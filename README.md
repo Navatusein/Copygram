@@ -30,7 +30,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/4nTony10/TelegramCopyPasta">
+  <a href="https://github.com/Navatusein/TelegramAnalog">
     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsjAkjgYvrZq_c1-SdOqeZii_K3tDz50AS0Q&usqp=CAU" alt="Logo" width="500">
   </a>
 
@@ -39,14 +39,14 @@
   <p align="center">
     The graeates Telegram analogue among all
     <br />
-    <a href="https://github.com/4nTony10/TelegramCopyPasta"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/Navatusein/TelegramAnalog"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/4nTony10/TelegramCopyPasta">View Demo</a>
+    <a href="https://github.com/Navatusein/TelegramAnalog">View Demo</a>
     ·
-    <a href="https://github.com/4nTony10/TelegramCopyPasta/issues">Report Bug</a>
+    <a href="https://github.com/Navatusein/TelegramAnalog/issues">Report Bug</a>
     ·
-    <a href="https://github.com/4nTony10/TelegramCopyPasta/issues">Request Feature</a>
+    <a href="https://github.com/Navatusein/TelegramAnalog/issues">Request Feature</a>
   </p>
 </div>
 
@@ -121,7 +121,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 - [ ] Add Roadmap Events
 
 
-See the [open issues](https://github.com/4nTony10/TelegramCopyPasta/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/Navatusein/TelegramAnalog/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -159,7 +159,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 Your Name - [@your_twitter](https://twitter.com/your_username) - email@example.com
 
-Project Link: [https://github.com/4nTony10/TelegramCopyPasta](https://github.com/4nTony10/TelegramCopyPasta)
+Project Link: [https://github.com/4nTony10/TelegramCopyPasta](https://github.com/Navatusein/TelegramAnalog)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
