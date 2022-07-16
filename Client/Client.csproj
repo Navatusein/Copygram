@@ -7,4 +7,28 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Resources\Icons\dots-three-vertical.ico" />
+    <None Remove="Resources\Icons\info.ico" />
+    <None Remove="Resources\Icons\logotype.ico" />
+    <None Remove="Resources\Icons\menu.ico" />
+    <None Remove="Resources\Icons\microphone.ico" />
+    <None Remove="Resources\Icons\paperclip.ico" />
+    <None Remove="Resources\Icons\search.ico" />
+    <None Remove="Resources\Icons\setting.ico" />
+    <None Remove="Resources\Icons\smiley.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Icons\dots-three-vertical.ico" />
+    <Resource Include="Resources\Icons\info.ico" />
+    <Resource Include="Resources\Icons\logotype.ico" />
+    <Resource Include="Resources\Icons\menu.ico" />
+    <Resource Include="Resources\Icons\microphone.ico" />
+    <Resource Include="Resources\Icons\paperclip.ico" />
+    <Resource Include="Resources\Icons\search.ico" />
+    <Resource Include="Resources\Icons\setting.ico" />
+    <Resource Include="Resources\Icons\smiley.ico" />
+  </ItemGroup>
+
 </Project>
