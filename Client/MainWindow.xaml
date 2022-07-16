@@ -8,5 +8,61 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid>
 
+        <Grid >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="5*"/>
+                <ColumnDefinition Width="10*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="9*"/>
+            </Grid.RowDefinitions>
+            <Button Grid.Row="0" Grid.Column="0" Margin="0" HorizontalAlignment="Stretch" 
+                VerticalAlignment="Stretch" Cursor="Hand" HorizontalContentAlignment="Center">
+                <Button.Content>
+                    <Image Source="Resources/Icons/menu.ico" Height="25" Width="25"/>
+                </Button.Content>
+            </Button>
+            <ListBox Grid.Row="1" Grid.Column="0">
+
+            </ListBox>
+
+            <TextBox Grid.Row="0" Grid.Column="1" Margin="5" VerticalAlignment="Center" Background="LightBlue" Text="Search"/>
+            <ListBox Grid.Row="1" Grid.Column="1" >
+
+            </ListBox>
+
+            <Grid Grid.Column="2" Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="10*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="5*"/>
+                        <ColumnDefinition Width="4*"/>
+                    </Grid.ColumnDefinitions>
+                </Grid>
+
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="7*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Grid.Column ="0" Source="Resources/Icons/paperclip.ico" Height="20" Width="20"/>
+                    <TextBox Grid.Column ="1" Text="Write a message..." HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                         HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                    <Image Grid.Column ="2" Source="Resources/Icons/smiley.ico" Height="20" Width="20"/>
+                    <Image Grid.Column ="3" Source="Resources/Icons/microphone.ico" Height="25" Width="25"/>
+                </Grid>
+
+            </Grid>
+
+        </Grid>
     </Grid>
 </Window>
