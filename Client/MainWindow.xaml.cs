@@ -23,6 +23,7 @@ namespace Client
         public MainWindow()
         {
             InitializeComponent();
+            tbSearch.Background = new SolidColorBrush(Color.FromArgb(240, 240, 240, 255));
         }
     }
 }

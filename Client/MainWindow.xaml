@@ -5,8 +5,121 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        WindowStartupLocation="CenterScreen"
+        MinHeight="500" MinWidth="500"
+        Icon="Resources/Icons/logotype.ico"
+        Title="Copygram" Height="450" Width="800">
     <Grid>
 
+        <Grid x:Name="MainGrid">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="5*"/>
+                <ColumnDefinition Width="10*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="9*"/>
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource IconCornerBorder}">
+                <Button  Style="{StaticResource IconButton}">
+                    <Image Source="Resources/Icons/menu.ico" Style="{StaticResource ImageSize}"/>
+                </Button>
+            </Border>
+
+            <ListBox x:Name="FoldersGrid" Background="SteelBlue" Grid.Row="1" Grid.Column="0">
+
+            </ListBox>
+
+            <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource TBCornerBorder}">
+                <TextBox x:Name="tbSearch" Text="Search"  Style="{StaticResource TextBoxStyle}"/>
+            </Border>
+            
+            <ListBox x:Name="ChatsList" Grid.Row="1" Grid.Column="1" >
+
+            </ListBox>
+
+            <Grid x:Name="ChatThumbnailGrid" Grid.Row="0" Grid.Column="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50*"/>
+                    <ColumnDefinition Width="5*"/>
+                    <ColumnDefinition Width="5*"/>
+                    <ColumnDefinition Width="5*"/>
+                    <ColumnDefinition Width="5*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="Name Surname" Style="{StaticResource NameLabel}"/>
+                    <TextBlock Text="last seen long time ago" Style="{StaticResource LastSeenLabel}"/>
+                </StackPanel>
+                
+                <Border Grid.Column="2" Style="{StaticResource IconCornerBorder}">
+                    <Button  Style="{StaticResource IconButton}">
+                        <Image Source="Resources/Icons/search.ico" Style="{StaticResource ImageSize}"/>
+                    </Button>
+                </Border>
+
+                <Border Grid.Column="3" Style="{StaticResource IconCornerBorder}">
+                    <Button Style="{StaticResource IconButton}">
+                        <Image Source="Resources/Icons/info.ico" Style="{StaticResource ImageSize}"/>
+                    </Button>
+                </Border>
+
+                <Border Grid.Column="4" Style="{StaticResource IconCornerBorder}">
+                    <Button Style="{StaticResource IconButton}">
+                        <Image Source="Resources/Icons/dots-three-vertical.ico" Style="{StaticResource ImageSize}"/>
+                    </Button>
+                </Border>
+            </Grid>
+            
+            <Grid x:Name="ChatGrid" Grid.Column="2" Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="10*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="5*"/>
+                        <ColumnDefinition Width="4*"/>
+                    </Grid.ColumnDefinitions>
+                </Grid>
+
+                <Grid x:Name="MessageSets" Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="7*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" Style="{StaticResource IconCornerBorder}">
+                        <Button Style="{StaticResource IconButton}">
+                            <Image Source="Resources/Icons/paperclip.ico" Style="{StaticResource ImageSize}"/>
+                        </Button>
+                    </Border>
+
+                    <Border Grid.Column="1" Style="{StaticResource TBCornerBorder}">
+                        <TextBox Text="Write a message..." Style="{StaticResource TextBoxStyle}"/>
+                    </Border>
+
+                    <Border Grid.Column="2" Style="{StaticResource IconCornerBorder}">
+                        <Button Style="{StaticResource IconButton}">
+                            <Image Source="Resources/Icons/smiley.ico" Style="{StaticResource ImageSize}"/>
+                        </Button>
+                    </Border>
+
+                    <Border Grid.Column="3" Style="{StaticResource IconCornerBorder}">
+                        <Button Style="{StaticResource IconButton}">
+                            <Image Source="Resources/Icons/microphone.ico" Style="{StaticResource ImageSize}"/>
+                        </Button>
+                    </Border>
+                </Grid>
+
+            </Grid>
+
+        </Grid>
     </Grid>
 </Window>
