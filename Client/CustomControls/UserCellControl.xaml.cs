@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Client
+namespace Client.CustomControls
 {
     /// <summary>
     /// Логика взаимодействия для UserCellControl.xaml

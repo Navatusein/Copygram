@@ -24,7 +24,7 @@ namespace Client.CustomControls
             = DependencyProperty.Register(
                 "IconImageSource",
                 typeof(ImageSource),
-                typeof(UserCellControl));
+                typeof(IconButton));
 
         public ImageSource IconImageSource
         {
@@ -36,6 +36,7 @@ namespace Client.CustomControls
         {
             InitializeComponent();
             this.DataContext = this;
+
         }
     }
 }

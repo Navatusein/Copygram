@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Client
+namespace Client.CustomControls
 {
     /// <summary>
     /// Логика взаимодействия для SidePanelMenuControl.xaml
@@ -24,7 +24,7 @@ namespace Client
             = DependencyProperty.Register(
                 "MyAvatarSource",
                 typeof(ImageSource),
-                typeof(UserCellControl));
+                typeof(SidePanelMenuControl));
 
         public ImageSource MyAvatarSource
         {
@@ -36,7 +36,7 @@ namespace Client
             = DependencyProperty.Register(
                 "MyUsernameSource",
                 typeof(string),
-                typeof(UserCellControl));
+                typeof(SidePanelMenuControl));
 
         public string MyUsernameSource
         {
@@ -48,7 +48,7 @@ namespace Client
             = DependencyProperty.Register(
                 "IdSource",
                 typeof(string),
-                typeof(UserCellControl));
+                typeof(SidePanelMenuControl));
 
         public string IdSource
         {
