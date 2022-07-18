@@ -1,0 +1,105 @@
+﻿<UserControl x:Class="Client.SidePanelMenuControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="300">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="2"/>
+            <RowDefinition Height="8*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0">
+            <Ellipse  Height="50" Width="50">
+                <Ellipse.Fill>
+                    <ImageBrush ImageSource="{Binding MyAvatarSource}"/>
+                </Ellipse.Fill>
+            </Ellipse>
+            <TextBlock Text="{Binding MyUsernameSource}" Style="{StaticResource NameLabel}"/>
+            <TextBlock Text="{Binding IdSource}" Style="{StaticResource LastSeenLabel}"/>
+        </StackPanel>
+
+        <Separator Grid.Row="1"/>
+        <StackPanel Grid.Row="2" Orientation="Vertical">
+            <StackPanel Orientation="Horizontal">
+                <Ellipse Style="{StaticResource MenuIcon}">
+                    <Ellipse.Fill>
+                        <ImageBrush ImageSource="../Resources/Icons/group.png"/>
+                    </Ellipse.Fill>
+                </Ellipse>
+                <TextBlock Text="New Group" Style="{StaticResource MenuLabel}"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal">
+                <Ellipse Style="{StaticResource MenuIcon}">
+                    <Ellipse.Fill>
+                        <ImageBrush ImageSource="../Resources/Icons/channel.png" />
+                    </Ellipse.Fill>
+                </Ellipse>
+                <TextBlock Text="New Channel" Style="{StaticResource MenuLabel}"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal">
+                <Ellipse Style="{StaticResource MenuIcon}">
+                    <Ellipse.Fill>
+                        <ImageBrush ImageSource="../Resources/Icons/contacts.png" />
+                    </Ellipse.Fill>
+                </Ellipse>
+                <TextBlock Text="Contacts" Style="{StaticResource MenuLabel}"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal">
+                <Ellipse Style="{StaticResource MenuIcon}">
+                    <Ellipse.Fill>
+                        <ImageBrush ImageSource="../Resources/Icons/phone.png"/>
+                    </Ellipse.Fill>
+                </Ellipse>
+                <TextBlock Text="Calls" Style="{StaticResource MenuLabel}"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal">
+                <Ellipse Style="{StaticResource MenuIcon}">
+                    <Ellipse.Fill>
+                        <ImageBrush ImageSource="../Resources/Icons/saved.png"/>
+                    </Ellipse.Fill>
+                </Ellipse>
+                <TextBlock Text="Saved Messages" Style="{StaticResource MenuLabel}"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal">
+                <Ellipse Style="{StaticResource MenuIcon}">
+                    <Ellipse.Fill>
+                        <ImageBrush ImageSource="../Resources/Icons/settings.png"/>
+                    </Ellipse.Fill>
+                </Ellipse>
+                <TextBlock Text="Settings" Style="{StaticResource MenuLabel}"/>
+            </StackPanel>
+
+            <StackPanel x:Name="ThemeSwitcher" Orientation="Horizontal">
+                <Ellipse Style="{StaticResource MenuIcon}">
+                    <Ellipse.Fill>
+                        <ImageBrush ImageSource="../Resources/Icons/nightmode.png"/>
+                    </Ellipse.Fill>
+                </Ellipse>
+                <TextBlock Text="Night Mode" Style="{StaticResource MenuLabel}"/>
+            </StackPanel>
+        </StackPanel>
+
+        <DockPanel Grid.Row="3">
+            <TextBlock DockPanel.Dock="Top" Style="{StaticResource MenuLabel}">
+                Copygram Desktop
+            </TextBlock>
+            <TextBlock Style="{StaticResource VersionLabel}">
+                Version 1.0 x64
+            </TextBlock>
+            <TextBlock DockPanel.Dock="Bottom">
+                <Italic>Made by Игроделы</Italic>
+            </TextBlock>
+        </DockPanel>
+    </Grid>
+</UserControl>

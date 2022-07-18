@@ -6,9 +6,9 @@
         xmlns:local="clr-namespace:Client"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        MinHeight="500" MinWidth="500"
+        MinHeight="600" MinWidth="600"
         Icon="Resources/Icons/logotype.ico"
-        Title="Copygram" Height="450" Width="800">
+        Title="Copygram" Height="600" Width="1000">
     <Grid>
 
         <Grid x:Name="MainGrid">
@@ -22,22 +22,20 @@
                 <RowDefinition Height="9*"/>
             </Grid.RowDefinitions>
 
-            <Grid Grid.RowSpan="2" Grid.ColumnSpan="3">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="4*"/>
-                    <ColumnDefinition Width="6*"/>
-                </Grid.ColumnDefinitions>
-
-                <StackPanel x:Name="sidePanel" Background="#293a4c" Grid.Column="0"
-                        Width="0" HorizontalAlignment="Left" VerticalAlignment="Stretch" Panel.ZIndex="1">
-
-                </StackPanel>
-
-                <StackPanel Grid.Column="1" x:Name="otherSidePanel" HorizontalAlignment="Stretch">
-                    <Rectangle Fill="Black"  />
-                </StackPanel>
+            <Grid x:Name="BackgroundOverlayGrid" Grid.RowSpan="2" Grid.ColumnSpan="3" Panel.ZIndex="1" >
+                <Rectangle Name="rectOverlay" MouseDown="rectOverlay_MouseDown" 
+                           Stroke="Black" StrokeThickness="2" 
+                           Fill="Black" Opacity="0.3" 
+                           Visibility="Collapsed" />
             </Grid>
-            
+
+            <Grid x:Name="OverlayElementGrid" Grid.RowSpan="2" Grid.ColumnSpan="3" Panel.ZIndex="2" >
+                <local:SidePanelMenuControl x:Name="sidePanel" Background="White" Grid.Column="0"
+                            HorizontalAlignment="Left" Visibility="Collapsed" 
+                            VerticalAlignment="Stretch"
+                            MyAvatarSource="Resources/Icons/logotype.ico"
+                            MyUsernameSource="Anthony" IdSource="+000 (00) 000 00 00"/>
+            </Grid>
 
             <StackPanel Grid.RowSpan="2" Background="#293a4c" Orientation="Vertical">
                 <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource IconCornerBorder}">
@@ -46,13 +44,11 @@
                     </Button>
                 </Border>
 
-                <ListBox x:Name="FoldersGrid" Background="#293a4c" Grid.Row="1" Grid.Column="0" BorderThickness="0">
-
-                </ListBox>
+                <ListBox x:Name="FoldersGrid" Background="#293a4c" Grid.Row="1" Grid.Column="0" BorderThickness="0"/>
             </StackPanel>
 
-            <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource TBCornerBorder}">
-                <TextBox x:Name="tbSearch" Text="Search" Style="{StaticResource TextBoxSearch}"/>
+            <Border Grid.Row="0" Grid.Column="1" Margin="12" Style="{StaticResource TBCornerBorder}">
+                <TextBox x:Name="tbSearch" Text="Search" Style="{StaticResource TextBoxSearch}" GotFocus="tbSearch_GotFocus" LostFocus="tbSearch_LostFocus"/>
             </Border>
 
             <ListBox x:Name="ChatsList" Grid.Row="1" Grid.Column="1" BorderThickness="1" HorizontalContentAlignment="Stretch">
@@ -75,7 +71,7 @@
 
                 <Border Grid.Column="2" Style="{StaticResource IconCornerBorder}">
                     <Button  Style="{StaticResource IconButton}">
-                        <Image Source="Resources/Icons/search.ico" Style="{StaticResource ImageSize}"/>
+                        <Image Source="Resources/Icons/search.png" Style="{StaticResource ImageSize}"/>
                     </Button>
                 </Border>
 
@@ -87,26 +83,30 @@
 
                 <Border Grid.Column="4" Style="{StaticResource IconCornerBorder}">
                     <Button Style="{StaticResource IconButton}">
-                        <Image Source="Resources/Icons/dots-three-vertical.ico" Style="{StaticResource ImageSize}"/>
+                        <Image Source="Resources/Icons/list.png" Style="{StaticResource ImageSize}"/>
                     </Button>
                 </Border>
             </Grid>
 
             <Grid x:Name="ChatGrid" Grid.Column="2" Grid.Row="1">
+
                 <Grid.RowDefinitions>
                     <RowDefinition Height="10*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-
-                <Grid>
+                
+                <Grid x:Name="MessageChat" Grid.Row="0">
+                    <Grid.Background>
+                        <ImageBrush ImageSource="Resources/Wallpapers/DefaultDay.jpg"/>
+                    </Grid.Background>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="5*"/>
-                        <ColumnDefinition Width="4*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                 </Grid>
 
                 <Grid x:Name="MessageSets" Grid.Row="1">
+                    
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*"/>
                         <ColumnDefinition Width="7*"/>
@@ -114,23 +114,27 @@
                         <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
 
-                    <Border Grid.Column="0" Style="{StaticResource IconCornerBorder}">
-                        <Button Style="{StaticResource IconButton}">
-                            <Image Source="Resources/Icons/paperclip.ico" Style="{StaticResource ImageSize}"/>
-                        </Button>
-                    </Border>
+                    <!--<local:IconButton Grid.Column="0" IconImageSource="Resources/Icons/insert.png"/>-->
 
-                    <TextBox Grid.Column="1" Text="Write a message..." Style="{StaticResource TextBoxMessage}"/>
+                    <TextBox x:Name="tbMessage" Grid.Column="1" Text="Write a message..." Style="{StaticResource TextBoxMessage}" GotFocus="tbMessage_GotFocus" LostFocus="tbMessage_LostFocus"/>
 
                     <Border Grid.Column="2" Style="{StaticResource IconCornerBorder}">
                         <Button Style="{StaticResource IconButton}">
-                            <Image Source="Resources/Icons/smiley.ico" Style="{StaticResource ImageSize}"/>
+                            <Ellipse Height="40" Width="40">
+                                <Ellipse.Fill>
+                                    <ImageBrush ImageSource="Resources/Icons/emoji.png"/>
+                                </Ellipse.Fill>
+                            </Ellipse>
                         </Button>
                     </Border>
 
                     <Border Grid.Column="3" Style="{StaticResource IconCornerBorder}">
                         <Button Style="{StaticResource IconButton}">
-                            <Image Source="Resources/Icons/microphone.ico" Style="{StaticResource ImageSize}"/>
+                            <Ellipse Height="40" Width="40">
+                                <Ellipse.Fill>
+                                    <ImageBrush ImageSource="Resources/Icons/microphone.png"/>
+                                </Ellipse.Fill>
+                            </Ellipse>
                         </Button>
                     </Border>
                 </Grid>
