@@ -1,19 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Windows.Threading;
 
 namespace Client
 {
@@ -28,18 +16,6 @@ namespace Client
         {
             InitializeComponent();
             toSize = Width / 4;
-        }
-
-        private void Button_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                sidePanel.Visibility = Visibility.Visible;
-                sidePanel.BeginAnimation(WidthProperty, new DoubleAnimation(0, toSize, TimeSpan.FromSeconds(0.5)));
-
-                rectOverlay.Visibility = Visibility.Visible;
-                rectOverlay.BeginAnimation(HeightProperty, new DoubleAnimation(0, this.Height, TimeSpan.FromSeconds(0.5)));
-            }
         }
 
         private void rectOverlay_MouseDown(object sender, MouseButtonEventArgs e)
@@ -77,6 +53,16 @@ namespace Client
         private void tbMessage_LostFocus(object sender, RoutedEventArgs e)
         {
             tbMessage.Text = "Write a message...";
+        }
+
+        private void IconButton_Tap(object sender, RoutedEventArgs e)
+        {
+
+            sidePanel.Visibility = Visibility.Visible;
+            sidePanel.BeginAnimation(WidthProperty, new DoubleAnimation(0, toSize, TimeSpan.FromSeconds(0.5)));
+
+            rectOverlay.Visibility = Visibility.Visible;
+            rectOverlay.BeginAnimation(HeightProperty, new DoubleAnimation(0, this.Height, TimeSpan.FromSeconds(0.5)));
         }
     }
 }

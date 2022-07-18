@@ -32,11 +32,32 @@ namespace Client.CustomControls
             set => SetValue(IconImageSourceProperty, value);
         }
 
+        public static readonly RoutedEvent ClickEvent = EventManager.RegisterRoutedEvent(
+            "Click", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(IconButton));
+
+        public event RoutedEventHandler Click
+        {
+            add { AddHandler(ClickEvent, value); }
+            remove { RemoveHandler(ClickEvent, value); }
+        }
+
+        void RaiseClickEvent()
+        {
+            RoutedEventArgs newEventArgs = new RoutedEventArgs(IconButton.ClickEvent);
+            RaiseEvent(newEventArgs);
+        }
+
+        void OnClick()
+        {
+            RaiseClickEvent();
+        }
+
         public IconButton()
         {
             InitializeComponent();
             this.DataContext = this;
 
+            PreviewMouseLeftButtonUp += (sender, args) => OnClick();
         }
     }
 }

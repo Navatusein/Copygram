@@ -39,7 +39,7 @@
             </Grid>
 
             <StackPanel Grid.RowSpan="2" Background="#293a4c" Orientation="Vertical">
-                <cctrl:IconButton Grid.Row="0" Grid.Column="0" IconImageSource="Resources/Icons/menu.ico"/>
+                <cctrl:IconButton Grid.Row="0" Grid.Column="0" IconImageSource="Resources/Icons/menu.ico" Click="IconButton_Tap"/>
 
                 <ListBox x:Name="FoldersGrid" Background="#293a4c" Grid.Row="1" Grid.Column="0" BorderThickness="0"/>
             </StackPanel>
