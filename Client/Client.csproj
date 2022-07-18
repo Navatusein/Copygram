@@ -8,27 +8,107 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Fonts\sf-compact-medium.otf" />
+    <None Remove="Resources\Fonts\sf-compact-thin.otf" />
+    <None Remove="Resources\Icons\channel.png" />
+    <None Remove="Resources\Icons\contacts.png" />
+    <None Remove="Resources\Icons\daymode.png" />
     <None Remove="Resources\Icons\dots-three-vertical.ico" />
+    <None Remove="Resources\Icons\emoji.png" />
+    <None Remove="Resources\Icons\forward.jpg" />
+    <None Remove="Resources\Icons\group.png" />
     <None Remove="Resources\Icons\info.ico" />
+    <None Remove="Resources\Icons\insert.png" />
+    <None Remove="Resources\Icons\list.png" />
     <None Remove="Resources\Icons\logotype.ico" />
     <None Remove="Resources\Icons\menu.ico" />
-    <None Remove="Resources\Icons\microphone.ico" />
-    <None Remove="Resources\Icons\paperclip.ico" />
-    <None Remove="Resources\Icons\search.ico" />
-    <None Remove="Resources\Icons\setting.ico" />
-    <None Remove="Resources\Icons\smiley.ico" />
+    <None Remove="Resources\Icons\microphone.png" />
+    <None Remove="Resources\Icons\nightmode.png" />
+    <None Remove="Resources\Icons\phone.png" />
+    <None Remove="Resources\Icons\saved.png" />
+    <None Remove="Resources\Icons\search.png" />
+    <None Remove="Resources\Icons\settings.png" />
+    <None Remove="Resources\Icons\stickers.png" />
+    <None Remove="Resources\Wallpapers\DefaultDay.jpg" />
+    <None Remove="Resources\Wallpapers\DefaultNight.jpg" />
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Resources\Icons\dots-three-vertical.ico" />
-    <Resource Include="Resources\Icons\info.ico" />
-    <Resource Include="Resources\Icons\logotype.ico" />
-    <Resource Include="Resources\Icons\menu.ico" />
-    <Resource Include="Resources\Icons\microphone.ico" />
-    <Resource Include="Resources\Icons\paperclip.ico" />
-    <Resource Include="Resources\Icons\search.ico" />
-    <Resource Include="Resources\Icons\setting.ico" />
-    <Resource Include="Resources\Icons\smiley.ico" />
+    <Resource Include="Resources\Fonts\sf-compact-medium.otf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\sf-compact-thin.otf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\channel.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\forward.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\group.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Icons\daymode.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\emoji.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\insert.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\microphone.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\nightmode.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\phone.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\saved.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Icons\contacts.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\dots-three-vertical.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\info.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\list.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\logotype.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\menu.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\settings.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\stickers.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\search.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Wallpapers\DefaultDay.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Wallpapers\DefaultNight.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
 </Project>

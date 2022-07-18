@@ -10,11 +10,22 @@
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="Height" Value="25"/>
-        <Setter Property="Width" Value="25"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
         <Style.Triggers>
             <Trigger Property="IsPressed" Value="True">
                 <Setter Property="Background" Value="Gray"/>
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="BorderBrush" Value="Transparent"/>
+                <Setter Property="Background" Value="Transparent"/>
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -40,9 +51,14 @@
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Foreground" Value="Gray"/>
         <Setter Property="Text" Value="Search"/>
+        <Setter Property="AllowDrop" Value="True"/>
+        <Setter Property="FontFamily" Value="SfCompact"/>
         <Style.Triggers>
             <Trigger Property="IsKeyboardFocused" Value="True">
                 <Setter Property="Foreground" Value="Black"/>
+            </Trigger>
+            <Trigger Property="IsKeyboardFocused" Value="False">
+                <Setter Property="Text" Value="Search"/>
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -56,6 +72,8 @@
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Foreground" Value="Gray"/>
         <Setter Property="Text" Value="Write a message..."/>
+        <Setter Property="AllowDrop" Value="True"/>
+        <Setter Property="FontFamily" Value="SfCompact"/>
         <Style.Triggers>
             <Trigger Property="IsKeyboardFocused" Value="True">
                 <Setter Property="Foreground" Value="Black"/>
@@ -76,26 +94,26 @@
     </Style>
     <Style x:Key="NameLabel" TargetType="TextBlock">
         <Setter Property="FontSize" Value="14"/>
-        <Setter Property="FontWeight" Value="DemiBold"/>
+        <Setter Property="FontFamily" Value="SfCompact"/>
         <Setter Property="Foreground" Value="Black"/>
         <Setter Property="Margin" Value="10, 5, 0, 0"/>
     </Style>
     <Style x:Key="LastSeenLabel" TargetType="TextBlock">
         <Setter Property="FontSize" Value="12"/>
-        <Setter Property="FontWeight" Value="Light"/>
+        <Setter Property="FontFamily" Value="SfCompactThin"/>
         <Setter Property="Foreground" Value="Gray"/>
         <Setter Property="Margin" Value="10, 0 ,0, 5"/>
     </Style>
     <Style x:Key="DateLabel" TargetType="TextBlock">
         <Setter Property="FontSize" Value="12"/>
-        <Setter Property="FontWeight" Value="Light"/>
+        <Setter Property="FontFamily" Value="SfComppactThin"/>
         <Setter Property="Foreground" Value="Gray"/>
         <Setter Property="Margin" Value="10, 5, 0, 5"/>
     </Style>
     <Style x:Key="NotSeenAmountLabel" TargetType="TextBlock">
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="Foreground" Value="White"/>
-        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="FontFamily" Value="SfCompactThin"/>
         <Setter Property="Margin" Value="3"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
@@ -106,5 +124,33 @@
         <Setter Property="LastMessage" Value="Hello there!"/>
         <Setter Property="Date" Value="Second ago"/>
         <Setter Property="UnreadCount" Value="1"/>
+    </Style>
+    <Style x:Key="MenuLabel" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="FontFamily" Value="SfCompact"/>
+        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="Margin" Value="10, 5"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+    <Style x:Key="MenuIcon" TargetType="Ellipse">
+        <Setter Property="Height" Value="30"/>
+        <Setter Property="Width" Value="30"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="Margin" Value="10,5"/>
+    </Style>
+    <Style x:Key="AboutLabel" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontFamily" Value="SgfCompact"/>
+        <Setter Property="Foreground" Value="LightGray"/>
+        <Setter Property="Margin" Value="10, 5"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+    <Style x:Key="VersionLabel" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontFamily" Value="SfCompact"/>
+        <Setter Property="Foreground" Value="Gray"/>
+        <Setter Property="Margin" Value="10, 5"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
 </ResourceDictionary>
