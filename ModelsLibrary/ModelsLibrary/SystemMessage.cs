@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 namespace ModelsLibrary
 {
     [Serializable]
-    public class Message : IMessage
+    public class SystemMessage : IMessage
     {
         public int Id { get; set; }
 
         public MessageType Type { get; set; }
 
-        public string MessageText { get; set; } = null!;
+        public byte[] Data { get; set; } = null!;
 
-        public User FromUser { get; set; } = null!;
+        public UserProfile FromUser { get; set; } = null!;
     }
 }

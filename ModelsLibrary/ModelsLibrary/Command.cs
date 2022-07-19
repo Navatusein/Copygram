@@ -23,6 +23,6 @@ namespace ModelsLibrary
 
         public byte[] Data { get; set; } = null!;
 
-        public User User { get; set; } = null!;
+        public UserProfile User { get; set; } = null!;
     }
 }
