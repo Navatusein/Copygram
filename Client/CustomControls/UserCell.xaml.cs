@@ -18,37 +18,37 @@ namespace Client.CustomControls
     /// <summary>
     /// Логика взаимодействия для UserCellControl.xaml
     /// </summary>
-    public partial class UserCellControl : UserControl
+    public partial class UserCell : UserControl
     {
         public static readonly DependencyProperty AvatarSourceProperty
             = DependencyProperty.Register(
                 "AvatarSource",
                 typeof(ImageSource),
-                typeof(UserCellControl));
+                typeof(UserCell));
 
         public static readonly DependencyProperty UserNameProperty
             = DependencyProperty.Register(
                 "Username",
                 typeof(string),
-                typeof(UserCellControl));
+                typeof(UserCell));
 
         public static readonly DependencyProperty LastMessageProperty
             = DependencyProperty.Register(
                 "LastMessage",
                 typeof(string),
-                typeof(UserCellControl));
+                typeof(UserCell));
 
         public static readonly DependencyProperty DateProperty
             = DependencyProperty.Register(
                 "Date",
                 typeof(string),
-                typeof(UserCellControl));
+                typeof(UserCell));
 
         public static readonly DependencyProperty UnReadMessagess
             = DependencyProperty.Register(
                 "UnreadCount",
                 typeof(int),
-                typeof(UserCellControl));
+                typeof(UserCell));
 
         public ImageSource AvatarSource
         {
@@ -76,7 +76,7 @@ namespace Client.CustomControls
             set => SetValue(UnReadMessagess, value);
         }
 
-        public UserCellControl()
+        public UserCell()
         {
             InitializeComponent();
             this.DataContext = this; 

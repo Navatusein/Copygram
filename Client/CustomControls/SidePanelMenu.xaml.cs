@@ -18,13 +18,13 @@ namespace Client.CustomControls
     /// <summary>
     /// Логика взаимодействия для SidePanelMenuControl.xaml
     /// </summary>
-    public partial class SidePanelMenuControl : UserControl
+    public partial class SidePanelMenu : UserControl
     {
         public static readonly DependencyProperty MyAvatarSourceProperty
             = DependencyProperty.Register(
                 "MyAvatarSource",
                 typeof(ImageSource),
-                typeof(SidePanelMenuControl));
+                typeof(SidePanelMenu));
 
         public ImageSource MyAvatarSource
         {
@@ -36,7 +36,7 @@ namespace Client.CustomControls
             = DependencyProperty.Register(
                 "MyUsernameSource",
                 typeof(string),
-                typeof(SidePanelMenuControl));
+                typeof(SidePanelMenu));
 
         public string MyUsernameSource
         {
@@ -48,7 +48,7 @@ namespace Client.CustomControls
             = DependencyProperty.Register(
                 "IdSource",
                 typeof(string),
-                typeof(SidePanelMenuControl));
+                typeof(SidePanelMenu));
 
         public string IdSource
         {
@@ -56,7 +56,7 @@ namespace Client.CustomControls
             set => SetValue(IdSourceProperty, value);
         }
 
-        public SidePanelMenuControl()
+        public SidePanelMenu()
         {
             InitializeComponent();
             this.DataContext = this;

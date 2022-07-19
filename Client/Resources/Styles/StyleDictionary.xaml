@@ -118,7 +118,7 @@
         <Setter Property="HorizontalAlignment" Value="Center"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
-    <Style x:Key="DefaultChatUser" TargetType="local:UserCellControl">
+    <Style x:Key="DefaultChatUser" TargetType="local:UserCell">
         <Setter Property="AvatarSource" Value="../Icons/logotype.ico"/>
         <Setter Property="Username" Value="Copygram Team"/>
         <Setter Property="LastMessage" Value="Hello there!"/>
@@ -152,5 +152,21 @@
         <Setter Property="Foreground" Value="Gray"/>
         <Setter Property="Margin" Value="10, 5"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+    <Style x:Key="CommonButton" TargetType="Button">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontFamily" Value="SfCompact"/>
+        <Setter Property="Foreground" Value="#2596be"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Margin" Value="10"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="BorderBrush" Value="#2596be"/>
+                <Setter Property="BorderThickness" Value="2"/>
+            </Trigger>
+        </Style.Triggers>
     </Style>
 </ResourceDictionary>

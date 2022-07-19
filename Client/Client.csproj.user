@@ -7,11 +7,17 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="CustomControls\ContactsOverlay.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="CustomControls\IconButton.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="CustomControls\ContactsOverlay.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="CustomControls\IconButton.xaml">
       <SubType>Designer</SubType>
     </Page>

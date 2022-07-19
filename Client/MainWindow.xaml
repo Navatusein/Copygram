@@ -31,7 +31,7 @@
             </Grid>
 
             <Grid x:Name="OverlayElementGrid" Grid.RowSpan="2" Grid.ColumnSpan="3" Panel.ZIndex="2" >
-                <cctrl:SidePanelMenuControl x:Name="sidePanel" Background="White" Grid.Column="0"
+                <cctrl:SidePanelMenu x:Name="sidePanel" Background="White" Grid.Column="0"
                             HorizontalAlignment="Left" Visibility="Collapsed" 
                             VerticalAlignment="Stretch"
                             MyAvatarSource="Resources/Icons/logotype.ico"
@@ -49,7 +49,7 @@
             </Border>
 
             <ListBox x:Name="ChatsList" Grid.Row="1" Grid.Column="1" BorderThickness="1" HorizontalContentAlignment="Stretch">
-                <cctrl:UserCellControl Style="{StaticResource DefaultChatUser}"/>
+                <cctrl:UserCell Style="{StaticResource DefaultChatUser}"/>
             </ListBox>
 
             <Grid x:Name="ChatThumbnailGrid" Grid.Row="0" Grid.Column="2">
