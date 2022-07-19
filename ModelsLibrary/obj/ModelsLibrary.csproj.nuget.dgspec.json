@@ -1,24 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Qube\\Source\\Repos\\4nThonyIO\\TelegramAnalogue\\ModelsLibrary\\ModelsLibrary.csproj": {}
+    "E:\\Projects\\Copygram\\ModelsLibrary\\ModelsLibrary.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Qube\\Source\\Repos\\4nThonyIO\\TelegramAnalogue\\ModelsLibrary\\ModelsLibrary.csproj": {
+    "E:\\Projects\\Copygram\\ModelsLibrary\\ModelsLibrary.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Qube\\Source\\Repos\\4nThonyIO\\TelegramAnalogue\\ModelsLibrary\\ModelsLibrary.csproj",
+        "projectUniqueName": "E:\\Projects\\Copygram\\ModelsLibrary\\ModelsLibrary.csproj",
         "projectName": "ModelsLibrary",
-        "projectPath": "C:\\Users\\Qube\\Source\\Repos\\4nThonyIO\\TelegramAnalogue\\ModelsLibrary\\ModelsLibrary.csproj",
-        "packagesPath": "C:\\Users\\Qube\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Qube\\Source\\Repos\\4nThonyIO\\TelegramAnalogue\\ModelsLibrary\\obj\\",
+        "projectPath": "E:\\Projects\\Copygram\\ModelsLibrary\\ModelsLibrary.csproj",
+        "packagesPath": "C:\\Users\\boghd\\.nuget\\packages\\",
+        "outputPath": "E:\\Projects\\Copygram\\ModelsLibrary\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "D:\\ЯЖЕПРОГРАМИСТ\\NuGetPackages",
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Qube\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\boghd\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -62,7 +61,7 @@
               "privateAssets": "none"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.302\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.101\\RuntimeIdentifierGraph.json"
         }
       }
     }
