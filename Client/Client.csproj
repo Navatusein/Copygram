@@ -15,6 +15,7 @@
     <None Remove="Resources\Icons\daymode.png" />
     <None Remove="Resources\Icons\dots-three-vertical.ico" />
     <None Remove="Resources\Icons\emoji.png" />
+    <None Remove="Resources\Icons\folder.png" />
     <None Remove="Resources\Icons\forward.jpg" />
     <None Remove="Resources\Icons\group.png" />
     <None Remove="Resources\Icons\info.ico" />
@@ -42,6 +43,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Icons\channel.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\folder.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Icons\forward.jpg">
