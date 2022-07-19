@@ -5,8 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Client.CustomControls"
              mc:Ignorable="d" 
-             d:DesignHeight="500" d:DesignWidth="400">
-    <Border CornerRadius="10" BorderThickness="2" BorderBrush="#2596be">
+             d:DesignHeight="500" d:DesignWidth="350">
+    <Border CornerRadius="10" BorderThickness="2" BorderBrush="#2596be" Background="WhiteSmoke">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="1*"/>
@@ -16,37 +16,26 @@
                 <RowDefinition Height="1"/>
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
-            <DockPanel Grid.Row="0">
-                
-            </DockPanel>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="8*"/>
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Style="{StaticResource NameLabel}" Text="Contacts" Margin="15" FontSize="16"/>
+                <local:IconButton Grid.Column="1" IconImageSource="../Resources/Icons/sort.png"/>
+            </Grid>
 
-            <StackPanel Grid.Row="1">
-                
+            <StackPanel Orientation="Horizontal" Grid.Row="1">
+                <local:IconButton IconImageSource="../Resources/Icons/search.png"/>
+                <TextBox Style="{StaticResource TextBoxSearch}"/>
             </StackPanel>
 
             <Separator Grid.Row="2"/>
 
             <ListBox Grid.Row="3" Background="Transparent" BorderThickness="0">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="2*"/>
-                                <ColumnDefinition Width="8*"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                            </Grid.RowDefinitions>
-                            <Ellipse Grid.RowSpan="2" Grid.Column="0" Height="25" Width="25">
-                                <Ellipse.Fill>
-                                    <ImageBrush ImageSource="{Binding}"/>
-                                </Ellipse.Fill>
-                            </Ellipse>
-
-                        </Grid>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
+                <ListBoxItem HorizontalContentAlignment="Stretch">
+                    <local:ContactsMenuItem IconImageSource="../Resources/Icons/logotype.ico" UsernameSource="Anthony" UserStatusSource="last seen recently"/>
+                </ListBoxItem>
             </ListBox>
 
             <Separator Grid.Row="4"/>

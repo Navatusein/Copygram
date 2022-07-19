@@ -44,7 +44,7 @@ namespace Client.CustomControls
                 typeof(string),
                 typeof(UserCell));
 
-        public static readonly DependencyProperty UnReadMessagess
+        public static readonly DependencyProperty UnReadMessagesProperty
             = DependencyProperty.Register(
                 "UnreadCount",
                 typeof(int),
@@ -72,8 +72,8 @@ namespace Client.CustomControls
         }
         public int UnreadCount
         {
-            get => (int)GetValue(UnReadMessagess);
-            set => SetValue(UnReadMessagess, value);
+            get => (int)GetValue(UnReadMessagesProperty);
+            set => SetValue(UnReadMessagesProperty, value);
         }
 
         public UserCell()

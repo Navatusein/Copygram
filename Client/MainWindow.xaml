@@ -30,7 +30,7 @@
                            Visibility="Collapsed" />
             </Grid>
 
-            <Grid x:Name="OverlayElementGrid" Grid.RowSpan="2" Grid.ColumnSpan="3" Panel.ZIndex="2" >
+            <Grid x:Name="SidePanelOverlay" Grid.RowSpan="2" Grid.ColumnSpan="3" Panel.ZIndex="2" >
                 <cctrl:SidePanelMenu x:Name="sidePanel" Background="White" Grid.Column="0"
                             HorizontalAlignment="Left" Visibility="Collapsed" 
                             VerticalAlignment="Stretch"
@@ -38,6 +38,10 @@
                             MyUsernameSource="Anthony" IdSource="+000 (00) 000 00 00"/>
             </Grid>
 
+            <Grid x:Name="ContactsOverlayGrid" Grid.RowSpan="2" Grid.ColumnSpan="3" Panel.ZIndex="2" >
+                <cctrl:ContactsOverlay Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Grid>
+            
             <StackPanel Grid.RowSpan="2" Background="#293a4c" Orientation="Vertical">
                 <cctrl:IconButton Grid.Row="0" Grid.Column="0" IconImageSource="Resources/Icons/menu.ico" Click="IconButton_Tap"/>
 

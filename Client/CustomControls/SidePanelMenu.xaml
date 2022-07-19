@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Client.CustomControls"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="300">
 
@@ -25,69 +26,14 @@
         </StackPanel>
 
         <Separator Grid.Row="1"/>
-        <StackPanel Grid.Row="2" Orientation="Vertical">
-            <StackPanel Orientation="Horizontal">
-                <Ellipse Style="{StaticResource MenuIcon}">
-                    <Ellipse.Fill>
-                        <ImageBrush ImageSource="../Resources/Icons/group.png"/>
-                    </Ellipse.Fill>
-                </Ellipse>
-                <TextBlock Text="New Group" Style="{StaticResource MenuLabel}"/>
-            </StackPanel>
-
-            <StackPanel Orientation="Horizontal">
-                <Ellipse Style="{StaticResource MenuIcon}">
-                    <Ellipse.Fill>
-                        <ImageBrush ImageSource="../Resources/Icons/channel.png" />
-                    </Ellipse.Fill>
-                </Ellipse>
-                <TextBlock Text="New Channel" Style="{StaticResource MenuLabel}"/>
-            </StackPanel>
-
-            <StackPanel Orientation="Horizontal">
-                <Ellipse Style="{StaticResource MenuIcon}">
-                    <Ellipse.Fill>
-                        <ImageBrush ImageSource="../Resources/Icons/contacts.png" />
-                    </Ellipse.Fill>
-                </Ellipse>
-                <TextBlock Text="Contacts" Style="{StaticResource MenuLabel}"/>
-            </StackPanel>
-
-            <StackPanel Orientation="Horizontal">
-                <Ellipse Style="{StaticResource MenuIcon}">
-                    <Ellipse.Fill>
-                        <ImageBrush ImageSource="../Resources/Icons/phone.png"/>
-                    </Ellipse.Fill>
-                </Ellipse>
-                <TextBlock Text="Calls" Style="{StaticResource MenuLabel}"/>
-            </StackPanel>
-
-            <StackPanel Orientation="Horizontal">
-                <Ellipse Style="{StaticResource MenuIcon}">
-                    <Ellipse.Fill>
-                        <ImageBrush ImageSource="../Resources/Icons/saved.png"/>
-                    </Ellipse.Fill>
-                </Ellipse>
-                <TextBlock Text="Saved Messages" Style="{StaticResource MenuLabel}"/>
-            </StackPanel>
-
-            <StackPanel Orientation="Horizontal">
-                <Ellipse Style="{StaticResource MenuIcon}">
-                    <Ellipse.Fill>
-                        <ImageBrush ImageSource="../Resources/Icons/settings.png"/>
-                    </Ellipse.Fill>
-                </Ellipse>
-                <TextBlock Text="Settings" Style="{StaticResource MenuLabel}"/>
-            </StackPanel>
-
-            <StackPanel x:Name="ThemeSwitcher" Orientation="Horizontal">
-                <Ellipse Style="{StaticResource MenuIcon}">
-                    <Ellipse.Fill>
-                        <ImageBrush ImageSource="../Resources/Icons/nightmode.png"/>
-                    </Ellipse.Fill>
-                </Ellipse>
-                <TextBlock Text="Night Mode" Style="{StaticResource MenuLabel}"/>
-            </StackPanel>
+        <StackPanel x:Name="MenuStack" Grid.Row="2" Orientation="Vertical">
+            <local:SidePanelMenuItem x:Name="GroupBtn" IconImageSource="../Resources/Icons/group.png" TextSource="New Group"/>
+            <local:SidePanelMenuItem x:Name="ChannelBtn" IconImageSource="../Resources/Icons/channel.png" TextSource="New Channel"/>
+            <local:SidePanelMenuItem x:Name="ContactsBtn" IconImageSource="../Resources/Icons/contacts.png" TextSource="Contacts"/>
+            <local:SidePanelMenuItem x:Name="PhoneBtn" IconImageSource="../Resources/Icons/phone.png" TextSource="Calls"/>
+            <local:SidePanelMenuItem x:Name="SavedBtn" IconImageSource="../Resources/Icons/saved.png" TextSource="Saved Messages"/>
+            <local:SidePanelMenuItem x:Name="SettingsBtn" IconImageSource="../Resources/Icons/settings.png" TextSource="Settings"/>
+            <local:SidePanelMenuItem x:Name="NightModeBtn" IconImageSource="../Resources/Icons/nightmode.png" TextSource="Night Mode"/>
         </StackPanel>
 
         <DockPanel Grid.Row="3">

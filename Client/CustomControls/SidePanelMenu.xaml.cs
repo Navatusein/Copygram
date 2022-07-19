@@ -56,10 +56,33 @@ namespace Client.CustomControls
             set => SetValue(IdSourceProperty, value);
         }
 
+        public static readonly RoutedEvent ClickEvent = EventManager.RegisterRoutedEvent(
+            "Click", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(SidePanelMenuItem));
+
+        public event RoutedEventHandler Click
+        {
+            add { AddHandler(ClickEvent, value); }
+            remove { RemoveHandler(ClickEvent, value); }
+        }
+
+        void RaiseClickEvent()
+        {
+            RoutedEventArgs newEventArgs = new RoutedEventArgs(SidePanelMenuItem.TapEvent);
+            RaiseEvent(newEventArgs);
+        }
+
+        void OnClick()
+        {
+            RaiseClickEvent();
+        }
+
+
         public SidePanelMenu()
         {
             InitializeComponent();
             this.DataContext = this;
+
+            ContactsBtn.PreviewMouseLeftButtonUp += (sender, args) => OnClick();
         }
     }
 }
