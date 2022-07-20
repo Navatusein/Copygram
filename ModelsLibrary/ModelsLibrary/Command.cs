@@ -11,9 +11,10 @@ namespace ModelsLibrary
         Login,
         Register,
         Sync,
+        SyncChatMessage,
         Exception,
-        Request,
-        Response
+        RequestChanges,
+        NewMessage
     }
 
     [Serializable]

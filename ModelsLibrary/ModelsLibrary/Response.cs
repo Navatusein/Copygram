@@ -6,16 +6,19 @@ using System.Threading.Tasks;
 
 namespace ModelsLibrary
 {
+    public enum ResponseType
+    {
+        Success,
+        Error    
+    }
 
     [Serializable]
-    public class SystemMessage : IMessage
+    public class Response
     {
-        public int Id { get; set; }
+        public ResponseType Type { get; set; }
 
-        public MessageType Type { get; set; }
+        public Command OnCommandResponse { get; set; } = null!;
 
         public byte[] Data { get; set; } = null!;
-
-        public UserProfile FromUser { get; set; } = null!;
     }
 }

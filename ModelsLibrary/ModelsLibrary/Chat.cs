@@ -24,6 +24,8 @@ namespace ModelsLibrary
 
         public Image Avatar { get; set; } = null!;
 
-        public List<Message> messages { get; set; } = null!;
+        public List<ChatMessage> Messages { get; set; } = null!;
+
+        public List<UserProfile> Users { get; set; } = null!;
     }
 }

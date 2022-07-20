@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace ModelsLibrary
 {
     [Serializable]
-    public class Message : IMessage
+    public class ChatMessage : IMessage
     {
         public int Id { get; set; }
 
