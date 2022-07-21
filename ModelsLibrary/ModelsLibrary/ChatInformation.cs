@@ -14,7 +14,7 @@ namespace ModelsLibrary
     }
 
     [Serializable]
-    public class Chat
+    public class ChatInformation
     {
         public int Id { get; set; }
 
