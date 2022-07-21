@@ -56,18 +56,18 @@ namespace Client.CustomControls
             set => SetValue(IdSourceProperty, value);
         }
 
-        public static readonly RoutedEvent ClickEvent = EventManager.RegisterRoutedEvent(
-            "Click", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(SidePanelMenuItem));
+        public static readonly RoutedEvent ContactClickEvent = EventManager.RegisterRoutedEvent(
+            "ContactClick", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(SidePanelMenuItem));
 
-        public event RoutedEventHandler Click
+        public event RoutedEventHandler ContactClick
         {
-            add { AddHandler(ClickEvent, value); }
-            remove { RemoveHandler(ClickEvent, value); }
+            add { AddHandler(ContactClickEvent, value); }
+            remove { RemoveHandler(ContactClickEvent, value); }
         }
 
         void RaiseClickEvent()
         {
-            RoutedEventArgs newEventArgs = new RoutedEventArgs(SidePanelMenuItem.TapEvent);
+            RoutedEventArgs newEventArgs = new RoutedEventArgs(SidePanelMenu.ContactClickEvent);
             RaiseEvent(newEventArgs);
         }
 
@@ -75,7 +75,6 @@ namespace Client.CustomControls
         {
             RaiseClickEvent();
         }
-
 
         public SidePanelMenu()
         {

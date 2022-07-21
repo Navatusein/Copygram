@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Client.CustomControls"
+             RenderOptions.BitmapScalingMode="HighQuality"
              mc:Ignorable="d" 
              d:DesignHeight="500" d:DesignWidth="350">
     <Border CornerRadius="10" BorderThickness="2" BorderBrush="#2596be" Background="WhiteSmoke">
@@ -21,20 +22,20 @@
                     <ColumnDefinition Width="8*"/>
                     <ColumnDefinition Width="2*"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Style="{StaticResource NameLabel}" Text="Contacts" Margin="15" FontSize="16"/>
+                <TextBlock Grid.Column="0" Style="{StaticResource NameLabel}" Text="Contacts" Margin="15" FontSize="16" FontWeight="Bold"/>
                 <local:IconButton Grid.Column="1" IconImageSource="../Resources/Icons/sort.png"/>
             </Grid>
 
             <StackPanel Orientation="Horizontal" Grid.Row="1">
                 <local:IconButton IconImageSource="../Resources/Icons/search.png"/>
-                <TextBox Style="{StaticResource TextBoxSearch}"/>
+                <TextBox x:Name="SeacrhBox" Style="{StaticResource TextBoxSearch}" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
             </StackPanel>
 
             <Separator Grid.Row="2"/>
 
             <ListBox Grid.Row="3" Background="Transparent" BorderThickness="0">
                 <ListBoxItem HorizontalContentAlignment="Stretch">
-                    <local:ContactsMenuItem IconImageSource="../Resources/Icons/logotype.ico" UsernameSource="Anthony" UserStatusSource="last seen recently"/>
+                    <local:ContactsMenuItem ImageSource="../Resources/Icons/logotype.ico" UsernameSource="Anthony" UserStatusSource="last seen recently"/>
                 </ListBoxItem>
             </ListBox>
 
@@ -42,12 +43,11 @@
 
             <Grid Grid.Row="5">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="3*"/>
-                    <ColumnDefinition Width="6*"/>
-                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" Content="Add Contact" Style="{StaticResource CommonButton}"/>
-                <Button Grid.Column="2" Content="Close" Style="{StaticResource CommonButton}"/>
+                <Button Grid.Column="0" Content="Add Contact" HorizontalAlignment="Left" Style="{StaticResource CommonButton}"/>
+                <Button Grid.Column="2" Content="Close" HorizontalAlignment="Right" Style="{StaticResource CommonButton}" Click="Button_Click"/>
             </Grid>
         </Grid>
     </Border>

@@ -20,16 +20,16 @@ namespace Client.CustomControls
     /// </summary>
     public partial class ContactsMenuItem : UserControl
     {
-        public static readonly DependencyProperty IconImageSourceProperty
+        public static readonly DependencyProperty ImageSourceProperty
             = DependencyProperty.Register(
-            "IconImageSource",
+            "ImageSource",
             typeof(ImageSource),
             typeof(ContactsMenuItem));
 
-        public ImageSource IconImageSource
+        public ImageSource ImageSource
         {
-            get => (ImageSource)GetValue(IconImageSourceProperty);
-            set => SetValue(IconImageSourceProperty, value);
+            get => (ImageSource)GetValue(ImageSourceProperty);
+            set => SetValue(ImageSourceProperty, value);
         }
 
         public static readonly DependencyProperty UsernameSourceProperty

@@ -24,6 +24,7 @@ namespace Client
             {
                 sidePanel.BeginAnimation(WidthProperty, new DoubleAnimation(toSize, 0, TimeSpan.FromSeconds(0.3)));
                 rectOverlay.BeginAnimation(HeightProperty, new DoubleAnimation(this.Height, 0, TimeSpan.FromSeconds(0.3)));
+                ContactsOverlay.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -63,6 +64,20 @@ namespace Client
 
             rectOverlay.Visibility = Visibility.Visible;
             rectOverlay.BeginAnimation(HeightProperty, new DoubleAnimation(0, this.Height, TimeSpan.FromSeconds(0.5)));
+        }
+
+        private void sidePanel_ContactClick(object sender, RoutedEventArgs e)
+        {
+            sidePanel.Visibility = Visibility.Collapsed;
+            ContactsOverlay.Visibility = Visibility.Visible;
+        }
+
+        private void ContactsOverlay_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (ContactsOverlay.Visibility == Visibility.Collapsed)
+            {
+                rectOverlay.Visibility = Visibility.Collapsed;
+            }
         }
     }
 }

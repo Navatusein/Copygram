@@ -9,6 +9,7 @@
         WindowStartupLocation="CenterScreen"
         MinHeight="600" MinWidth="600"
         Icon="Resources/Icons/logotype.ico"
+        RenderOptions.BitmapScalingMode="HighQuality"
         Title="Copygram" Height="600" Width="1000">
     <Grid>
 
@@ -33,15 +34,22 @@
             <Grid x:Name="SidePanelOverlay" Grid.RowSpan="2" Grid.ColumnSpan="3" Panel.ZIndex="2" >
                 <cctrl:SidePanelMenu x:Name="sidePanel" Background="White" Grid.Column="0"
                             HorizontalAlignment="Left" Visibility="Collapsed" 
-                            VerticalAlignment="Stretch"
+                            VerticalAlignment="Stretch" ContactClick="sidePanel_ContactClick"
                             MyAvatarSource="Resources/Icons/logotype.ico"
                             MyUsernameSource="Anthony" IdSource="+000 (00) 000 00 00"/>
             </Grid>
 
             <Grid x:Name="ContactsOverlayGrid" Grid.RowSpan="2" Grid.ColumnSpan="3" Panel.ZIndex="2" >
-                <cctrl:ContactsOverlay Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <cctrl:ContactsOverlay Grid.Column="1" x:Name="ContactsOverlay" Visibility="Collapsed" 
+                                       HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                       IsVisibleChanged="ContactsOverlay_IsVisibleChanged"/>
             </Grid>
-            
+
             <Border Grid.Row="0" Grid.Column="0" Background="#293a4c">
                 <cctrl:IconButton  IconImageSource="Resources/Icons/menu.ico" Click="IconButton_Tap"/>
             </Border>
@@ -87,16 +95,12 @@
                     <RowDefinition Height="10*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                
-                <Grid x:Name="MessageChat" Grid.Row="0">
-                    <Grid.Background>
+
+                <ListView x:Name="MessageChat" Grid.Row="0" ItemContainerStyle="{StaticResource MessageContainer}">
+                    <ListView.Background>
                         <ImageBrush ImageSource="Resources/Wallpapers/DefaultDay.jpg"/>
-                    </Grid.Background>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                </Grid>
+                    </ListView.Background>
+                </ListView>
 
                 <Grid x:Name="MessageSets" Grid.Row="1">
                     

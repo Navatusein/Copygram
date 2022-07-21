@@ -4,13 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="40" d:DesignWidth="40">
+             d:DesignHeight="40" d:DesignWidth="40" RenderOptions.BitmapScalingMode="HighQuality">
     <Grid>
         <Border Style="{StaticResource IconCornerBorder}">
             <Button x:Name="MyBtn" Style="{StaticResource IconButton}" >
-                <Ellipse Height="20" Width="20">
+                <Ellipse Height="25" Width="25">
                     <Ellipse.Fill>
-                        <ImageBrush ImageSource="{Binding IconImageSource}"/>
+                        <ImageBrush ImageSource="{Binding IconImageSource}" RenderOptions.BitmapScalingMode="HighQuality"/>
                     </Ellipse.Fill>
                 </Ellipse>
             </Button>

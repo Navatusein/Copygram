@@ -44,32 +44,10 @@ namespace Client.CustomControls
             set => SetValue(ItemTextSourceProperty, value);
         }
 
-        public static readonly RoutedEvent TapEvent = EventManager.RegisterRoutedEvent(
-            "Tap", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(SidePanelMenuItem));
-
-        public event RoutedEventHandler Tap
-        {
-            add { AddHandler(TapEvent, value); }
-            remove { RemoveHandler(TapEvent, value); }
-        }
-
-        void RaiseClickEvent()
-        {
-            RoutedEventArgs newEventArgs = new RoutedEventArgs(SidePanelMenuItem.TapEvent);
-            RaiseEvent(newEventArgs);
-        }
-
-        void OnClick()
-        {
-            RaiseClickEvent();
-        }
-
         public SidePanelMenuItem()
         {
             InitializeComponent();
             this.DataContext = this;
-
-            PreviewMouseLeftButtonUp += (sender, args) => OnClick();
         }
     }
 }

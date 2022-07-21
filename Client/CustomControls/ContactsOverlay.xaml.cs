@@ -23,6 +23,22 @@ namespace Client.CustomControls
         public ContactsOverlay()
         {
             InitializeComponent();
+            this.DataContext = this;
+        }
+
+        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            SeacrhBox.Clear();
+        }
+
+        private void TextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            SeacrhBox.Text = "Search";
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            this.Visibility = Visibility.Collapsed;
         }
     }
 }
