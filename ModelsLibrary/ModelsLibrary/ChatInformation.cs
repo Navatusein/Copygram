@@ -22,7 +22,7 @@ namespace ModelsLibrary
 
         public string Name { get; set; } = null!;
 
-        public Image Avatar { get; set; } = null!;
+        public byte[] Avatar { get; set; } = null!;
 
         public List<ChatMessage> Messages { get; set; } = null!;
 

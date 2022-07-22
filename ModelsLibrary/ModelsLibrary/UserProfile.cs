@@ -12,6 +12,6 @@ namespace ModelsLibrary
     {
         public int Id { get; set; }
         public string Nickname { get; set; } = null!;
-        public Image Avatar { get; set; } = null!;
+        public byte[] Avatar { get; set; } = null!;
     }
 }
