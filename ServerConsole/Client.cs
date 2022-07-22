@@ -6,11 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using TCP = ModelsLibrary;
+using DB = ServerConsole.Models;
+
 namespace ServerConsole
 {
     internal class Client
     {
-        private User User = null!;
+        private TCP.User User = null!;
 
         public List<IMessage> Changes { get; set; } = null!;
 

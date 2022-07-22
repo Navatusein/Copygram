@@ -93,6 +93,23 @@ namespace ServerConsole
 
                 Response(stream, ResponseType.Success, data, command);
             }
+            else if (command.Type == CommandType.NewMessage)
+            {
+                byte[] data = null!;
+
+                if (!clients.ContainsKey(command.User.UserId))
+                {
+                    TCP.Error error = new();
+                    error.Type = KnownErrors.OutOfSync;
+
+                    data = Serialization(error);
+
+                    Response(stream, ResponseType.Error, data, command);
+
+                    semaphore.Release();
+                    return;
+                }
+            }
             else if (command.Type == CommandType.Sync)
             {
                 byte[] data = null!;
@@ -112,8 +129,26 @@ namespace ServerConsole
 
                 data = Serialization(DbConnector.GetChatsForUser(command.User));
 
-                //data = Serialization();
                 Response(stream, ResponseType.Success, data, command);
+            }
+            else if (command.Type == CommandType.SyncChatMessage)
+            {
+                byte[] data = null!;
+
+                if (!clients.ContainsKey(command.User.UserId))
+                {
+                    TCP.Error error = new();
+                    error.Type = KnownErrors.OutOfSync;
+
+                    data = Serialization(error);
+
+                    Response(stream, ResponseType.Error, data, command);
+
+                    semaphore.Release();
+                    return;
+                }
+
+
             }
             else if (command.Type == CommandType.Login)
             {
@@ -125,7 +160,11 @@ namespace ServerConsole
             }
             else
             {
-                byte[] data = Encoding.UTF8.GetBytes("Unknown command");
+                TCP.Error error = new();
+                error.Type = KnownErrors.SecondClient;
+                error.Text = "Unknown command";
+
+                byte[] data = Serialization(error);
 
                 Response(stream, ResponseType.Error, data, command);
             }
