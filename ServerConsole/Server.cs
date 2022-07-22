@@ -8,6 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using ModelsLibrary;
 
+using TCP = ModelsLibrary;
+using DB = ServerConsole.Models;
+
 #pragma warning disable SYSLIB0011
 
 namespace ServerConsole
@@ -71,9 +74,9 @@ namespace ServerConsole
             {
                 byte[] data = null!;
 
-                if (!clients.ContainsKey(command.User.Id))
+                if (!clients.ContainsKey(command.User.UserId))
                 {
-                    ErrorInformation error = new ErrorInformation();
+                    TCP.Error error = new();
                     error.Type = KnownErrors.OutOfSync;
 
                     data = Serialization(error);
@@ -84,7 +87,7 @@ namespace ServerConsole
                     return;
                 }
 
-                Client client = clients[command.User.Id];
+                Client client = clients[command.User.UserId];
 
                 data = Serialization(client.Changes);
 
@@ -94,9 +97,9 @@ namespace ServerConsole
             {
                 byte[] data = null!;
 
-                if (clients.ContainsKey(command.User.Id))
+                if (clients.ContainsKey(command.User.UserId))
                 {
-                    ErrorInformation error = new ErrorInformation();
+                    TCP.Error error = new();
                     error.Type = KnownErrors.SecondClient;
 
                     data = Serialization(error);
@@ -106,6 +109,8 @@ namespace ServerConsole
                     semaphore.Release();
                     return;
                 }
+
+                data = Serialization(DbConnector.GetChatsForUser(command.User));
 
                 //data = Serialization();
                 Response(stream, ResponseType.Success, data, command);
@@ -130,6 +135,9 @@ namespace ServerConsole
 
         private byte[] Serialization<T>(T obj)
         {
+            if (obj == null)
+                return null!;
+
             byte[] serializedObject;
 
             using (MemoryStream memoryStream = new MemoryStream())
@@ -155,7 +163,7 @@ namespace ServerConsole
 
         private void Response(NetworkStream stream, ResponseType type, byte[] data, Command command)
         {
-            Response response = new();
+            TCP.Response response = new();
             response.Type = type;
             response.Data = data;
             response.OnCommandResponse = command;

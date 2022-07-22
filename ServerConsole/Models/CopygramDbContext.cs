@@ -33,7 +33,7 @@ namespace ServerConsole.Models
 
         public virtual DbSet<ChatType> ChatTypes { get; set; } = null!;
 
-        public virtual DbSet<Message> Messages { get; set; } = null!;
+        public virtual DbSet<ChatMessage> Messages { get; set; } = null!;
 
         public virtual DbSet<User> Users { get; set; } = null!;
     }

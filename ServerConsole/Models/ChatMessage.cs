@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace ServerConsole.Models
 {
-    internal class Message
+    internal class ChatMessage
     {
-        public int MessageId { get; set; }
+        public int ChatMessageId { get; set; }
 
         public int ChatId { get; set; }
 
@@ -16,7 +16,9 @@ namespace ServerConsole.Models
 
         public string MessageText { get; set; } = null!;
 
-        public virtual User User { get; set; } = null!;
+        public DateTime DispatchTime { get; set; } = DateTime.Now;
+
+        public virtual User FromUser { get; set; } = null!;
 
         public virtual Chat Chat { get; set; } = null!;
     }

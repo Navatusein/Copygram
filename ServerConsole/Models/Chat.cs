@@ -11,7 +11,7 @@ namespace ServerConsole.Models
         public Chat()
         {
             ChatMembers = new HashSet<ChatMember>();
-            Messages = new HashSet<Message>();
+            Messages = new HashSet<ChatMessage>();
         }
 
         public int ChatId { get; set; }
@@ -24,7 +24,7 @@ namespace ServerConsole.Models
 
         public virtual ICollection<ChatMember> ChatMembers { get; set; }
 
-        public virtual ICollection<Message> Messages { get; set; }
+        public virtual ICollection<ChatMessage> Messages { get; set; }
 
         public virtual ChatType ChatType { get; set; }
     }
