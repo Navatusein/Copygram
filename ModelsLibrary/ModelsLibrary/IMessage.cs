@@ -10,13 +10,11 @@ namespace ModelsLibrary
     public enum MessageType
     {
         SystemMessage,
-        Message
+        ChatMessage
     }
 
     public interface IMessage
     {
-        public int Id { get; set; }
-
         public MessageType Type { get; set; }
     }
 }

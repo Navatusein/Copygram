@@ -15,7 +15,7 @@ namespace ModelsLibrary
     }
 
     [Serializable]
-    public class ErrorInformation
+    public class Error
     {
         public KnownErrors Type { get; set; }
 

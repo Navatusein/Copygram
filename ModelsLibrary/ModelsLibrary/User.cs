@@ -8,10 +8,12 @@ using System.Threading.Tasks;
 namespace ModelsLibrary
 {
     [Serializable]
-    public class UserProfile
+    public class User
     {
-        public int Id { get; set; }
-        public string Nickname { get; set; } = null!;
+        public int UserId { get; set; }
+
         public byte[] Avatar { get; set; } = null!;
+
+        public string Nickname { get; set; } = null!; 
     }
 }

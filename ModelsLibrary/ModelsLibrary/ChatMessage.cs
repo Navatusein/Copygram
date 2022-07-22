@@ -9,12 +9,14 @@ namespace ModelsLibrary
     [Serializable]
     public class ChatMessage : IMessage
     {
-        public int Id { get; set; }
+        public int ChatMessageId { get; set; }
 
-        public MessageType Type { get; set; }
+        public User FromUser { get; set; } = null!;
 
         public string MessageText { get; set; } = null!;
 
-        public UserProfile FromUser { get; set; } = null!;
+        public MessageType Type { get; set; }
+
+        public DateTime DispatchTime { get; set; } = DateTime.Now;
     }
 }

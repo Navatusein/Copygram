@@ -14,18 +14,18 @@ namespace ModelsLibrary
     }
 
     [Serializable]
-    public class ChatInformation
+    public class Chat
     {
-        public int Id { get; set; }
+        public int ChatId { get; set; }
 
-        public ChatType Type { get; set; }
+        public ChatType ChatType { get; set; }
 
-        public string Name { get; set; } = null!;
+        public string ChatName { get; set; } = null!;
 
         public byte[] Avatar { get; set; } = null!;
 
-        public List<ChatMessage> Messages { get; set; } = null!;
+        public List<ChatMember> ChatMembers { get; set; } = null!;
 
-        public List<UserProfile> Users { get; set; } = null!;
+        public List<ChatMessage> Messages { get; set; } = null!;
     }
 }
