@@ -8,6 +8,8 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Client;component/Resources/Styles/StyleDictionary.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <FontFamily x:Key="SfCompact">pack://application:,,,/Resources/Fonts/sf-compact-medium.otf</FontFamily>
+            <FontFamily x:Key="SfCompactThin">pack://application:,,,/Resources/Fonts/sf-compact-thin.otf</FontFamily>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

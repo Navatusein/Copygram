@@ -7,18 +7,36 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="UserCellControl.xaml.cs">
+    <Compile Update="CustomControls\ContactsMenuItem.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="CustomControls\ContactsOverlay.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="CustomControls\IconButton.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="CustomControls\SidePanelMenuItem.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="CustomControls\ContactsMenuItem.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="CustomControls\ContactsOverlay.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="CustomControls\IconButton.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="CustomControls\SidePanelMenuItem.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="MainWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Resources\Styles\StyleDictionary.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="UserCellControl.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

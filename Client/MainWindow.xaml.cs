@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Client.CustomControls;
+using System;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Windows.Threading;
 
 namespace Client
 {
@@ -21,49 +13,94 @@ namespace Client
     /// </summary>
     public partial class MainWindow : Window
     {
-        bool isHidden;
-        double panelWidth;
+        double toSize;
 
-        DispatcherTimer timer;
         public MainWindow()
         {
             InitializeComponent();
-            isHidden = true;
-            timer = new DispatcherTimer();
-            timer.Interval = new TimeSpan(0, 0, 0, 0, 10);
-            timer.Tick += Timer_Tick;
+            BackgroundOverlayGrid.Visibility = Visibility.Visible;
+            SidePanelOverlayGrid.Visibility = Visibility.Visible;
+            ContactsOverlayGrid.Visibility = Visibility.Visible;
+            toSize = Width / 4;
+            Controller ctrl = new();
 
-            panelWidth = sidePanel.Width;
+            UserCell cell = null;
+            int count = 1;
+            while (count != 5)
+            {
+                cell = new("test" + count, "Hello, World!", (count > 2 ? count : 0), new BitmapImage(new Uri("../../../Resources/Icons/user.png", UriKind.Relative)));
+                count++;
+                ChatsList.Items.Add(cell);
+            }
         }
 
-        private void Timer_Tick(object? sender, EventArgs e)
+        private void rectOverlay_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            double tickSize = this.Width / 100;
-            if (isHidden)
+            if (e.LeftButton == MouseButtonState.Pressed)
             {
-                sidePanel.Width += tickSize;
-                if (sidePanel.Width >= this.Width / 3)
-                {
-                    timer.Stop();
-                    isHidden = false;
-                }
+                sidePanelOverlay.BeginAnimation(WidthProperty, new DoubleAnimation(toSize, 0, TimeSpan.FromSeconds(0.3)));
+                rectOverlay.BeginAnimation(HeightProperty, new DoubleAnimation(this.Height, 0, TimeSpan.FromSeconds(0.3)));
+                ContactsOverlay.Visibility = Visibility.Collapsed;
             }
-            else
+        }
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (rectOverlay.Height > 0 || rectOverlay.Width > 0)
+            {
+                rectOverlay.Width = this.Width;
+                rectOverlay.Height = this.Height;
+            }
+        }
+
+        private void tbSearch_GotFocus(object sender, RoutedEventArgs e)
+        {
+            tbSearch.Clear();
+        }
+
+        private void tbSearch_LostFocus(object sender, RoutedEventArgs e)
+        {
+            tbSearch.Text = "Search";
+        }
+        private void tbMessage_GotFocus(object sender, RoutedEventArgs e)
+        {
+            tbMessage.Clear();
+        }
+
+        private void tbMessage_LostFocus(object sender, RoutedEventArgs e)
+        {
+            tbMessage.Text = "Write a message...";
+        }
+
+        private void IconButton_Tap(object sender, RoutedEventArgs e)
+        {
+
+            sidePanelOverlay.Visibility = Visibility.Visible;
+            sidePanelOverlay.BeginAnimation(WidthProperty, new DoubleAnimation(0, toSize, TimeSpan.FromSeconds(0.5)));
+
+            rectOverlay.Visibility = Visibility.Visible;
+            rectOverlay.BeginAnimation(HeightProperty, new DoubleAnimation(0, this.Height, TimeSpan.FromSeconds(0.5)));
+        }
+
+        private void sidePanel_ContactClick(object sender, RoutedEventArgs e)
+        {
+            sidePanelOverlay.Visibility = Visibility.Collapsed;
+            ContactsOverlay.Visibility = Visibility.Visible;
+        }
+
+        private void ContactsOverlay_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (ContactsOverlay.Visibility == Visibility.Collapsed)
+            {
+                rectOverlay.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void tbMessage_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
             { 
-                sidePanel.Width -= tickSize;
-                if (sidePanel.Width <= this.Width / 3)
-                {
-                    timer.Stop();
-                    isHidden = true;
-                }
-            }
-        }
-
-        private void Button_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.LeftButton == MouseButtonState.Pressed && timer.IsEnabled == false)
-            {
-                timer.Start();
+                
             }
         }
     }
