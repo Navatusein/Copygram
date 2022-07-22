@@ -24,22 +24,22 @@
                 <RowDefinition Height="9*"/>
             </Grid.RowDefinitions>
 
-            <Grid x:Name="BackgroundOverlayGrid" Grid.RowSpan="2" Grid.ColumnSpan="3" Panel.ZIndex="1" >
+            <Grid x:Name="BackgroundOverlayGrid" Grid.RowSpan="2" Grid.ColumnSpan="3" Panel.ZIndex="1" Visibility="Collapsed">
                 <Rectangle Name="rectOverlay" MouseDown="rectOverlay_MouseDown" 
                            Stroke="Black" StrokeThickness="2" 
                            Fill="Black" Opacity="0.3" 
                            Visibility="Collapsed" />
             </Grid>
 
-            <Grid x:Name="SidePanelOverlay" Grid.RowSpan="2" Grid.ColumnSpan="3" Panel.ZIndex="2" >
-                <cctrl:SidePanelMenu x:Name="sidePanel" Background="White" Grid.Column="0"
+            <Grid x:Name="SidePanelOverlayGrid" Grid.RowSpan="2" Grid.ColumnSpan="3" Panel.ZIndex="2" Visibility="Collapsed" >
+                <cctrl:SidePanelMenu x:Name="sidePanelOverlay" Background="White" Grid.Column="0"
                             HorizontalAlignment="Left" Visibility="Collapsed" 
                             VerticalAlignment="Stretch" ContactClick="sidePanel_ContactClick"
                             MyAvatarSource="Resources/Icons/logotype.ico"
                             MyUsernameSource="Anthony" IdSource="+000 (00) 000 00 00"/>
             </Grid>
 
-            <Grid x:Name="ContactsOverlayGrid" Grid.RowSpan="2" Grid.ColumnSpan="3" Panel.ZIndex="2" >
+            <Grid x:Name="ContactsOverlayGrid" Grid.RowSpan="2" Grid.ColumnSpan="3" Panel.ZIndex="2" Visibility="Collapsed">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
@@ -51,7 +51,7 @@
             </Grid>
 
             <Border Grid.Row="0" Grid.Column="0" Background="#293a4c">
-                <cctrl:IconButton  IconImageSource="Resources/Icons/menu.ico" Click="IconButton_Tap"/>
+                <cctrl:IconButton IconImageSource="Resources/Icons/menu.ico" Click="IconButton_Tap"/>
             </Border>
 
             <ListBox Grid.Row="1" Grid.Column="0" x:Name="FoldersGrid" Background="#293a4c" BorderThickness="0">
@@ -113,7 +113,8 @@
 
                     <cctrl:IconButton Grid.Column="0" IconImageSource="Resources/Icons/insert.png"/>
 
-                    <TextBox x:Name="tbMessage" Grid.Column="1" Text="Write a message..." Style="{StaticResource TextBoxMessage}" GotFocus="tbMessage_GotFocus" LostFocus="tbMessage_LostFocus"/>
+                    <TextBox x:Name="tbMessage" Grid.Column="1" Text="Write a message..." Style="{StaticResource TextBoxMessage}" 
+                             GotFocus="tbMessage_GotFocus" LostFocus="tbMessage_LostFocus" KeyDown="tbMessage_KeyDown"/>
 
                     <cctrl:IconButton Grid.Column="2" IconImageSource="Resources/Icons/emoji.png"/>
 

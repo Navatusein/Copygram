@@ -26,9 +26,9 @@ namespace Client.CustomControls
                 typeof(ImageSource),
                 typeof(UserCell));
 
-        public static readonly DependencyProperty UserNameProperty
+        public static readonly DependencyProperty NicknameProperty
             = DependencyProperty.Register(
-                "Username",
+                "Nickname",
                 typeof(string),
                 typeof(UserCell));
 
@@ -44,9 +44,9 @@ namespace Client.CustomControls
                 typeof(string),
                 typeof(UserCell));
 
-        public static readonly DependencyProperty UnReadMessagesProperty
+        public static readonly DependencyProperty UnreadMessageCountProperty
             = DependencyProperty.Register(
-                "UnreadCount",
+                "UnreadMessageCount",
                 typeof(int),
                 typeof(UserCell));
 
@@ -55,10 +55,10 @@ namespace Client.CustomControls
             get => (ImageSource)GetValue(AvatarSourceProperty);
             set => SetValue(AvatarSourceProperty, value);
         }
-        public string Username
+        public string Nickname
         {
-            get => (string)GetValue(UserNameProperty);
-            set => SetValue(UserNameProperty, value);
+            get => (string)GetValue(NicknameProperty);
+            set => SetValue(NicknameProperty, value);
         }
         public string LastMessage
         {
@@ -70,17 +70,48 @@ namespace Client.CustomControls
             get => (string)GetValue(DateProperty);
             set => SetValue(DateProperty, value);
         }
-        public int UnreadCount
+        public int UnreadMessageCount
         {
-            get => (int)GetValue(UnReadMessagesProperty);
-            set => SetValue(UnReadMessagesProperty, value);
+            get => (int)GetValue(UnreadMessageCountProperty);
+            set => SetValue(UnreadMessageCountProperty, value);
         }
 
         public UserCell()
         {
             InitializeComponent();
-            this.DataContext = this; 
+            this.DataContext = this;
+            if (UnreadCountBubble.Text == null )
+            {
+                UnreadCountBubble.Visibility = Visibility.Collapsed;
+                Bubble.Visibility = Visibility.Collapsed;
+            }
         }
 
+        public UserCell(string name, string message, int count, BitmapImage image)
+        {
+            InitializeComponent();
+            this.DataContext = this;
+            if (string.IsNullOrEmpty(name) || count < 0) return;
+            
+            Nickname = name;
+            LastMessage = message;
+            UnreadMessageCount = count;
+            AvatarSource = image;
+        }
+
+        private void UnreadCountBubble_SourceUpdated(object sender, DataTransferEventArgs e)
+        {
+            if (Convert.ToInt32(UnreadCountBubble.Text) > 1)
+            {
+                UnreadCountBubble.Visibility = Visibility.Visible;
+                Bubble.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void UserControl_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            UnreadCountBubble.Visibility = Visibility.Collapsed;
+            Bubble.Visibility = Visibility.Collapsed;
+        }
     }
 }

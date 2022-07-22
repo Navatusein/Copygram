@@ -1,7 +1,10 @@
-﻿using System;
+﻿using Client.CustomControls;
+using System;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Media.Imaging;
 
 namespace Client
 {
@@ -15,14 +18,27 @@ namespace Client
         public MainWindow()
         {
             InitializeComponent();
+            BackgroundOverlayGrid.Visibility = Visibility.Visible;
+            SidePanelOverlayGrid.Visibility = Visibility.Visible;
+            ContactsOverlayGrid.Visibility = Visibility.Visible;
             toSize = Width / 4;
+            Controller ctrl = new();
+
+            UserCell cell = null;
+            int count = 1;
+            while (count != 5)
+            {
+                cell = new("test" + count, "Hello, World!", (count > 2 ? count : 0), new BitmapImage(new Uri("../../../Resources/Icons/user.png", UriKind.Relative)));
+                count++;
+                ChatsList.Items.Add(cell);
+            }
         }
 
         private void rectOverlay_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                sidePanel.BeginAnimation(WidthProperty, new DoubleAnimation(toSize, 0, TimeSpan.FromSeconds(0.3)));
+                sidePanelOverlay.BeginAnimation(WidthProperty, new DoubleAnimation(toSize, 0, TimeSpan.FromSeconds(0.3)));
                 rectOverlay.BeginAnimation(HeightProperty, new DoubleAnimation(this.Height, 0, TimeSpan.FromSeconds(0.3)));
                 ContactsOverlay.Visibility = Visibility.Collapsed;
             }
@@ -59,8 +75,8 @@ namespace Client
         private void IconButton_Tap(object sender, RoutedEventArgs e)
         {
 
-            sidePanel.Visibility = Visibility.Visible;
-            sidePanel.BeginAnimation(WidthProperty, new DoubleAnimation(0, toSize, TimeSpan.FromSeconds(0.5)));
+            sidePanelOverlay.Visibility = Visibility.Visible;
+            sidePanelOverlay.BeginAnimation(WidthProperty, new DoubleAnimation(0, toSize, TimeSpan.FromSeconds(0.5)));
 
             rectOverlay.Visibility = Visibility.Visible;
             rectOverlay.BeginAnimation(HeightProperty, new DoubleAnimation(0, this.Height, TimeSpan.FromSeconds(0.5)));
@@ -68,7 +84,7 @@ namespace Client
 
         private void sidePanel_ContactClick(object sender, RoutedEventArgs e)
         {
-            sidePanel.Visibility = Visibility.Collapsed;
+            sidePanelOverlay.Visibility = Visibility.Collapsed;
             ContactsOverlay.Visibility = Visibility.Visible;
         }
 
@@ -77,6 +93,14 @@ namespace Client
             if (ContactsOverlay.Visibility == Visibility.Collapsed)
             {
                 rectOverlay.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void tbMessage_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            { 
+                
             }
         }
     }
