@@ -13,6 +13,9 @@
     <Compile Update="CustomControls\ContactsOverlay.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="CustomControls\DonatePage.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="CustomControls\IconButton.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -25,6 +28,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="CustomControls\ContactsOverlay.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="CustomControls\DonatePage.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="CustomControls\IconButton.xaml">

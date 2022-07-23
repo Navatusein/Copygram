@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="Client.CustomControls.DonatePage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Client.CustomControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="250" d:DesignWidth="520" RenderOptions.BitmapScalingMode="Fant">
+    <Grid Background="#293a4c">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="2*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right">
+            <local:IconButton x:Name="btExit" IconImageSource="../resources/Icons/cross.png" MouseEnter="IconButton_MouseEnter" MouseLeave="IconButton_MouseLeave"/>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Orientation="Vertical">
+            <Ellipse Width="50" Height="50" Margin="10">
+                <Ellipse.Fill>
+                    <ImageBrush ImageSource="../Resources/Icons/logotype.ico"/>
+                </Ellipse.Fill>
+            </Ellipse>
+            <TextBlock HorizontalAlignment="Center" Style="{StaticResource MenuLabel}" Foreground="WhiteSmoke">
+                This feature is only available in premium version!
+            </TextBlock>
+        </StackPanel>
+        <StackPanel Grid.Row="2" Orientation="Horizontal">
+            <TextBlock Style="{StaticResource DonateText}"> Please support us! </TextBlock>
+            <TextBlock Style="{StaticResource DonateText}"> (visa) 0000 0000 0000 0000 </TextBlock>
+            <TextBlock Style="{StaticResource DonateText}"> (mastercard) 0000 0000 0000 0000 </TextBlock>
+        </StackPanel>
+    </Grid>
+</UserControl>

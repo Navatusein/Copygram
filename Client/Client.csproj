@@ -12,6 +12,7 @@
     <None Remove="Resources\Fonts\sf-compact-thin.otf" />
     <None Remove="Resources\Icons\channel.png" />
     <None Remove="Resources\Icons\contacts.png" />
+    <None Remove="Resources\Icons\cross.png" />
     <None Remove="Resources\Icons\daymode.png" />
     <None Remove="Resources\Icons\dots-three-vertical.ico" />
     <None Remove="Resources\Icons\emoji.png" />
@@ -47,6 +48,7 @@
     <Resource Include="Resources\Icons\channel.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\Icons\cross.png" />
     <Resource Include="Resources\Icons\folder.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>

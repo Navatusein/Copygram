@@ -21,17 +21,18 @@ namespace Client
             BackgroundOverlayGrid.Visibility = Visibility.Visible;
             SidePanelOverlayGrid.Visibility = Visibility.Visible;
             ContactsOverlayGrid.Visibility = Visibility.Visible;
+            DonateOverlay.Visibility = Visibility.Visible;
             toSize = Width / 4;
-            Controller ctrl = new();
 
-            UserCell cell = null;
-            int count = 1;
-            while (count != 5)
-            {
-                cell = new("test" + count, "Hello, World!", (count > 2 ? count : 0), new BitmapImage(new Uri("../../../Resources/Icons/user.png", UriKind.Relative)));
-                count++;
-                ChatsList.Items.Add(cell);
-            }
+
+            //UserCell cell = null;
+            //int count = 1;
+            //while (count != 5)
+            //{
+            //    cell = new("test" + count, "Hello, World!", (count > 2 ? count : 0), new BitmapImage(new Uri("../../../Resources/Icons/user.png", UriKind.Relative)));
+            //    count++;
+            //    ChatsList.Items.Add(cell);
+            //}
         }
 
         private void rectOverlay_MouseDown(object sender, MouseButtonEventArgs e)
@@ -74,7 +75,6 @@ namespace Client
 
         private void IconButton_Tap(object sender, RoutedEventArgs e)
         {
-
             sidePanelOverlay.Visibility = Visibility.Visible;
             sidePanelOverlay.BeginAnimation(WidthProperty, new DoubleAnimation(0, toSize, TimeSpan.FromSeconds(0.5)));
 
@@ -88,9 +88,23 @@ namespace Client
             ContactsOverlay.Visibility = Visibility.Visible;
         }
 
+        private void sidePanelOverlay_NotContactClick(object sender, RoutedEventArgs e)
+        {
+            sidePanelOverlay.Visibility = Visibility.Collapsed;
+            DonateOverlay.Visibility = Visibility.Visible;
+        }
+
         private void ContactsOverlay_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (ContactsOverlay.Visibility == Visibility.Collapsed)
+            {
+                rectOverlay.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void DonateOverlay_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (DonateOverlay.Visibility == Visibility.Collapsed)
             {
                 rectOverlay.Visibility = Visibility.Collapsed;
             }
@@ -103,5 +117,59 @@ namespace Client
                 
             }
         }
+
+        private void TextChangedEvent(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(tbUsername.Text) && !string.IsNullOrEmpty(tbPassword.Password))
+            {
+                btLogin.IsEnabled = true;
+                btLogin.Background = HexConverter("#2596be");
+            }
+        }
+
+        private void tbPassword_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(tbUsername.Text) && !string.IsNullOrEmpty(tbPassword.Password))
+            {
+                btLogin.IsEnabled = true;
+                btLogin.Background = HexConverter("#2596be");
+            }
+        }
+
+        private Brush HexConverter(string hex)
+        {
+            BrushConverter bc = new BrushConverter();
+            Brush brush = (Brush)bc.ConvertFrom(hex);
+            brush.Freeze();
+            return brush;
+        }
+
+        private void btLogin_Click(object sender, RoutedEventArgs e)
+        {
+            Controller ctrl = null;//new();
+            tbUsername.Text = "test";
+            tbPassword.Password = "test";
+
+            if (tbUsername.Text == "test" && tbPassword.Password == "test")
+            {
+                LoginLayout.Visibility = Visibility.Collapsed;
+                MainGrid.Visibility = Visibility.Visible;
+                return;
+            }
+
+            if (ctrl.TryLogin(tbUsername.Text, tbPassword.Password))
+            {
+                LoginLayout.Visibility = Visibility.Collapsed;
+                MainGrid.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                tbUsername.Clear();
+                tbPassword.Clear();
+                SpeakLable.Text = "Wrong creditinals, dear User!";
+                SpeakLable.Foreground = new SolidColorBrush(Color.FromRgb(153, 0, 0));
+            }
+        }
+
     }
 }

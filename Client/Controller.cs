@@ -12,6 +12,7 @@ using System.Drawing;
 using System.Windows.Media.Imaging;
 using System.Windows.Controls;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Client
 {
@@ -19,25 +20,25 @@ namespace Client
     {
         TcpClient client = null;
         NetworkStream ns = null;
+        BinaryFormatter binFromat;
+        UserProfile profile;
+        Response lastResponse;
+
         long address; //temporary
         int port; //temporary
+
         public ObservableCollection<IMessage> messages = new();
         public ObservableCollection<UserProfile> users = new();
 
         public Controller()
         {
             try
-            {   
-                /*
+            {
+                binFromat = new BinaryFormatter();
                 client = new TcpClient();
-                IPEndPoint ep = new IPEndPoint( ip addres , port);
+                IPEndPoint ep = new IPEndPoint(address , port);
                 client.Connect(ep);
-                ns = client.GetStream();
 
-                int size = client.ReceiveBufferSize;
-                byte[] buff = new byte[size];
-                ns.Read(buff, 0, size);
-                */
             }
             catch (Exception ex)
             {
@@ -46,5 +47,48 @@ namespace Client
             }
         }
 
+
+        public bool TryLogin(string username, string password)
+        {
+            byte[] buff = Encoding.UTF8.GetBytes(username + ":" + password);
+            Command command = new() { Type = CommandType.Login, Data = buff, User = null};
+
+            ns = client.GetStream();
+            binFromat.Serialize(ns, command);
+            ns.Flush();
+
+            buff = new byte[client.ReceiveBufferSize];
+            ns.Read(buff, 0, buff.Length);
+            ns.Close();
+            lastResponse = (Response)binFromat.Deserialize(ns);
+
+            if (lastResponse.Type == ResponseType.Success)
+            {
+                profile = new() { Nickname = username };
+                return true;
+            }
+            else
+                return false;
+        }
+
+        public void LoadData()
+        {
+            byte[] buff = Encoding.UTF8.GetBytes("what?");
+            Command command = new() { Type = CommandType.Sync, Data = buff, User = profile };
+
+            ns = client.GetStream();
+            binFromat.Serialize(ns, command);
+            ns.Flush();
+
+            buff = new byte[client.ReceiveBufferSize];
+            ns.Read(buff, 0, buff.Length);
+            ns.Close();
+            lastResponse = (Response)binFromat.Deserialize(ns);
+            
+            if (lastResponse.Type == ResponseType.Success)
+            { 
+                
+            }
+        }
     }
 }
