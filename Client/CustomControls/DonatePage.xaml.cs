@@ -23,6 +23,7 @@ namespace Client.CustomControls
         public DonatePage()
         {
             InitializeComponent();
+            btExit.PreviewMouseLeftButtonDown += (sender, args) => OnCloseClick();
         }
 
         private void IconButton_MouseEnter(object sender, MouseEventArgs e)
@@ -33,6 +34,26 @@ namespace Client.CustomControls
         private void IconButton_MouseLeave(object sender, MouseEventArgs e)
         {
             btExit.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+        }
+
+        public static readonly RoutedEvent CloseClickEvent = EventManager.RegisterRoutedEvent(
+            "CloseClick", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(Button));
+
+        public event RoutedEventHandler CloseClick
+        {
+            add { AddHandler(CloseClickEvent, value); }
+            remove { RemoveHandler(CloseClickEvent, value); }
+        }
+
+        void RaiseCloseEvent()
+        {
+            RoutedEventArgs newEventArgs = new RoutedEventArgs(DonatePage.CloseClickEvent);
+            RaiseEvent(newEventArgs);
+        }
+
+        void OnCloseClick()
+        {
+            RaiseCloseEvent();
         }
 
     }

@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\**" />
+    <EmbeddedResource Remove="Models\**" />
+    <None Remove="Models\**" />
+    <Page Remove="Models\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Resources\Fonts\sf-compact-medium.otf" />
     <None Remove="Resources\Fonts\sf-compact-thin.otf" />
     <None Remove="Resources\Icons\channel.png" />
@@ -36,6 +43,12 @@
 
   <ItemGroup>
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="ModelsLibrary">
+      <HintPath>..\ModelsLibrary\ModelsLibrary\obj\Debug\net6.0\ModelsLibrary.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>

@@ -355,4 +355,10 @@
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="Cursor" Value="Hand"/>
     </Style>
+    <Style x:Key="MessageStyle" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="SfMedium"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+        <Setter Property="Foreground" Value="Black"/>
+    </Style>
 </ResourceDictionary>

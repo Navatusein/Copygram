@@ -13,7 +13,7 @@
         RenderOptions.BitmapScalingMode="HighQuality"
         Title="Copygram" Height="600" Width="1000">
     <Grid>
-        <Grid x:Name="LoginLayout" Background="#293a4c">
+        <Grid x:Name="LoginLayout" Background="#293a4c" Visibility="Collapsed">
             <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Ellipse Width="100" Height="100" Margin="0,50,0,0">
                     <Ellipse.Fill>
@@ -46,7 +46,7 @@
                 </Button>
             </StackPanel>
         </Grid> 
-        <Grid x:Name="MainGrid" Visibility="Hidden">
+        <Grid x:Name="MainGrid" Visibility="Visible">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="5*"/>
@@ -84,14 +84,9 @@
             </Grid>
 
             <Grid x:Name="DonatePlsGrid" Grid.RowSpan="2" Grid.ColumnSpan="3" Panel.ZIndex="2" Visibility="Collapsed">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
                 <cctrl:DonatePage Grid.Column="1" x:Name="DonateOverlay" Visibility="Collapsed"
-                                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                                  IsVisibleChanged="DonateOverlay_IsVisibleChanged"/>
+                                  HorizontalAlignment="Center" VerticalAlignment="Center"
+                                  IsVisibleChanged="DonateOverlay_IsVisibleChanged" CloseClick="DonateOverlay_CloseClick"/>
             </Grid>
             
             <Border Grid.Row="0" Grid.Column="0" Background="#293a4c">
@@ -109,7 +104,9 @@
             </Border>
 
             <ListBox x:Name="ChatsList" Grid.Row="1" Grid.Column="1" BorderThickness="1" HorizontalContentAlignment="Stretch">
-                <cctrl:UserCell Style="{StaticResource DefaultChatUser}"/>
+                <ListBoxItem>
+                    <cctrl:UserCell Style="{StaticResource DefaultChatUser}"/>
+                </ListBoxItem>
             </ListBox>
 
             <Grid x:Name="ChatThumbnailGrid" Grid.Row="0" Grid.Column="2" Margin="5">
@@ -144,6 +141,21 @@
                     <ListView.Background>
                         <ImageBrush ImageSource="Resources/Wallpapers/DefaultDay.jpg"/>
                     </ListView.Background>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Vertical" Margin="5, 10">
+                                <!--<Ellipse Height="30" Width="30">
+                                    <Ellipse.Fill>
+                                        <ImageBrush ImageSource="{Binding Avatar}"/>
+                                    </Ellipse.Fill>
+                                </Ellipse>-->
+                                <Border Background="Gray" CornerRadius="10">
+                                    <TextBlock Style="{StaticResource MessageStyle}" Text="{Binding MessageText}"/>
+                                </Border>
+                                <!--<TextBlock Style="{StaticResource LastSeenLabel}" />-->
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
                 </ListView>
 
                 <Grid x:Name="MessageSets" Grid.Row="1">
