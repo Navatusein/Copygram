@@ -11,6 +11,8 @@ namespace ModelsLibrary
     {
         public int ChatMessageId { get; set; }
 
+        public int ChatId { get; set; }
+
         public User FromUser { get; set; } = null!;
 
         public string MessageText { get; set; } = null!;
