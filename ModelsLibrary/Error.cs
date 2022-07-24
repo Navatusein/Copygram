@@ -11,7 +11,9 @@ namespace ModelsLibrary
         UnknownError,
         OutOfSync,
         SecondClient,
-        BadPasswordOrLogin
+        BadPasswordOrLogin,
+        LoginBusy,
+        NicknameBusy
     }
 
     [Serializable]
