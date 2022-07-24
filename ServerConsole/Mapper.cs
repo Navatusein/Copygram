@@ -32,6 +32,7 @@ namespace ServerConsole
 
             tcpChatMember.ChatMemberId = dbChatMember.ChatMemberId;
             tcpChatMember.User = DbModelToTcpModel(dbChatMember.User);
+            tcpChatMember.ChatId = dbChatMember.ChatId;
             tcpChatMember.ChatMemberRole = (TCP.ChatMemberRole)dbChatMember.ChatMemberId;
 
             return tcpChatMember;
@@ -42,6 +43,7 @@ namespace ServerConsole
             TCP.ChatMessage tcpChatMessage = new();
 
             tcpChatMessage.ChatMessageId = dbChatMessage.ChatMessageId;
+            tcpChatMessage.ChatId = dbChatMessage.ChatId;
             tcpChatMessage.FromUser = DbModelToTcpModel(dbChatMessage.FromUser);
             tcpChatMessage.MessageText = dbChatMessage.MessageText;
             tcpChatMessage.Type = TCP.MessageType.ChatMessage;
@@ -59,6 +61,19 @@ namespace ServerConsole
             tcpUser.Nickname = dbUser.Nickname;
 
             return tcpUser;
+        }
+
+        public static DB.User TcpModelToDbModel(TCP.User tcpUser, string login, string password)
+        {
+            DB.User dbUser = new();
+
+            dbUser.UserId = tcpUser.UserId;
+            dbUser.Avatar = tcpUser.Avatar;
+            dbUser.Nickname = tcpUser.Nickname;
+            dbUser.Login = login;
+            dbUser.Password = password;
+
+            return dbUser;
         }
     }
 }
