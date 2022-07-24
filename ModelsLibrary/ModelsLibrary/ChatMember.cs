@@ -20,6 +20,8 @@ namespace ModelsLibrary
 
         public User User { get; set; } = null!;
 
+        public int ChatId { get; set; }
+
         public ChatMemberRole ChatMemberRole { get; set; }
     }
 }
