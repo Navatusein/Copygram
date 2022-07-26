@@ -19,12 +19,12 @@ namespace Client
 {
     internal class Controller
     {
-        TcpClient client = null;
-        NetworkStream ns = null;
-        BinaryFormatter binFormat = null;
-        User profile = null;
-        BitmapImage avatar = null;
-        Response lastResponse = null;
+        TcpClient? client = null;
+        NetworkStream? ns = null;
+        BinaryFormatter? binFormat = null;
+        User? profile = null;
+        BitmapImage? avatar = null;
+        Response? lastResponse = null;
 
         byte[] buff;
         long address; //temporary

@@ -120,7 +120,7 @@ namespace Client
             if (e.Key == Key.Enter && !string.IsNullOrEmpty(tbMessage.Text))
             {
                 ctrl.SendMessage(tbMessage.Text.Trim());
-				MessageChat.Items.Add( new ChatMessage() { MessageText = tbMessage.Text, FromUser = ctrl.profile});
+				MessageChat.Items.Add( new ChatMessage() { MessageText = tbMessage.Text, FromUser = ctrl.Profile});
             }
         }
 
