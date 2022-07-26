@@ -14,6 +14,7 @@ using System.Windows.Controls;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using ModelsLibrary;
+using System.Runtime.Serialization;
 
 #pragma warning disable SYSLIB0011
 
@@ -23,6 +24,7 @@ namespace Client
     {
         TcpClient client = null!;
         NetworkStream ns = null!;
+        MemoryStream ms = null!;
         BinaryFormatter binFormat = null!;
         User profile = null!;
         BitmapImage avatar = null!;
@@ -78,29 +80,51 @@ namespace Client
             return lastResponse.Type;
         }
 
-        public bool TryLogin(string username, string password)
+        void Serialize(object obj)
         {
-            //TODO buff = Encoding.UTF8.GetBytes(new LoginData() { Login = username, Password = password });
+            using (ms = new MemoryStream())
+            {
+                binFormat.Serialize(ms, obj);
+                buff = ms.ToArray();
+            } 
+        }
 
+        object Deserialize(byte[] byteArray)
+        {
+            using (ms = new MemoryStream())
+            {
+                ms.Write(byteArray, 0, byteArray.Length);
+                return binFormat.Deserialize(ms);
+            }
+        }
+
+        void Request(CommandType type)
+        {
             using (ns = client.GetStream())
             {
-                binFormat.Serialize(ns, BuildCommand(CommandType.Login, buff));
+                binFormat.Serialize(ns, BuildCommand(type, buff));
                 ns.Flush();
             }
             buff = null!;
+        }
+
+        public bool TryLogin(string username, string password)
+        {
+
+            Serialize(new LoginData() { Login = username, Password = password });
+
+            Request(CommandType.Login);
 
             if (RecieveResponse() == ResponseType.Success)
             {
-                using (MemoryStream ms = new MemoryStream())
+                using (ms = new MemoryStream())
                 {
                     buff = new byte[client.ReceiveBufferSize];
-                    ms.Write(buff, 0, buff.Length);
-                    profile = (User)binFormat.Deserialize(ms);
+                    profile = (User)Deserialize(buff);
 
-                    ms.Write(profile.Avatar, 0, profile.Avatar.Length);
-                    avatar = (BitmapImage)binFormat.Deserialize(ms);
+                    avatar = (BitmapImage)Deserialize(profile.Avatar);
 
-                    
+                    LoadData();
                 }   
                 return true;
             }
@@ -112,14 +136,7 @@ namespace Client
 
         public void LoadData()
         {
-            buff = Encoding.UTF8.GetBytes("Emptyness");
-
-            using (ns = client.GetStream())
-            {
-                binFormat.Serialize(ns, BuildCommand(CommandType.Sync, buff));
-                ns.Flush();
-            }
-            buff = null!;
+            Request(CommandType.Sync);
 
             if (RecieveResponse() == ResponseType.Success)
             {
@@ -130,12 +147,8 @@ namespace Client
         public bool SendMessage(string messageText)
         {
             buff = Encoding.UTF8.GetBytes(messageText);
-            using(ns = client.GetStream())
-            {
-                binFormat.Serialize(ns, BuildCommand(CommandType.NewChatMessage, buff));
-                ns.Flush();
-            }
-            buff = null!;
+
+            Request(CommandType.NewChatMessage);
 
             if (RecieveResponse() == ResponseType.Success)
             {
@@ -147,11 +160,11 @@ namespace Client
             }
         }
 
-        private ObservableCollection<Chat> ByteToChat(byte[] bytes)
+        ObservableCollection<Chat> ByteToChat(byte[] bytes)
         {
             try
             {
-                using (MemoryStream ms = new MemoryStream())
+                using (ms = new MemoryStream())
                 {
                     ms.Write(bytes, 0, bytes.Length);
                     ObservableCollection<Chat> chat = (ObservableCollection<Chat>)binFormat.Deserialize(ms);
@@ -163,6 +176,12 @@ namespace Client
                 MessageBox.Show(ex.Message + "\n" + ex.Source, ex.StackTrace);
                 return null!;
             }
+        }
+
+        public Chat GetChatOnUser(string nickname)
+        {
+            User toSend = users.FirstOrDefault(user => user.Nickname == nickname);
+            return chats.FirstOrDefault(chat => chat.ChatMembers.Any(a => a.User == profile) && chat.ChatMembers.Any(a => a.User == toSend));
         }
     }
 }

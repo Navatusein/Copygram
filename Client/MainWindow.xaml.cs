@@ -26,6 +26,8 @@ namespace Client
             SidePanelOverlayGrid.Visibility = Visibility.Visible;
             ContactsOverlayGrid.Visibility = Visibility.Visible;
             DonatePlsGrid.Visibility = Visibility.Visible;
+            ChatThumbnailGrid.IsEnabled = false;
+            ChatGrid.IsEnabled = false;
             toSize = Width / 4;
 
 
@@ -104,6 +106,8 @@ namespace Client
             if (ContactsOverlay.Visibility == Visibility.Collapsed)
             {
                 rectOverlay.Visibility = Visibility.Collapsed;
+
+                
             }
         }
 
@@ -192,7 +196,18 @@ namespace Client
 
         private void NewChat_Click(object sender, RoutedEventArgs e)
         {
+            ContactsOverlay.Visibility = Visibility.Visible;
+            rectOverlay.Visibility = Visibility.Visible;
 
+
+        }
+
+        private void ChatsList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            if (ChatsList.SelectedIndex != -1 || ChatsList.SelectedItem != null)
+            {
+                ctrl.GetChatOnUser((ChatsList.SelectedItem as UserCell).Nickname);
+            }
         }
     }
 }

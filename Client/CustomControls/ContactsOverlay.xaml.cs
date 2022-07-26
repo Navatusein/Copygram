@@ -20,10 +20,12 @@ namespace Client.CustomControls
     /// </summary>
     public partial class ContactsOverlay : UserControl
     {
+        string WhoToAddress { get; set; }
         public ContactsOverlay()
         {
             InitializeComponent();
             this.DataContext = this;
+            string WhoToAddress = string.Empty;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -53,7 +55,8 @@ namespace Client.CustomControls
 
         private void Add_Click(object sender, RoutedEventArgs e)
         {
-
+            WhoToAddress = tbWhoToAddress.Text.Trim();
+            Visibility = Visibility.Collapsed;
         }
     }
 }

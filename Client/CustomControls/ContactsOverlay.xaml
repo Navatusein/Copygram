@@ -21,11 +21,11 @@
                     <ColumnDefinition Width="2*"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0" Style="{StaticResource NameLabel}" Text="Add Chat" Margin="15" FontSize="16" FontWeight="Bold"/>
-                <local:IconButton Grid.Column="1" IconImageSource="../Resources/Icons/sort.png"/>
             </Grid>
             <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center">
                 <TextBlock Style="{StaticResource MenuLabel}">Who to address:</TextBlock>
-                <TextBox HorizontalAlignment="Stretch" Width="180"/>
+                <TextBox x:Name="tbWhoToAddress" HorizontalAlignment="Stretch" Width="180" 
+                         HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
             </StackPanel>
             <!--<StackPanel Orientation="Horizontal" Grid.Row="1">
                 <local:IconButton IconImageSource="../Resources/Icons/search.png"/>
