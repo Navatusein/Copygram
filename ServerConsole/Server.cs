@@ -37,7 +37,7 @@ namespace ServerConsole
         {
             clients = new();
 
-            listener = new(IPAddress.Parse("192.168.1.100"), 25565);
+            listener = new(IPAddress.Parse("192.168.1.100"), 27015);
             listener.Start();
 
             serverWork = true;
@@ -57,119 +57,186 @@ namespace ServerConsole
 
         private void WaitingForRequest()
         {
-            TcpClient tcpClient = listener.AcceptTcpClient();
-            NetworkStream stream = tcpClient.GetStream();
-            StreamReader reader = new(stream, Encoding.UTF8);
-
-            Command command = (Command)binaryFormatter.Deserialize(reader.BaseStream);
-
-            if (command == null)
+            try
             {
-                tcpClient.Close();
-                semaphore.Release();
-                return;
-            }
+                TcpClient tcpClient = listener.AcceptTcpClient();
+                NetworkStream stream = tcpClient.GetStream();
+                StreamReader reader = new(stream, Encoding.UTF8);
 
-            if (command.Type == CommandType.RequestChanges)
-            {
-                byte[] data = null!;
+                Command command = (Command)binaryFormatter.Deserialize(reader.BaseStream);
 
-                if (!clients.ContainsKey(command.User.UserId))
+                if (command == null)
                 {
-                    TCP.Error error = new();
-                    error.Type = KnownErrors.OutOfSync;
-
-                    data = Serialization(error);
-
-                    Response(stream, ResponseType.Error, data, command);
-
+                    tcpClient.Close();
                     semaphore.Release();
                     return;
                 }
 
-                Client client = clients[command.User.UserId];
-
-                data = Serialization(client.Changes);
-
-                Response(stream, ResponseType.Success, data, command);
-            }
-            else if (command.Type == CommandType.NewMessage)
-            {
-                byte[] data = null!;
-
-                if (!clients.ContainsKey(command.User.UserId))
+                if (command.Type == CommandType.RequestChanges)
                 {
-                    TCP.Error error = new();
-                    error.Type = KnownErrors.OutOfSync;
+                    byte[] data = null!;
 
-                    data = Serialization(error);
+                    if (!clients.ContainsKey(command.User.UserId))
+                    {
+                        TCP.Error error = new();
+                        error.Type = KnownErrors.OutOfSync;
 
-                    Response(stream, ResponseType.Error, data, command);
+                        data = Serialization(error);
 
-                    semaphore.Release();
-                    return;
+                        Response(stream, ResponseType.Error, data, command);
+
+                        semaphore.Release();
+                        return;
+                    }
+
+                    Client client = clients[command.User.UserId];
+
+                    data = Serialization(client.Changes);
+
+                    Response(stream, ResponseType.Success, data, command);
                 }
-            }
-            else if (command.Type == CommandType.Sync)
-            {
-                byte[] data = null!;
+                else if (command.Type == CommandType.NewMessage)
+                {
+                    byte[] data = null!;
 
-                if (clients.ContainsKey(command.User.UserId))
+                    if (!clients.ContainsKey(command.User.UserId))
+                    {
+                        TCP.Error error = new();
+                        error.Type = KnownErrors.OutOfSync;
+
+                        data = Serialization(error);
+
+                        Response(stream, ResponseType.Error, data, command);
+
+                        semaphore.Release();
+                        return;
+                    }
+                }
+                else if (command.Type == CommandType.Sync)
+                {
+                    byte[] data = null!;
+
+                    if (clients.ContainsKey(command.User.UserId))
+                    {
+                        TCP.Error error = new();
+                        error.Type = KnownErrors.SecondClient;
+
+                        data = Serialization(error);
+
+                        Response(stream, ResponseType.Error, data, command);
+
+                        semaphore.Release();
+                        return;
+                    }
+
+                    data = Serialization(DbConnector.SyncChats(command.User));
+
+                    Response(stream, ResponseType.Success, data, command);
+                }
+                else if (command.Type == CommandType.SyncChatMessage)
+                {
+                    byte[] data = null!;
+
+                    if (!clients.ContainsKey(command.User.UserId))
+                    {
+                        TCP.Error error = new();
+                        error.Type = KnownErrors.OutOfSync;
+
+                        data = Serialization(error);
+
+                        Response(stream, ResponseType.Error, data, command);
+
+                        semaphore.Release();
+                        return;
+                    }
+
+                    TCP.SyncChatMessages syncChatMessages = Deserialization<TCP.SyncChatMessages>(command.Data);
+
+                    data = Serialization(DbConnector.SyncChatMessages(syncChatMessages));
+
+                    Response(stream, ResponseType.Success, data, command);
+                }
+                else if (command.Type == CommandType.Login)
+                {
+                    TCP.LoginData loginData = Deserialization<TCP.LoginData>(command.Data);
+
+                    TCP.User? tcpUser = DbConnector.TryToLogin(loginData);
+
+                    if (tcpUser == null)
+                    {
+                        TCP.Error error = new();
+
+                        error.Type = KnownErrors.BadPasswordOrLogin;
+
+                        byte[] data = Serialization(error);
+
+                        Response(stream, ResponseType.Error, data, command);;
+                    }
+                    else
+                    {
+                        byte[] data = Serialization(tcpUser);
+
+                        Response(stream, ResponseType.Success, data, command);
+                    }
+                }
+                else if (command.Type == CommandType.Register)
+                {
+                    TCP.LoginData loginData = Deserialization<TCP.LoginData>(command.Data);
+                    TCP.User tcpUser = loginData.User;
+
+                    byte[] data = null;
+
+                    if (!DbConnector.IsLoginAllowed(loginData.Login))
+                    {
+                        TCP.Error error = new();
+
+                        error.Type = KnownErrors.LoginBusy;
+
+                        data = Serialization(error);
+
+                        Response(stream, ResponseType.Error, data, command);
+
+                        semaphore.Release();
+                        return;
+                    }
+
+                    if (!DbConnector.IsNicknameAllowed(tcpUser.Nickname))
+                    {
+                        TCP.Error error = new();
+
+                        error.Type = KnownErrors.NicknameBusy;
+
+                        data = Serialization(error);
+
+                        Response(stream, ResponseType.Error, data, command);
+
+                        semaphore.Release();
+                        return;
+                    }
+
+                    DbConnector.RegisterUser(ref tcpUser, loginData.Login, loginData.Password);
+
+                    data = Serialization(tcpUser);
+
+                    Response(stream, ResponseType.Success, data, command);
+                }
+                else
                 {
                     TCP.Error error = new();
                     error.Type = KnownErrors.SecondClient;
+                    error.Text = "Unknown command";
 
-                    data = Serialization(error);
-
-                    Response(stream, ResponseType.Error, data, command);
-
-                    semaphore.Release();
-                    return;
-                }
-
-                data = Serialization(DbConnector.GetChatsForUser(command.User));
-
-                Response(stream, ResponseType.Success, data, command);
-            }
-            else if (command.Type == CommandType.SyncChatMessage)
-            {
-                byte[] data = null!;
-
-                if (!clients.ContainsKey(command.User.UserId))
-                {
-                    TCP.Error error = new();
-                    error.Type = KnownErrors.OutOfSync;
-
-                    data = Serialization(error);
+                    byte[] data = Serialization(error);
 
                     Response(stream, ResponseType.Error, data, command);
-
-                    semaphore.Release();
-                    return;
                 }
 
-
+                semaphore.Release();
             }
-            else if (command.Type == CommandType.Login)
+            catch (Exception ex)
             {
-
+                Console.Error.WriteLine(ex.ToString());
             }
-            else if (command.Type == CommandType.Register)
-            {
-
-            }
-            else
-            {
-                TCP.Error error = new();
-                error.Type = KnownErrors.SecondClient;
-                error.Text = "Unknown command";
-
-                byte[] data = Serialization(error);
-
-                Response(stream, ResponseType.Error, data, command);
-            }
-
-            semaphore.Release();
         }
 
         private byte[] Serialization<T>(T obj)
@@ -207,7 +274,7 @@ namespace ServerConsole
             response.Data = data;
             response.OnCommandResponse = command;
 
-            byte[] serializedObject = Serialization(command);
+            byte[] serializedObject = Serialization(response);
 
             stream.Write(serializedObject, 0, serializedObject.Length);
         }

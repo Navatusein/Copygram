@@ -22,7 +22,7 @@
 
   <ItemGroup>
     <Reference Include="ModelsLibrary">
-      <HintPath>..\ModelsLibrary\ModelsLibrary\bin\Debug\net6.0\ModelsLibrary.dll</HintPath>
+      <HintPath>..\ModelsLibrary\bin\Debug\net6.0\ModelsLibrary.dll</HintPath>
     </Reference>
   </ItemGroup>
 

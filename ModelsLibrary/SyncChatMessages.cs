@@ -10,6 +10,8 @@ namespace ModelsLibrary
     {
         public int MessageId { get; set; }
 
+        public int ChatId { get; set; }
+
         public int MessageCount { get; set; }
     }
 }
