@@ -58,16 +58,18 @@
             </Grid.RowDefinitions>
 
             <Grid x:Name="BackgroundOverlayGrid" Grid.RowSpan="2" Grid.ColumnSpan="3" Panel.ZIndex="1" Visibility="Collapsed">
-                <Rectangle Name="rectOverlay" MouseDown="rectOverlay_MouseDown" 
+                <Viewbox Stretch="Fill">
+                    <Rectangle Name="rectOverlay" MouseDown="rectOverlay_MouseDown" 
                            Stroke="Black" StrokeThickness="2" 
                            Fill="Black" Opacity="0.3" 
-                           Visibility="Collapsed" />
+                           Visibility="Collapsed"/>
+                </Viewbox>
             </Grid>
 
             <Grid x:Name="SidePanelOverlayGrid" Grid.RowSpan="2" Grid.ColumnSpan="3" Panel.ZIndex="2" Visibility="Collapsed" >
                 <cctrl:SidePanelMenu x:Name="sidePanelOverlay" Background="White" Grid.Column="0"
                             HorizontalAlignment="Left" Visibility="Collapsed" 
-                            VerticalAlignment="Stretch" ContactClick="sidePanel_ContactClick" NotContactClick="sidePanelOverlay_NotContactClick"
+                            VerticalAlignment="Stretch" NotImplementedClick="NotImplementedClick"
                             MyAvatarSource="Resources/Icons/logotype.ico"
                             MyUsernameSource="Anthony" IdSource="+000 (00) 000 00 00"/>
             </Grid>
@@ -100,7 +102,7 @@
 
             <ListBox Grid.Row="1" Grid.Column="0" x:Name="FoldersGrid" Background="#293a4c" BorderThickness="0">
                 <ListBoxItem Style="{StaticResource ListBoxItemDefaultStyle}">
-                    <cctrl:IconButton IconImageSource="Resources/Icons/folder.png"/>
+                    <cctrl:IconButton IconImageSource="Resources/Icons/folder.png" Click="NotImplementedClick"/>
                 </ListBoxItem>
                 <ListBoxItem Style="{StaticResource ListBoxItemDefaultStyle}">
                     <cctrl:IconButton IconImageSource="Resources/Icons/add_chat.png" Click="NewChat_Click"/>
@@ -145,25 +147,10 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <ListView x:Name="MessageChat" Grid.Row="0" ItemContainerStyle="{StaticResource MessageContainer}">
+                <ListView x:Name="MessageChat" Grid.Row="0" >
                     <ListView.Background>
                         <ImageBrush ImageSource="Resources/Wallpapers/DefaultDay.jpg"/>
                     </ListView.Background>
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Vertical" Margin="5, 10">
-                                <!--<Ellipse Height="30" Width="30">
-                                    <Ellipse.Fill>
-                                        <ImageBrush ImageSource="{Binding Avatar}"/>
-                                    </Ellipse.Fill>
-                                </Ellipse>-->
-                                <Border Background="Gray" CornerRadius="10">
-                                    <TextBlock Style="{StaticResource MessageStyle}" Text="{Binding MessageText}"/>
-                                </Border>
-                                <!--<TextBlock Style="{StaticResource LastSeenLabel}" />-->
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
                 </ListView>
 
                 <Grid x:Name="MessageSets" Grid.Row="1">

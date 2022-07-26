@@ -90,7 +90,7 @@ namespace Client
             } 
         }
 
-        object Deserialize(byte[] byteArray)
+        public object Deserialize(byte[] byteArray)
         {
             using (ms = new MemoryStream())
             {

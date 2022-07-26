@@ -1,0 +1,19 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:Client.CustomControls">
+    <Style x:Key="UserCellSelection" TargetType="UserControl">
+        <Style.Triggers>
+            <Trigger Property="IsFocused" Value="True">
+                <Setter Property="Background" Value="#2596be"/>
+                <Setter Property="Foreground" Value="Black"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <Style x:Key="DefaultChatUser" TargetType="local:UserCell">
+        <Setter Property="AvatarSource" Value="../Icons/logotype.ico"/>
+        <Setter Property="Nickname" Value="Copygram Team"/>
+        <Setter Property="LastMessage" Value="Hello there!"/>
+        <Setter Property="Date" Value="Second ago"/>
+        <Setter Property="UnreadMessageCount" Value="1"/>
+    </Style>
+</ResourceDictionary>

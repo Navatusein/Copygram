@@ -19,6 +19,9 @@
     <Compile Update="CustomControls\IconButton.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="CustomControls\MessageContainer.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="CustomControls\SidePanelMenuItem.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -39,13 +42,28 @@
     <Page Update="CustomControls\IconButton.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="CustomControls\MessageContainer.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="CustomControls\SidePanelMenuItem.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="MainWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Resources\Styles\StyleDictionary.xaml">
+    <Page Update="Resources\Styles\ButtonStyles.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Resources\Styles\MiscStyles.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Resources\Styles\TextBlockStyles.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Resources\Styles\TextBoxStyles.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Resources\Styles\UserControlSpecificStyles.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="SignUp.xaml">

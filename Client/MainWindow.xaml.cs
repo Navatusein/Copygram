@@ -1,6 +1,7 @@
 ﻿using Client.CustomControls;
 using ModelsLibrary;
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -16,6 +17,14 @@ namespace Client
     {
         double toSize;
         Controller ctrl = null!;
+
+        private Brush HexConverter(string hex)
+        {
+            BrushConverter bc = new BrushConverter();
+            Brush brush = (Brush)bc.ConvertFrom(hex);
+            brush.Freeze();
+            return brush;
+        }
 
         public MainWindow()
         {
@@ -46,26 +55,16 @@ namespace Client
             if (e.LeftButton == MouseButtonState.Pressed)
             {
                 sidePanelOverlay.BeginAnimation(WidthProperty, new DoubleAnimation(toSize, 0, TimeSpan.FromSeconds(0.3)));
-                rectOverlay.BeginAnimation(HeightProperty, new DoubleAnimation(this.Height, 0, TimeSpan.FromSeconds(0.3)));
                 ContactsOverlay.Visibility = Visibility.Collapsed;
                 DonateOverlay.Visibility = Visibility.Collapsed;
             }
         }
 
-        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            if (rectOverlay.Height > 0 || rectOverlay.Width > 0)
-            {
-                rectOverlay.Width = this.Width;
-                rectOverlay.Height = this.Height;
-            }
-        }
-
+        #region Focus events
         private void tbSearch_GotFocus(object sender, RoutedEventArgs e)
         {
             tbSearch.Clear();
         }
-
         private void tbSearch_LostFocus(object sender, RoutedEventArgs e)
         {
             tbSearch.Text = "Search";
@@ -74,12 +73,13 @@ namespace Client
         {
             tbMessage.Clear();
         }
-
         private void tbMessage_LostFocus(object sender, RoutedEventArgs e)
         {
             tbMessage.Text = "Write a message...";
         }
+        #endregion
 
+        #region Overlays functions
         private void IconButton_Tap(object sender, RoutedEventArgs e)
         {
             sidePanelOverlay.Visibility = Visibility.Visible;
@@ -95,7 +95,7 @@ namespace Client
             ContactsOverlay.Visibility = Visibility.Visible;
         }
 
-        private void sidePanelOverlay_NotContactClick(object sender, RoutedEventArgs e)
+        private void NotImplementedClick(object sender, RoutedEventArgs e)
         {
             sidePanelOverlay.Visibility = Visibility.Collapsed;
             DonateOverlay.Visibility = Visibility.Visible;
@@ -119,17 +119,21 @@ namespace Client
             }
         }
 
-        private void tbMessage_KeyDown(object sender, KeyEventArgs e)
+        private void DonateOverlay_CloseClick(object sender, RoutedEventArgs e)
         {
-            if (e.Key == Key.Enter && !string.IsNullOrEmpty(tbMessage.Text))
-            {
-                if(ctrl.SendMessage(tbMessage.Text.Trim()))
-				    MessageChat.Items.Add( new ChatMessage() { MessageText = tbMessage.Text.Trim(), FromUser = ctrl.Profile});
-                else
-                    MessageChat.Items.Add(new ChatMessage() { MessageText = "X Something went wrong! X", FromUser = ctrl.Profile });
-            }
+            rectOverlay.Visibility = Visibility.Collapsed;
+            DonateOverlay.Visibility = Visibility.Collapsed;
         }
+        private void NewChat_Click(object sender, RoutedEventArgs e)
+        {
+            ContactsOverlay.Visibility = Visibility.Visible;
+            rectOverlay.Visibility = Visibility.Visible;
 
+
+        }
+        #endregion
+
+        #region Login overlay funcs
         private void TextChangedEvent(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             if (!string.IsNullOrEmpty(tbUsername.Text) && !string.IsNullOrEmpty(tbPassword.Password))
@@ -146,14 +150,6 @@ namespace Client
                 btLogin.IsEnabled = true;
                 btLogin.Background = HexConverter("#2596be");
             }
-        }
-
-        private Brush HexConverter(string hex)
-        {
-            BrushConverter bc = new BrushConverter();
-            Brush brush = (Brush)bc.ConvertFrom(hex);
-            brush.Freeze();
-            return brush;
         }
 
         private void btLogin_Click(object sender, RoutedEventArgs e)
@@ -187,27 +183,33 @@ namespace Client
                 SpeakLable.Foreground = new SolidColorBrush(Color.FromRgb(153, 0, 0));
             }
         }
+        #endregion
 
-        private void DonateOverlay_CloseClick(object sender, RoutedEventArgs e)
-        {
-            rectOverlay.Visibility = Visibility.Collapsed;
-            DonateOverlay.Visibility = Visibility.Collapsed;
-        }
-
-        private void NewChat_Click(object sender, RoutedEventArgs e)
-        {
-            ContactsOverlay.Visibility = Visibility.Visible;
-            rectOverlay.Visibility = Visibility.Visible;
-
-
-        }
 
         private void ChatsList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             if (ChatsList.SelectedIndex != -1 || ChatsList.SelectedItem != null)
             {
-                MessageChat.ItemsSource = ctrl.GetChatOnUser((ChatsList.SelectedItem as UserCell).Nickname);
+                ChatThumbnailGrid.IsEnabled = true;
+                ChatGrid.IsEnabled = true;
+
+                foreach (ChatMessage message in ctrl.GetChatOnUser((ChatsList.SelectedItem as UserCell).Nickname))
+                {
+                    MessageChat.Items.Add(new MessageContainer((BitmapImage)ctrl.Deserialize(message.FromUser.Avatar), message.MessageText));
+                }
             }
         }
+
+        private void tbMessage_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter && !string.IsNullOrEmpty(tbMessage.Text))
+            {
+                if (ctrl.SendMessage(tbMessage.Text.Trim()))
+                    MessageChat.Items.Add(new ChatMessage() { MessageText = tbMessage.Text.Trim(), FromUser = ctrl.Profile });
+                else
+                    MessageChat.Items.Add(new ChatMessage() { MessageText = "X Something went wrong! X", FromUser = ctrl.Profile });
+            }
+        }
+
     }
 }
