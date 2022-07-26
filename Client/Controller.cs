@@ -22,7 +22,8 @@ namespace Client
         TcpClient client = null;
         NetworkStream ns = null;
         BinaryFormatter binFormat = null;
-        public User profile = null;
+        User profile = null;
+        BitmapImage avatar = null;
         Response lastResponse = null;
 
         byte[] buff;
@@ -31,6 +32,16 @@ namespace Client
 
         public ObservableCollection<User> users = new();
         public ObservableCollection<Chat> chats = new();
+
+        public User Profile 
+        {
+            get { return profile; }
+        }
+
+        public BitmapImage Avatar
+        {
+            get { return avatar; }
+        }
 
         public Controller()
         {
@@ -78,7 +89,17 @@ namespace Client
 
             if (RecieveResponse() == ResponseType.Success)
             {
-                profile = new() { Nickname = username };    
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    buff = new byte[client.ReceiveBufferSize];
+                    ms.Write(buff, 0, buff.Length);
+                    profile = (User)binFormat.Deserialize(ms);
+
+                    ms.Write(profile.Avatar, 0, profile.Avatar.Length);
+                    avatar = (BitmapImage)binFormat.Deserialize(ms);
+
+                    
+                }   
                 return true;
             }
             else
@@ -127,12 +148,12 @@ namespace Client
         {
             try
             {
-                MemoryStream ms = new MemoryStream();
-                binFormat = new BinaryFormatter();
-                ms.Write(bytes, 0, bytes.Length);
-                ms.Seek(0, SeekOrigin.Begin);
-                ObservableCollection<Chat> chat = (ObservableCollection<Chat>)binFormat.Deserialize(ms);
-                return chat;
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    ms.Write(bytes, 0, bytes.Length);
+                    ObservableCollection<Chat> chat = (ObservableCollection<Chat>)binFormat.Deserialize(ms);
+                    return chat;
+                }
             }
             catch (Exception ex)
             {

@@ -33,7 +33,7 @@
 
             <Separator Grid.Row="2"/>
 
-            <ListBox Grid.Row="3" Background="Transparent" BorderThickness="0">
+            <ListBox x:Name="ContactsList" Grid.Row="3" Background="Transparent" BorderThickness="0">
                 <ListBoxItem HorizontalContentAlignment="Stretch">
                     <local:ContactsMenuItem ImageSource="../Resources/Icons/logotype.ico" UsernameSource="Anthony" UserStatusSource="last seen recently"/>
                 </ListBoxItem>

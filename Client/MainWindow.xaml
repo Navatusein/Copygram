@@ -94,7 +94,7 @@
             </Border>
 
             <ListBox Grid.Row="1" Grid.Column="0" x:Name="FoldersGrid" Background="#293a4c" BorderThickness="0">
-                <ListBoxItem HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch">
+                <ListBoxItem Style="{StaticResource ListBoxItemDefaultStyle}">
                     <cctrl:IconButton IconImageSource="Resources/Icons/folder.png"/>
                 </ListBoxItem>
             </ListBox>
