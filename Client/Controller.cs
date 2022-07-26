@@ -12,6 +12,8 @@ using System.Drawing;
 using System.Windows.Media.Imaging;
 using System.Windows.Controls;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using ModelsLibrary;
 
 namespace Client
 {
@@ -19,25 +21,37 @@ namespace Client
     {
         TcpClient client = null;
         NetworkStream ns = null;
+        BinaryFormatter binFormat = null;
+        User profile = null;
+        BitmapImage avatar = null;
+        Response lastResponse = null;
+
+        byte[] buff;
         long address; //temporary
         int port; //temporary
-        public ObservableCollection<IMessage> messages = new();
-        public ObservableCollection<UserProfile> users = new();
+
+        public ObservableCollection<User> users = new();
+        public ObservableCollection<Chat> chats = new();
+
+        public User Profile 
+        {
+            get { return profile; }
+        }
+
+        public BitmapImage Avatar
+        {
+            get { return avatar; }
+        }
 
         public Controller()
         {
             try
-            {   
-                /*
+            {
+                binFormat = new BinaryFormatter();
                 client = new TcpClient();
-                IPEndPoint ep = new IPEndPoint( ip addres , port);
+                IPEndPoint ep = new IPEndPoint(address , port);
                 client.Connect(ep);
-                ns = client.GetStream();
 
-                int size = client.ReceiveBufferSize;
-                byte[] buff = new byte[size];
-                ns.Read(buff, 0, size);
-                */
             }
             catch (Exception ex)
             {
@@ -46,5 +60,106 @@ namespace Client
             }
         }
 
+        Command BuildCommand(CommandType type, byte[] data)
+        {
+            return new Command() { Type = type, Data = data, User = profile };
+        }
+
+        ResponseType RecieveResponse()
+        {
+            using (ns = client.GetStream())
+            {
+                buff = new byte[client.ReceiveBufferSize];
+                ns.Read(buff, 0, buff.Length);
+                lastResponse = (Response)binFormat.Deserialize(ns);
+            }
+            return lastResponse.Type;
+        }
+
+        public bool TryLogin(string username, string password)
+        {
+            buff = Encoding.UTF8.GetBytes(username + ":" + password);
+
+            using (ns = client.GetStream())
+            {
+                binFormat.Serialize(ns, BuildCommand(CommandType.Login, buff));
+                ns.Flush();
+            }
+            buff = null;
+
+            if (RecieveResponse() == ResponseType.Success)
+            {
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    buff = new byte[client.ReceiveBufferSize];
+                    ms.Write(buff, 0, buff.Length);
+                    profile = (User)binFormat.Deserialize(ms);
+
+                    ms.Write(profile.Avatar, 0, profile.Avatar.Length);
+                    avatar = (BitmapImage)binFormat.Deserialize(ms);
+
+                    
+                }   
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public void LoadData()
+        {
+            buff = Encoding.UTF8.GetBytes("what?");
+
+            using (ns = client.GetStream())
+            {
+                binFormat.Serialize(ns, BuildCommand(CommandType.Sync, buff));
+                ns.Flush();
+            }
+            buff = null;
+
+            if (RecieveResponse() == ResponseType.Success)
+            {
+                chats = ByteToChat(lastResponse.Data);
+            }
+        }
+
+        public void SendMessage(string messageText)
+        {
+            buff = Encoding.UTF8.GetBytes(messageText);
+            using(ns = client.GetStream())
+            {
+                binFormat.Serialize(ns, BuildCommand(CommandType.NewMessage, buff));
+                ns.Flush();
+            }
+            buff = null;
+            if (RecieveResponse() == ResponseType.Success)
+            {
+                //Good :D
+            }
+            else
+            {
+                //Bad :(
+            }
+        }
+
+        private ObservableCollection<Chat> ByteToChat(byte[] bytes)
+        {
+            try
+            {
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    ms.Write(bytes, 0, bytes.Length);
+                    ObservableCollection<Chat> chat = (ObservableCollection<Chat>)binFormat.Deserialize(ms);
+                    return chat;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + "\n" + ex.Source, ex.StackTrace);
+                return null;
+            }
+        }
     }
 }

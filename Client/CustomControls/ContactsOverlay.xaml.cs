@@ -24,6 +24,8 @@ namespace Client.CustomControls
         {
             InitializeComponent();
             this.DataContext = this;
+
+            ContactsList.PreviewMouseDoubleClick += (sender, args) => OnClick();
         }
 
         private void TextBox_GotFocus(object sender, RoutedEventArgs e)
@@ -39,6 +41,26 @@ namespace Client.CustomControls
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             this.Visibility = Visibility.Collapsed;
+        }
+
+        public static readonly RoutedEvent UserClickEvent = EventManager.RegisterRoutedEvent(
+            "UserClick", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(ContactsOverlay));
+
+        public event RoutedEventHandler UserClick
+        {
+            add { AddHandler(UserClickEvent, value); }
+            remove { RemoveHandler(UserClickEvent, value); }
+        }
+
+        void RaiseClickEvent()
+        {
+            RoutedEventArgs newEventArgs = new RoutedEventArgs(ContactsOverlay.UserClickEvent);
+            RaiseEvent(newEventArgs);
+        }
+
+        void OnClick()
+        {
+            RaiseClickEvent();
         }
     }
 }

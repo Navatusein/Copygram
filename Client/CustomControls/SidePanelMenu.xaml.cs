@@ -65,15 +65,35 @@ namespace Client.CustomControls
             remove { RemoveHandler(ContactClickEvent, value); }
         }
 
-        void RaiseClickEvent()
+        void RaiseContactEvent()
         {
             RoutedEventArgs newEventArgs = new RoutedEventArgs(SidePanelMenu.ContactClickEvent);
             RaiseEvent(newEventArgs);
         }
 
-        void OnClick()
+        void OnContactClick()
         {
-            RaiseClickEvent();
+            RaiseContactEvent();
+        }
+
+        public static readonly RoutedEvent NotContactClickEvent = EventManager.RegisterRoutedEvent(
+            "NotContactClick", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(SidePanelMenuItem));
+
+        public event RoutedEventHandler NotContactClick
+        {
+            add { AddHandler(NotContactClickEvent, value); }
+            remove { RemoveHandler(NotContactClickEvent, value); }
+        }
+
+        void RaiseNotContactEvent()
+        {
+            RoutedEventArgs newEventArgs = new RoutedEventArgs(SidePanelMenu.NotContactClickEvent);
+            RaiseEvent(newEventArgs);
+        }
+
+        void OnNotContactClick()
+        {
+            RaiseNotContactEvent();
         }
 
         public SidePanelMenu()
@@ -81,7 +101,13 @@ namespace Client.CustomControls
             InitializeComponent();
             this.DataContext = this;
 
-            ContactsBtn.PreviewMouseLeftButtonUp += (sender, args) => OnClick();
+            ContactsBtn.PreviewMouseLeftButtonUp += (sender, args) => OnContactClick();
+            GroupBtn.PreviewMouseLeftButtonUp += (sender, args) => OnNotContactClick();
+            ChannelBtn.PreviewMouseLeftButtonUp += (sender, args) => OnNotContactClick();
+            PhoneBtn.PreviewMouseLeftButtonUp += (sender, args) => OnNotContactClick();
+            SavedBtn.PreviewMouseLeftButtonUp += (sender, args) => OnNotContactClick();
+            SettingsBtn.PreviewMouseLeftButtonUp += (sender, args) => OnNotContactClick();
+            NightModeBtn.PreviewMouseLeftButtonUp += (sender, args) => OnNotContactClick();
         }
     }
 }
