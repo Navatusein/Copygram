@@ -15,6 +15,6 @@ namespace ModelsLibrary
 
     public interface IMessage
     {
-        public MessageType Type { get; set; }
+        public MessageType Type { get; }
     }
 }

@@ -13,7 +13,8 @@ namespace ModelsLibrary
         SecondClient,
         BadPasswordOrLogin,
         LoginBusy,
-        NicknameBusy
+        NicknameBusy,
+        UnknownCommand
     }
 
     [Serializable]

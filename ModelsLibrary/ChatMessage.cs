@@ -17,8 +17,13 @@ namespace ModelsLibrary
 
         public string MessageText { get; set; } = null!;
 
-        public MessageType Type { get; set; }
+        public MessageType Type { get; private set; }
 
         public DateTime DispatchTime { get; set; } = DateTime.Now;
+
+        public ChatMessage()
+        {
+            Type = MessageType.ChatMessage;
+        }
     }
 }
