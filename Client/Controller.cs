@@ -15,18 +15,20 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using ModelsLibrary;
 
+#pragma warning disable SYSLIB0011
+
 namespace Client
 {
     internal class Controller
     {
-        TcpClient client = null;
-        NetworkStream ns = null;
-        BinaryFormatter binFormat = null;
-        User profile = null;
-        BitmapImage avatar = null;
-        Response lastResponse = null;
+        TcpClient client = null!;
+        NetworkStream ns = null!;
+        BinaryFormatter binFormat = null!;
+        User profile = null!;
+        BitmapImage avatar = null!;
+        Response lastResponse = null!;
 
-        byte[] buff;
+        byte[] buff = null!;
         long address; //temporary
         int port; //temporary
 
@@ -85,7 +87,7 @@ namespace Client
                 binFormat.Serialize(ns, BuildCommand(CommandType.Login, buff));
                 ns.Flush();
             }
-            buff = null;
+            buff = null!;
 
             if (RecieveResponse() == ResponseType.Success)
             {
@@ -117,7 +119,7 @@ namespace Client
                 binFormat.Serialize(ns, BuildCommand(CommandType.Sync, buff));
                 ns.Flush();
             }
-            buff = null;
+            buff = null!;
 
             if (RecieveResponse() == ResponseType.Success)
             {
@@ -130,10 +132,10 @@ namespace Client
             buff = Encoding.UTF8.GetBytes(messageText);
             using(ns = client.GetStream())
             {
-                binFormat.Serialize(ns, BuildCommand(CommandType.NewMessage, buff));
+                binFormat.Serialize(ns, BuildCommand(CommandType.NewChatMessage, buff));
                 ns.Flush();
             }
-            buff = null;
+            buff = null!;
             if (RecieveResponse() == ResponseType.Success)
             {
                 //Good :D
@@ -158,7 +160,7 @@ namespace Client
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message + "\n" + ex.Source, ex.StackTrace);
-                return null;
+                return null!;
             }
         }
     }

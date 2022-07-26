@@ -15,7 +15,7 @@ namespace Client
     public partial class MainWindow : Window
     {
         double toSize;
-        Controller ctrl;
+        Controller ctrl = null!;
 
         public MainWindow()
         {
@@ -120,7 +120,7 @@ namespace Client
             if (e.Key == Key.Enter && !string.IsNullOrEmpty(tbMessage.Text))
             {
                 ctrl.SendMessage(tbMessage.Text.Trim());
-				MessageChat.Items.Add( new ChatMessage() { MessageText = tbMessage.Text, FromUser = ctrl.profile});
+				MessageChat.Items.Add( new ChatMessage() { MessageText = tbMessage.Text, FromUser = ctrl.Profile});
             }
         }
 
@@ -152,7 +152,7 @@ namespace Client
 
         private void btLogin_Click(object sender, RoutedEventArgs e)
         {
-            ctrl = null;//new();
+            ctrl = null!;//new();
             tbUsername.Text = "test";
             tbPassword.Password = "test";
 
