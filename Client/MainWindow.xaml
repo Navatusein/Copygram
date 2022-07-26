@@ -97,6 +97,9 @@
                 <ListBoxItem Style="{StaticResource ListBoxItemDefaultStyle}">
                     <cctrl:IconButton IconImageSource="Resources/Icons/folder.png"/>
                 </ListBoxItem>
+                <ListBoxItem Style="{StaticResource ListBoxItemDefaultStyle}">
+                    <cctrl:IconButton IconImageSource="Resources/Icons/add_chat.png" Click="NewChat_Click"/>
+                </ListBoxItem>
             </ListBox>
 
             <Border Grid.Row="0" Grid.Column="1" Margin="12" Style="{StaticResource TBCornerBorder}">

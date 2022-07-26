@@ -80,7 +80,7 @@ namespace Client
 
         public bool TryLogin(string username, string password)
         {
-            buff = Encoding.UTF8.GetBytes(username + ":" + password);
+            //TODO buff = Encoding.UTF8.GetBytes(new LoginData() { Login = username, Password = password });
 
             using (ns = client.GetStream())
             {
@@ -112,7 +112,7 @@ namespace Client
 
         public void LoadData()
         {
-            buff = Encoding.UTF8.GetBytes("what?");
+            buff = Encoding.UTF8.GetBytes("Emptyness");
 
             using (ns = client.GetStream())
             {
@@ -127,7 +127,7 @@ namespace Client
             }
         }
 
-        public void SendMessage(string messageText)
+        public bool SendMessage(string messageText)
         {
             buff = Encoding.UTF8.GetBytes(messageText);
             using(ns = client.GetStream())
@@ -136,13 +136,14 @@ namespace Client
                 ns.Flush();
             }
             buff = null!;
+
             if (RecieveResponse() == ResponseType.Success)
             {
-                //Good :D
+                return true;//Good :D
             }
             else
             {
-                //Bad :(
+                return false;//Bad :(
             }
         }
 

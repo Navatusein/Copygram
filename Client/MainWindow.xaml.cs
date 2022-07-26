@@ -119,8 +119,10 @@ namespace Client
         {
             if (e.Key == Key.Enter && !string.IsNullOrEmpty(tbMessage.Text))
             {
-                ctrl.SendMessage(tbMessage.Text.Trim());
-				MessageChat.Items.Add( new ChatMessage() { MessageText = tbMessage.Text, FromUser = ctrl.Profile});
+                if(ctrl.SendMessage(tbMessage.Text.Trim()))
+				    MessageChat.Items.Add( new ChatMessage() { MessageText = tbMessage.Text.Trim(), FromUser = ctrl.Profile});
+                else
+                    MessageChat.Items.Add(new ChatMessage() { MessageText = "X Something went wrong! X", FromUser = ctrl.Profile });
             }
         }
 
@@ -186,6 +188,11 @@ namespace Client
         {
             rectOverlay.Visibility = Visibility.Collapsed;
             DonateOverlay.Visibility = Visibility.Collapsed;
+        }
+
+        private void NewChat_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

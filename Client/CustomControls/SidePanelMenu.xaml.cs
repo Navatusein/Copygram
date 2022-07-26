@@ -101,13 +101,12 @@ namespace Client.CustomControls
             InitializeComponent();
             this.DataContext = this;
 
-            ContactsBtn.PreviewMouseLeftButtonUp += (sender, args) => OnContactClick();
-            GroupBtn.PreviewMouseLeftButtonUp += (sender, args) => OnNotContactClick();
-            ChannelBtn.PreviewMouseLeftButtonUp += (sender, args) => OnNotContactClick();
-            PhoneBtn.PreviewMouseLeftButtonUp += (sender, args) => OnNotContactClick();
-            SavedBtn.PreviewMouseLeftButtonUp += (sender, args) => OnNotContactClick();
-            SettingsBtn.PreviewMouseLeftButtonUp += (sender, args) => OnNotContactClick();
-            NightModeBtn.PreviewMouseLeftButtonUp += (sender, args) => OnNotContactClick();
+            //ContactsBtn.PreviewMouseLeftButtonUp += (sender, args) => OnContactClick();
+            //GroupBtn.PreviewMouseLeftButtonUp += (sender, args) => OnNotContactClick();
+            //ChannelBtn.PreviewMouseLeftButtonUp += (sender, args) => OnNotContactClick();
+            //SavedBtn.PreviewMouseLeftButtonUp += (sender, args) => OnNotContactClick();
+            //SettingsBtn.PreviewMouseLeftButtonUp += (sender, args) => OnNotContactClick();
+            //NightModeBtn.PreviewMouseLeftButtonUp += (sender, args) => OnNotContactClick();
         }
     }
 }

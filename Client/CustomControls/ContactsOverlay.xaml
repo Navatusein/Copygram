@@ -6,14 +6,12 @@
              xmlns:local="clr-namespace:Client.CustomControls"
              RenderOptions.BitmapScalingMode="HighQuality"
              mc:Ignorable="d" 
-             d:DesignHeight="500" d:DesignWidth="350">
+             d:DesignHeight="200" d:DesignWidth="350">
     <Border CornerRadius="10" BorderThickness="2" BorderBrush="#2596be" Background="WhiteSmoke">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="1*"/>
-                <RowDefinition Height="1*"/>
-                <RowDefinition Height="1"/>
-                <RowDefinition Height="7*"/>
+                <RowDefinition Height="2*"/>
                 <RowDefinition Height="1"/>
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
@@ -22,31 +20,32 @@
                     <ColumnDefinition Width="8*"/>
                     <ColumnDefinition Width="2*"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Style="{StaticResource NameLabel}" Text="Contacts" Margin="15" FontSize="16" FontWeight="Bold"/>
+                <TextBlock Grid.Column="0" Style="{StaticResource NameLabel}" Text="Add Chat" Margin="15" FontSize="16" FontWeight="Bold"/>
                 <local:IconButton Grid.Column="1" IconImageSource="../Resources/Icons/sort.png"/>
             </Grid>
-
-            <StackPanel Orientation="Horizontal" Grid.Row="1">
+            <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock Style="{StaticResource MenuLabel}">Who to address:</TextBlock>
+                <TextBox HorizontalAlignment="Stretch" Width="180"/>
+            </StackPanel>
+            <!--<StackPanel Orientation="Horizontal" Grid.Row="1">
                 <local:IconButton IconImageSource="../Resources/Icons/search.png"/>
                 <TextBox x:Name="SeacrhBox" Style="{StaticResource TextBoxSearch}" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
-            </StackPanel>
+            </StackPanel>-->
 
-            <Separator Grid.Row="2"/>
-
-            <ListBox x:Name="ContactsList" Grid.Row="3" Background="Transparent" BorderThickness="0">
+            <!--<ListBox x:Name="ContactsList" Grid.Row="3" Background="Transparent" BorderThickness="0">
                 <ListBoxItem HorizontalContentAlignment="Stretch">
                     <local:ContactsMenuItem ImageSource="../Resources/Icons/logotype.ico" UsernameSource="Anthony" UserStatusSource="last seen recently"/>
                 </ListBoxItem>
-            </ListBox>
+            </ListBox>-->
 
-            <Separator Grid.Row="4"/>
+            <Separator Grid.Row="2"/>
 
-            <Grid Grid.Row="5">
+            <Grid Grid.Row="3">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" Content="Add Contact" HorizontalAlignment="Left" Style="{StaticResource CommonButton}"/>
+                <Button Grid.Column="0" Content="Add Chat" HorizontalAlignment="Left" Style="{StaticResource CommonButton}" Click="Add_Click"/>
                 <Button Grid.Column="2" Content="Close" HorizontalAlignment="Right" Style="{StaticResource CommonButton}" Click="Button_Click"/>
             </Grid>
         </Grid>

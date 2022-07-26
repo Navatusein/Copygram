@@ -17,6 +17,7 @@
   <ItemGroup>
     <None Remove="Resources\Fonts\sf-compact-medium.otf" />
     <None Remove="Resources\Fonts\sf-compact-thin.otf" />
+    <None Remove="Resources\Icons\add_chat.png" />
     <None Remove="Resources\Icons\channel.png" />
     <None Remove="Resources\Icons\contacts.png" />
     <None Remove="Resources\Icons\cross.png" />
@@ -59,6 +60,9 @@
     </Resource>
     <Resource Include="Resources\Fonts\sf-compact-thin.otf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\add_chat.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Icons\channel.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

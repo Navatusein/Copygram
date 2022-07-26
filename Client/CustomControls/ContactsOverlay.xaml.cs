@@ -24,18 +24,6 @@ namespace Client.CustomControls
         {
             InitializeComponent();
             this.DataContext = this;
-
-            ContactsList.PreviewMouseDoubleClick += (sender, args) => OnClick();
-        }
-
-        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
-        {
-            SeacrhBox.Clear();
-        }
-
-        private void TextBox_LostFocus(object sender, RoutedEventArgs e)
-        {
-            SeacrhBox.Text = "Search";
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -61,6 +49,11 @@ namespace Client.CustomControls
         void OnClick()
         {
             RaiseClickEvent();
+        }
+
+        private void Add_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
