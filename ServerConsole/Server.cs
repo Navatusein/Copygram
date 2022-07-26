@@ -78,83 +78,72 @@ namespace ServerConsole
 
                     if (!clients.ContainsKey(command.User.UserId))
                     {
-                        TCP.Error error = new();
-                        error.Type = KnownErrors.OutOfSync;
-
-                        data = Serialization(error);
-
-                        Response(stream, ResponseType.Error, data, command);
-
-                        semaphore.Release();
+                        SendError(stream, KnownErrors.OutOfSync, command);
                         return;
                     }
-
+                        
                     Client client = clients[command.User.UserId];
 
                     data = Serialization(client.Changes);
 
-                    Response(stream, ResponseType.Success, data, command);
+                    SendResponse(stream, ResponseType.Success, data, command);
                 }
                 else if (command.Type == CommandType.NewMessage)
                 {
-                    byte[] data = null!;
-
                     if (!clients.ContainsKey(command.User.UserId))
                     {
-                        TCP.Error error = new();
-                        error.Type = KnownErrors.OutOfSync;
-
-                        data = Serialization(error);
-
-                        Response(stream, ResponseType.Error, data, command);
-
-                        semaphore.Release();
+                        SendError(stream, KnownErrors.OutOfSync, command);
                         return;
+                    }
+
+                    TCP.IMessage message = Deserialization<TCP.IMessage>(command.Data);
+
+                    if (message.Type == MessageType.SystemMessage)
+                    {
+                        TCP.SystemMessage? systemMessage = message as TCP.SystemMessage;
+
+                        if (systemMessage == null)
+                        {
+                            semaphore.Release();
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        TCP.ChatMessage? chatMessage = message as TCP.ChatMessage;
+
+                        if (chatMessage == null)
+                        {
+                            semaphore.Release();
+                            return;
+                        }
                     }
                 }
                 else if (command.Type == CommandType.Sync)
                 {
-                    byte[] data = null!;
-
-                    if (clients.ContainsKey(command.User.UserId))
+                    if (!clients.ContainsKey(command.User.UserId))
                     {
-                        TCP.Error error = new();
-                        error.Type = KnownErrors.SecondClient;
-
-                        data = Serialization(error);
-
-                        Response(stream, ResponseType.Error, data, command);
-
-                        semaphore.Release();
+                        SendError(stream, KnownErrors.SecondClient, command);
                         return;
                     }
 
-                    data = Serialization(DbConnector.SyncChats(command.User));
+                    byte[] data = Serialization(DbConnector.SyncChats(command.User));
 
-                    Response(stream, ResponseType.Success, data, command);
+                    SendResponse(stream, ResponseType.Success, data, command);
                 }
                 else if (command.Type == CommandType.SyncChatMessage)
                 {
-                    byte[] data = null!;
-
                     if (!clients.ContainsKey(command.User.UserId))
                     {
-                        TCP.Error error = new();
-                        error.Type = KnownErrors.OutOfSync;
-
-                        data = Serialization(error);
-
-                        Response(stream, ResponseType.Error, data, command);
-
-                        semaphore.Release();
+                        SendError(stream, KnownErrors.OutOfSync, command);
                         return;
                     }
 
                     TCP.SyncChatMessages syncChatMessages = Deserialization<TCP.SyncChatMessages>(command.Data);
 
-                    data = Serialization(DbConnector.SyncChatMessages(syncChatMessages));
+                    byte[] data = Serialization(DbConnector.SyncChatMessages(syncChatMessages));
 
-                    Response(stream, ResponseType.Success, data, command);
+                    SendResponse(stream, ResponseType.Success, data, command);
                 }
                 else if (command.Type == CommandType.Login)
                 {
@@ -164,19 +153,14 @@ namespace ServerConsole
 
                     if (tcpUser == null)
                     {
-                        TCP.Error error = new();
-
-                        error.Type = KnownErrors.BadPasswordOrLogin;
-
-                        byte[] data = Serialization(error);
-
-                        Response(stream, ResponseType.Error, data, command);;
+                        SendError(stream, KnownErrors.BadPasswordOrLogin, command);
+                        return;
                     }
                     else
                     {
                         byte[] data = Serialization(tcpUser);
 
-                        Response(stream, ResponseType.Success, data, command);
+                        SendResponse(stream, ResponseType.Success, data, command);
                     }
                 }
                 else if (command.Type == CommandType.Register)
@@ -184,51 +168,28 @@ namespace ServerConsole
                     TCP.LoginData loginData = Deserialization<TCP.LoginData>(command.Data);
                     TCP.User tcpUser = loginData.User;
 
-                    byte[] data = null;
-
                     if (!DbConnector.IsLoginAllowed(loginData.Login))
                     {
-                        TCP.Error error = new();
-
-                        error.Type = KnownErrors.LoginBusy;
-
-                        data = Serialization(error);
-
-                        Response(stream, ResponseType.Error, data, command);
-
-                        semaphore.Release();
+                        SendError(stream, KnownErrors.LoginBusy, command);
                         return;
                     }
 
                     if (!DbConnector.IsNicknameAllowed(tcpUser.Nickname))
                     {
-                        TCP.Error error = new();
-
-                        error.Type = KnownErrors.NicknameBusy;
-
-                        data = Serialization(error);
-
-                        Response(stream, ResponseType.Error, data, command);
-
-                        semaphore.Release();
+                        SendError(stream, KnownErrors.NicknameBusy, command);
                         return;
                     }
 
                     DbConnector.RegisterUser(ref tcpUser, loginData.Login, loginData.Password);
 
-                    data = Serialization(tcpUser);
+                    byte[]  data = Serialization(tcpUser);
 
-                    Response(stream, ResponseType.Success, data, command);
+                    SendResponse(stream, ResponseType.Success, data, command);
                 }
                 else
                 {
-                    TCP.Error error = new();
-                    error.Type = KnownErrors.SecondClient;
-                    error.Text = "Unknown command";
-
-                    byte[] data = Serialization(error);
-
-                    Response(stream, ResponseType.Error, data, command);
+                    SendError(stream, KnownErrors.UnknownCommand, command);
+                    return;
                 }
 
                 semaphore.Release();
@@ -267,7 +228,22 @@ namespace ServerConsole
             return DeserializedObject;
         }
 
-        private void Response(NetworkStream stream, ResponseType type, byte[] data, Command command)
+
+        private void SendError(NetworkStream stream, KnownErrors knownErrors, Command command, string message = "")
+        {
+            TCP.Error error = new();
+
+            error.Type = knownErrors;
+            error.Text = message;
+
+            byte[] data = Serialization(error);
+
+            SendResponse(stream, ResponseType.Error, data, command);
+
+            semaphore.Release();
+        }
+
+        private void SendResponse(NetworkStream stream, ResponseType type, byte[] data, Command command)
         {
             TCP.Response response = new();
             response.Type = type;

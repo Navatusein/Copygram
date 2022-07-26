@@ -46,7 +46,6 @@ namespace ServerConsole
             tcpChatMessage.ChatId = dbChatMessage.ChatId;
             tcpChatMessage.FromUser = DbModelToTcpModel(dbChatMessage.FromUser);
             tcpChatMessage.MessageText = dbChatMessage.MessageText;
-            tcpChatMessage.Type = TCP.MessageType.ChatMessage;
             tcpChatMessage.DispatchTime = dbChatMessage.DispatchTime;
 
             return tcpChatMessage;
