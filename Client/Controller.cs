@@ -29,6 +29,7 @@ namespace Client
         User profile = null!;
         BitmapImage avatar = null!;
         Response lastResponse = null!;
+        Chat activeChat = null!;
 
         byte[] buff = null!;
         long address; //temporary
@@ -178,10 +179,26 @@ namespace Client
             }
         }
 
-        public Chat GetChatOnUser(string nickname)
+        public List<ChatMessage> GetChatOnUser(string nickname)
         {
             User toSend = users.FirstOrDefault(user => user.Nickname == nickname);
-            return chats.FirstOrDefault(chat => chat.ChatMembers.Any(a => a.User == profile) && chat.ChatMembers.Any(a => a.User == toSend));
+            int id = chats.FirstOrDefault(chat => chat.ChatMembers.Any(a => a.User == profile)
+                                            && chat.ChatMembers.Any(a => a.User == toSend)).ChatId;
+            if (id == -1 || id == null)
+                return null;
+
+            Serialize(id);
+            Request(CommandType.SyncChatMessage);
+
+            if (RecieveResponse() == ResponseType.Success)
+            {
+                activeChat = (Chat)Deserialize(lastResponse.Data);
+                return activeChat.Messages;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

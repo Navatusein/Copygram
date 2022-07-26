@@ -206,7 +206,7 @@ namespace Client
         {
             if (ChatsList.SelectedIndex != -1 || ChatsList.SelectedItem != null)
             {
-                ctrl.GetChatOnUser((ChatsList.SelectedItem as UserCell).Nickname);
+                MessageChat.ItemsSource = ctrl.GetChatOnUser((ChatsList.SelectedItem as UserCell).Nickname);
             }
         }
     }
