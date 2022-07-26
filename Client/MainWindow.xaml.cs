@@ -120,7 +120,7 @@ namespace Client
             if (e.Key == Key.Enter && !string.IsNullOrEmpty(tbMessage.Text))
             {
                 ctrl.SendMessage(tbMessage.Text.Trim());
-                MessageChat.Items.Add( new ChatMessage() { MessageText = tbMessage.Text, FromUser = ctrl.profile, Type = MessageType.ChatMessage});
+                MessageChat.Items.Add( new ChatMessage() { MessageText = tbMessage.Text, FromUser = ctrl.Profile, Type = MessageType.ChatMessage});
             }
         }
 
@@ -168,6 +168,10 @@ namespace Client
                 LoginLayout.Visibility = Visibility.Collapsed;
                 MainGrid.Visibility = Visibility.Visible;
                 ChatsList.ItemsSource = ctrl.chats;
+
+                sidePanelOverlay.Name = ctrl.Profile.Nickname;
+                sidePanelOverlay.MyAvatarSource = ctrl.Avatar;
+                sidePanelOverlay.IdSource = ctrl.Profile.UserId.ToString();
             }
             else
             {
