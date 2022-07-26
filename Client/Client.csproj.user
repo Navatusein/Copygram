@@ -22,6 +22,9 @@
     <Compile Update="CustomControls\SidePanelMenuItem.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="SignUp.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="CustomControls\ContactsMenuItem.xaml">
@@ -43,6 +46,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Resources\Styles\StyleDictionary.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="SignUp.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

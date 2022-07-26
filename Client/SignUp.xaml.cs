@@ -23,10 +23,31 @@ namespace Client
         {
             InitializeComponent();
         }
-
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void selectImageAction(object sender, RoutedEventArgs e)
         {
+            // TODO
+            // Upload image using image path.
+        }
 
+        private void signupAction(object sender, RoutedEventArgs e)
+        {
+            if (usernameTb.Text.ToString() != String.Empty && passwordTb.Text.ToString() != String.Empty)
+            {
+                // TODO
+                // Sign up process. Send request to server.
+            }
+        }
+
+        private void passwordAction(object sender, TextChangedEventArgs e)
+        {
+            // TODO
+            // Check if not null
+        }
+
+        private void usernameAction(object sender, TextChangedEventArgs e)
+        {
+            // TODO
+            // Check if not null
         }
     }
 }

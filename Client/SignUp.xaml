@@ -7,12 +7,12 @@
         mc:Ignorable="d"
         Title="SignUp" Height="450" Width="800">
     <Grid>
-        <TextBox x:Name="username" HorizontalAlignment="Center" Margin="0,129,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" TextChanged="TextBox_TextChanged"/>
-        <TextBox x:Name="password" HorizontalAlignment="Center" Margin="0,166,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" TextChanged="TextBox_TextChanged"/>
+        <TextBox x:Name="usernameTb" HorizontalAlignment="Center" Margin="0,129,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" TextChanged="usernameAction"/>
+        <TextBox x:Name="passwordTb" HorizontalAlignment="Center" Margin="0,166,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" TextChanged="passwordAction"/>
         <Label Content="Username:" HorizontalAlignment="Left" Margin="265,123,0,0" VerticalAlignment="Top" Width="70" Height="30"/>
         <Label Content="Password:" HorizontalAlignment="Left" Margin="265,160,0,0" VerticalAlignment="Top" Width="70" Height="30"/>
-        <Button x:Name="signupBtn" Content="Sign up" HorizontalAlignment="Left" Margin="300,258,0,0" VerticalAlignment="Top" Width="128"/>
+        <Button x:Name="signupBtn" Content="Sign up" HorizontalAlignment="Left" Margin="300,258,0,0" VerticalAlignment="Top" Width="128" Click="signupAction"/>
         <Image x:Name="profileImage" HorizontalAlignment="Left" Height="50" Margin="265,195,0,0" VerticalAlignment="Top" Width="50"/>
-        <Button x:Name="selectImageBtn" Content="Select image" HorizontalAlignment="Left" Margin="364,0,0,0" VerticalAlignment="Center" Width="96"/>
+        <Button x:Name="selectImageBtn" Content="Select image" HorizontalAlignment="Left" Margin="364,0,0,0" VerticalAlignment="Center" Width="96" Click="selectImageAction"/>
     </Grid>
 </Window>
