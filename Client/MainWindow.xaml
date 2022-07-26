@@ -20,29 +20,18 @@
                         <ImageBrush ImageSource="Resources/Icons/logotype.ico"/>
                     </Ellipse.Fill>
                 </Ellipse>
-                
-                <TextBlock x:Name="SpeakLable" Style="{StaticResource LoginScreenTextBlock}" HorizontalAlignment="Center">
-                    Welcome, User!
-                </TextBlock>
-                
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <TextBlock Style="{StaticResource LoginScreenTextBlock}"> Enter your username: </TextBlock>
-                    <TextBox x:Name="tbUsername" Background="WhiteSmoke" BorderThickness="0" 
-                             Width="400" Height="30" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" 
-                             Margin="10,5" TextChanged="TextChangedEvent" ></TextBox>
-                </StackPanel>
 
+                <TextBlock x:Name="SpeakLable" Style="{StaticResource LoginScreenTextBlock}" Text="Welcome, User!"/>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <TextBlock Style="{StaticResource LoginScreenTextBlock}"> Enter your password: </TextBlock>
-                    <PasswordBox x:Name="tbPassword" Background="WhiteSmoke" BorderThickness="0" 
-                                 Width="400" Height="30" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" 
-                                 Margin="10,5" PasswordChanged="tbPassword_PasswordChanged"></PasswordBox>
+                    <TextBlock Style="{StaticResource LoginScreenTextBlock}" Text="Enter your username:"/>
+                    <TextBox x:Name="tbUsername" Style="{StaticResource LoginTextBoxStyle}" TextChanged="TextChangedEvent"/>
                 </StackPanel>
-                <Button x:Name="btLogin" HorizontalAlignment="Center" VerticalAlignment="Center" 
-                        Background="LightGray" Style="{StaticResource LoginButton}" IsEnabled="False" Click="btLogin_Click">
-                    <TextBlock Style="{StaticResource LoginScreenTextBlock}" Margin="25,10,25,10" HorizontalAlignment="Center">
-                        Login
-                    </TextBlock>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <TextBlock Style="{StaticResource LoginScreenTextBlock}" Text="Enter your password:"/>
+                    <PasswordBox x:Name="tbPassword" Style="{StaticResource LoginPassBoxStyle}" PasswordChanged="tbPassword_PasswordChanged"/>
+                </StackPanel>
+                <Button x:Name="btLogin" Style="{StaticResource LoginButton}" Click="btLogin_Click">
+                    <TextBlock Style="{StaticResource LoginScreenTextBlock}" Margin="25,10" Text="Login"/>
                 </Button>
             </StackPanel>
         </Grid> 
