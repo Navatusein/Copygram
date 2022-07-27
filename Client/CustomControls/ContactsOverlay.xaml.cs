@@ -58,5 +58,19 @@ namespace Client.CustomControls
             WhoToAddress = tbWhoToAddress.Text.Trim();
             Visibility = Visibility.Collapsed;
         }
+
+        private void IsGroup_Checked(object sender, RoutedEventArgs e)
+        {
+            lbGroup.IsEnabled = true;
+            tbGroupName.IsEnabled = true;
+            btSelectImage.IsEnabled = true;
+        }
+
+        private void IsGroup_Unchecked(object sender, RoutedEventArgs e)
+        {
+            lbGroup.IsEnabled = false;
+            tbGroupName.IsEnabled = false;
+            btSelectImage.IsEnabled = false;
+        }
     }
 }

@@ -22,10 +22,19 @@
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0" Style="{StaticResource NameLabel}" Text="Add Chat" Margin="15" FontSize="16" FontWeight="Bold"/>
             </Grid>
-            <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center">
-                <TextBlock Style="{StaticResource MenuLabel}">Who to address:</TextBlock>
-                <TextBox x:Name="tbWhoToAddress" HorizontalAlignment="Stretch" Width="180" 
+            <StackPanel Grid.Row="1" Orientation="Vertical">
+                <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="10">
+                    <TextBlock Style="{StaticResource MenuLabel}">Who to address:</TextBlock>
+                    <TextBox x:Name="tbWhoToAddress" HorizontalAlignment="Stretch" Width="180" 
                          HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
+                </StackPanel>
+                <StackPanel x:Name="GroupStack" Orientation="Horizontal" 
+                            Margin="10" VerticalAlignment="Center" HorizontalAlignment="Center" >
+                    <CheckBox x:Name="IsGroup" Margin="5" VerticalAlignment="Center" Checked="IsGroup_Checked"  Unchecked="IsGroup_Unchecked"/>
+                    <TextBlock x:Name="lbGroup" HorizontalAlignment="Left" VerticalAlignment="Center" Text="Group"/>
+                    <TextBox x:Name="tbGroupName" Width="120" Margin="5" Text="Group name"/>
+                    <Button x:Name="btSelectImage" Content="Select image" Margin="5"/>
+                </StackPanel>
             </StackPanel>
             <!--<StackPanel Orientation="Horizontal" Grid.Row="1">
                 <local:IconButton IconImageSource="../Resources/Icons/search.png"/>

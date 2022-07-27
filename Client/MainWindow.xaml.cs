@@ -116,36 +116,32 @@ namespace Client
             rectOverlay.Visibility = Visibility.Collapsed;
             DonateOverlay.Visibility = Visibility.Collapsed;
         }
-        private void NewChat_Click(object sender, RoutedEventArgs e)
-        {
-            ContactsOverlay.Visibility = Visibility.Visible;
-            rectOverlay.Visibility = Visibility.Visible;
 
-
-        }
         #endregion
         private void btLogin_Click(object sender, RoutedEventArgs e)
         {
-            ctrl = null!;//new();
-            LoginOverlay.tbUsername.Text = "test";
-            LoginOverlay.tbPassword.Password = "test";
+            ctrl = /*null!;*/new();
+            //LoginOverlay.tbUsername.Text = "test";
+            //LoginOverlay.tbPassword.Password = "test";
 
-            if (LoginOverlay.tbUsername.Text == "test" && LoginOverlay.tbPassword.Password == "test")
-            {
-                LoginLayout.Visibility = Visibility.Collapsed;
-                MainGrid.Visibility = Visibility.Visible;
-                return;
-            }
+            //if (LoginOverlay.tbUsername.Text == "test" && LoginOverlay.tbPassword.Password == "test")
+            //{
+            //    LoginLayout.Visibility = Visibility.Collapsed;
+            //    MainGrid.Visibility = Visibility.Visible;
+            //    return;
+            //}
 
             if (ctrl.TryLogin(LoginOverlay.tbUsername.Text, LoginOverlay.tbPassword.Password))
             {
                 LoginLayout.Visibility = Visibility.Collapsed;
                 MainGrid.Visibility = Visibility.Visible;
-                ChatsList.ItemsSource = ctrl.chats;
-
-                sidePanelOverlay.Name = ctrl.Profile.Nickname;
-                sidePanelOverlay.MyAvatarSource = ctrl.Avatar;
-                sidePanelOverlay.IdSource = ctrl.Profile.UserId.ToString();
+                foreach (UserCell us in ctrl.cells)
+                {
+                    ChatsList.Items.Add(us);
+                }
+                //sidePanelOverlay.Name = ctrl.Profile.Nickname;
+                //sidePanelOverlay.MyAvatarSource = ctrl.Avatar;
+                //sidePanelOverlay.IdSource = ctrl.Profile.UserId.ToString();
             }
             else
             {
@@ -181,5 +177,12 @@ namespace Client
             }
         }
 
+        private void NewChat_Click(object sender, RoutedEventArgs e)
+        {
+            ContactsOverlay.Visibility = Visibility.Visible;
+            rectOverlay.Visibility = Visibility.Visible;
+
+            ctrl.AddChat(ContactsOverlay.tbWhoToAddress.Text);
+        }
     }
 }
