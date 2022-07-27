@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Media;
-using System.Drawing;
-using System.Windows.Media.Imaging;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
+﻿using Client.CustomControls;
 using ModelsLibrary;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net.Sockets;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
+using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using Client.CustomControls;
 
 #pragma warning disable SYSLIB0011
 
@@ -39,7 +35,7 @@ namespace Client
         public List<UserCell> cells = null!;
         List<Chat> chats = null!;
 
-        public User Profile 
+        public User Profile
         {
             get { return profile; }
         }
@@ -61,7 +57,7 @@ namespace Client
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message + "\n" + ex.StackTrace, "Error | " + ex.Source ,
+                MessageBox.Show(ex.Message + "\n" + ex.StackTrace, "Error | " + ex.Source,
                         MessageBoxButton.OK);
             }
         }
@@ -88,7 +84,7 @@ namespace Client
             {
                 binFormat.Serialize(ms, obj);
                 buff = ms.ToArray();
-            } 
+            }
         }
 
         public object Deserialize(byte[] byteArray)
@@ -113,28 +109,26 @@ namespace Client
         public bool TryLogin(string username, string password)
         {
 
-            //Serialize(new LoginData() { Login = username, Password = password });
+            Serialize(new LoginData() { Login = username, Password = password });
 
-            //Request(CommandType.Login);
+            Request(CommandType.Login);
 
-            //if (RecieveResponse() == ResponseType.Success)
-            //{
-            //    using (ms = new MemoryStream())
-            //    {
-            //        buff = new byte[client.ReceiveBufferSize];
-            //        profile = (User)Deserialize(buff);
+            if (RecieveResponse() == ResponseType.Success)
+            {
+                using (ms = new MemoryStream())
+                {
+                    buff = new byte[client.ReceiveBufferSize];
+                    profile = (User)Deserialize(buff);
 
-            //        avatar = (BitmapImage)Deserialize(profile.Avatar);
-
-                    return true;
-            //        LoadData();
-            //    }   
-            //    return true;
-            //}
-            //else
-            //{
-            //    return false;
-            //}
+                    avatar = (BitmapImage)Deserialize(profile.Avatar);
+                    LoadData();
+                }
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public void LoadData()
@@ -180,18 +174,20 @@ namespace Client
                 foreach (Chat chat in chats)
                 {
                     if (chat.ChatType == ChatType.Private)
-                        cells.Add(new UserCell() {
+                        cells.Add(new UserCell()
+                        {
                             AvatarSource = (BitmapImage)Deserialize(chat.Avatar),
                             Nickname = chat.ChatMembers.FirstOrDefault(user => user.User != profile).User.Nickname,
                             LastMessage = "No message",
                             Date = DateTime.Now.ToString()
                         });
                     else
-                        cells.Add(new UserCell() { 
+                        cells.Add(new UserCell()
+                        {
                             AvatarSource = (BitmapImage)Deserialize(chat.Avatar),
-                            Nickname = chat.ChatName, 
-                            LastMessage = "No message", 
-                            Date = DateTime.Now.ToString() 
+                            Nickname = chat.ChatName,
+                            LastMessage = "No message",
+                            Date = DateTime.Now.ToString()
                         });
                 }
             }
@@ -241,58 +237,58 @@ namespace Client
             }
         }
 
-        public void AddChat(string nickname, bool IsGroup)
+        public void AddPrivateChat(string nickname)
         {
             if (nickname == null) return;
 
-            if (!IsGroup)
+            User toUser = users.FirstOrDefault(user => user.Nickname.Trim().ToLower() == nickname.Trim().ToLower());
+
+            if (toUser == null) return;
+
+            ChatMember me = new ChatMember() { User = profile, ChatMemberRole = ChatMemberRole.Owner };
+            ChatMember to = new ChatMember() { User = toUser, ChatMemberRole = ChatMemberRole.Owner };
+
+            chats.Add(new Chat()
             {
-                User toUser = users.FirstOrDefault(user => user.Nickname.Trim().ToLower() == nickname.Trim().ToLower());
+                Avatar = toUser.Avatar,
+                ChatName = toUser.Nickname,
+                ChatMembers = new List<ChatMember>() { me, to },
+                ChatType = ChatType.Private,
+                Messages = new List<ChatMessage>()
+            });
 
-                if (toUser == null) return;
-
-                ChatMember me = new ChatMember() { User = profile, ChatMemberRole = ChatMemberRole.Owner };
-                ChatMember to = new ChatMember() { User = toUser, ChatMemberRole = ChatMemberRole.Owner };
-
-                chats.Add(new Chat()
-                {
-                    Avatar = toUser.Avatar,
-                    ChatName = toUser.Nickname,
-                    ChatMembers = new List<ChatMember>() { me, to },
-                    ChatType = ChatType.Private,
-                    Messages = new List<ChatMessage>()
-                });
-
-                cells.Add(new UserCell()
-                { 
-                    AvatarSource = (BitmapImage)Deserialize(toUser.Avatar),
-                    Nickname = toUser.Nickname,
-                    LastMessage = "No message",
-                    Date = DateTime.Now.ToString()
-                });
-            }
-
-            if (IsGroup)
+            cells.Add(new UserCell()
             {
-                ChatMember me = new ChatMember() { User = profile, ChatMemberRole = ChatMemberRole.Owner };
+                AvatarSource = (BitmapImage)Deserialize(toUser.Avatar),
+                Nickname = toUser.Nickname,
+                LastMessage = "No message",
+                Date = DateTime.Now.ToString()
+            });
+        }
 
-                chats.Add(new Chat()
-                {
-                    Avatar = null,//default image,
-                    ChatName = toUser.Nickname,
-                    ChatMembers = new List<ChatMember>() { me },
-                    ChatType = ChatType.Private,
-                    Messages = new List<ChatMessage>()
-                });;
+        public void AddGroupChat(string nickname, string imagePath)
+        {
+            if (nickname == null) return;
 
-                cells.Add(new UserCell()
-                {
-                    AvatarSource = (BitmapImage)Deserialize(toUser.Avatar),
-                    Nickname = toUser.Nickname,
-                    LastMessage = "No message",
-                    Date = DateTime.Now.ToString()
-                });
-            }
+            ChatMember me = new ChatMember() { User = profile, ChatMemberRole = ChatMemberRole.Owner };
+
+            chats.Add(new Chat()
+            {
+                Avatar = Encoding.UTF8.GetBytes(imagePath),
+                ChatName = nickname,
+                ChatMembers = new List<ChatMember>() { me },
+                ChatType = ChatType.Group,
+                Messages = new List<ChatMessage>()
+            });
+
+            cells.Add(new UserCell()
+            {
+                AvatarSource = (ImageSource)new ImageSourceConverter().ConvertFromString(imagePath),
+                Nickname = nickname,
+                LastMessage = "No message",
+                Date = DateTime.Now.ToString()
+            });
+
         }
 
     }

@@ -18,14 +18,13 @@ namespace Client.CustomControls
     /// <summary>
     /// Логика взаимодействия для ContactsOverlay.xaml
     /// </summary>
-    public partial class ContactsOverlay : UserControl
+    public partial class PrivateOverlay : UserControl
     {
         string WhoToAddress { get; set; }
-        public ContactsOverlay()
+        public PrivateOverlay()
         {
             InitializeComponent();
             this.DataContext = this;
-            string WhoToAddress = string.Empty;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -34,9 +33,9 @@ namespace Client.CustomControls
         }
 
         public static readonly RoutedEvent UserClickEvent = EventManager.RegisterRoutedEvent(
-            "UserClick", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(ContactsOverlay));
+            "AddClick", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(PrivateOverlay));
 
-        public event RoutedEventHandler UserClick
+        public event RoutedEventHandler AddClick
         {
             add { AddHandler(UserClickEvent, value); }
             remove { RemoveHandler(UserClickEvent, value); }
@@ -44,7 +43,7 @@ namespace Client.CustomControls
 
         void RaiseClickEvent()
         {
-            RoutedEventArgs newEventArgs = new RoutedEventArgs(ContactsOverlay.UserClickEvent);
+            RoutedEventArgs newEventArgs = new RoutedEventArgs(PrivateOverlay.UserClickEvent);
             RaiseEvent(newEventArgs);
         }
 
@@ -58,19 +57,13 @@ namespace Client.CustomControls
             WhoToAddress = tbWhoToAddress.Text.Trim();
             Visibility = Visibility.Collapsed;
         }
-
-        private void IsGroup_Checked(object sender, RoutedEventArgs e)
+        private void tbGotFocus(object sender, RoutedEventArgs e)
         {
-            lbGroup.IsEnabled = true;
-            tbGroupName.IsEnabled = true;
-            btSelectImage.IsEnabled = true;
+            tbWhoToAddress.Clear();
         }
-
-        private void IsGroup_Unchecked(object sender, RoutedEventArgs e)
+        private void tbLostFocus(object sender, RoutedEventArgs e)
         {
-            lbGroup.IsEnabled = false;
-            tbGroupName.IsEnabled = false;
-            btSelectImage.IsEnabled = false;
+            tbWhoToAddress.Text = "Nickname";
         }
     }
 }

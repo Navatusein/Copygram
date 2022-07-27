@@ -44,7 +44,7 @@
                             MyUsernameSource="Anthony" IdSource="+000 (00) 000 00 00"/>
             </Grid>
 
-            <Grid x:Name="ContactsOverlayGrid" Grid.RowSpan="2" Grid.ColumnSpan="3" Panel.ZIndex="2" Visibility="Collapsed">
+            <Grid x:Name="PrivateOverlayGrid" Grid.RowSpan="2" Grid.ColumnSpan="3" Panel.ZIndex="2" Visibility="Collapsed">
                 <Grid.RowDefinitions>
                     <RowDefinition/>
                     <RowDefinition/>
@@ -55,11 +55,27 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <cctrl:ContactsOverlay Grid.Row="1" Grid.Column="1" x:Name="ContactsOverlay" Visibility="Collapsed" 
+                <cctrl:PrivateOverlay Grid.Row="1" Grid.Column="1" x:Name="PrivateChatOverlay" Visibility="Collapsed" 
                                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                                       IsVisibleChanged="ContactsOverlay_IsVisibleChanged"/>
+                                       IsVisibleChanged="PrivateOverlay_IsVisibleChanged" AddClick="PrivateChatOverlay_AddClick"/>
             </Grid>
 
+            <Grid x:Name="GroupOverlayGrid" Grid.RowSpan="2" Grid.ColumnSpan="3" Panel.ZIndex="2" Visibility="Collapsed">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <cctrl:GroupOverlay Grid.Row="1" Grid.Column="1" x:Name="GroupChatOverlay" Visibility="Collapsed" 
+                                       HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                       IsVisibleChanged="GroupOverlay_IsVisibleChanged" AddClick="GroupChatOverlay_AddClick"/>
+            </Grid>
+                
             <Grid x:Name="DonatePlsGrid" Grid.RowSpan="2" Grid.ColumnSpan="3" Panel.ZIndex="2" Visibility="Collapsed">
                 <cctrl:DonatePage Grid.Column="1" x:Name="DonateOverlay" Visibility="Collapsed"
                                   HorizontalAlignment="Center" VerticalAlignment="Center"
@@ -75,7 +91,10 @@
                     <cctrl:IconButton IconImageSource="Resources/Icons/folder.png" Click="NotImplementedClick"/>
                 </ListBoxItem>
                 <ListBoxItem Style="{StaticResource ListBoxItemDefaultStyle}">
-                    <cctrl:IconButton IconImageSource="Resources/Icons/add_chat.png" Click="NewChat_Click"/>
+                    <cctrl:IconButton IconImageSource="Resources/Icons/private_chat.png" Click="AddPrivate_Click"/>
+                </ListBoxItem>
+                <ListBoxItem Style="{StaticResource ListBoxItemDefaultStyle}">
+                    <cctrl:IconButton IconImageSource="Resources/Icons/group_chat.png" Click="AddGroup_Click"/>
                 </ListBoxItem>
             </ListBox>
 
@@ -84,9 +103,6 @@
             </Border>
 
             <ListBox x:Name="ChatsList" Grid.Row="1" Grid.Column="1" BorderThickness="1" HorizontalContentAlignment="Stretch" SelectionChanged="ChatsList_SelectionChanged">
-                <!--<ListBoxItem>
-                    <cctrl:UserCell Style="{StaticResource DefaultChatUser}"/>
-                </ListBoxItem>-->
             </ListBox>
 
             <Grid x:Name="ChatThumbnailGrid" Grid.Row="0" Grid.Column="2" Margin="5">

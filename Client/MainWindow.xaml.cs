@@ -25,7 +25,8 @@ namespace Client
             MainGrid.Visibility = Visibility.Collapsed;
             BackgroundOverlayGrid.Visibility = Visibility.Visible;
             SidePanelOverlayGrid.Visibility = Visibility.Visible;
-            ContactsOverlayGrid.Visibility = Visibility.Visible;
+            PrivateOverlayGrid.Visibility = Visibility.Visible;
+            GroupOverlayGrid.Visibility = Visibility.Visible;
             DonatePlsGrid.Visibility = Visibility.Visible;
             ChatThumbnailGrid.IsEnabled = false;
             ChatGrid.IsEnabled = false;
@@ -47,7 +48,8 @@ namespace Client
             if (e.LeftButton == MouseButtonState.Pressed)
             {
                 sidePanelOverlay.BeginAnimation(WidthProperty, new DoubleAnimation(toSize, 0, TimeSpan.FromSeconds(0.3)));
-                ContactsOverlay.Visibility = Visibility.Collapsed;
+                PrivateChatOverlay.Visibility = Visibility.Collapsed;
+                GroupChatOverlay.Visibility = Visibility.Collapsed;
                 DonateOverlay.Visibility = Visibility.Collapsed;
             }
         }
@@ -81,25 +83,25 @@ namespace Client
             rectOverlay.BeginAnimation(HeightProperty, new DoubleAnimation(0, this.Height, TimeSpan.FromSeconds(0.5)));
         }
 
-        private void sidePanel_ContactClick(object sender, RoutedEventArgs e)
-        {
-            sidePanelOverlay.Visibility = Visibility.Collapsed;
-            ContactsOverlay.Visibility = Visibility.Visible;
-        }
-
         private void NotImplementedClick(object sender, RoutedEventArgs e)
         {
             sidePanelOverlay.Visibility = Visibility.Collapsed;
             DonateOverlay.Visibility = Visibility.Visible;
         }
 
-        private void ContactsOverlay_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        private void PrivateOverlay_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            if (ContactsOverlay.Visibility == Visibility.Collapsed)
+            if (PrivateChatOverlay.Visibility == Visibility.Collapsed)
             {
                 rectOverlay.Visibility = Visibility.Collapsed;
+            }
+        }
 
-                
+        private void GroupOverlay_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (GroupChatOverlay.Visibility == Visibility.Collapsed)
+            {
+                rectOverlay.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -117,19 +119,31 @@ namespace Client
             DonateOverlay.Visibility = Visibility.Collapsed;
         }
 
+        private void AddPrivate_Click(object sender, RoutedEventArgs e)
+        {
+            PrivateChatOverlay.Visibility = Visibility.Visible;
+            rectOverlay.Visibility = Visibility.Visible;
+        }
+
+        private void AddGroup_Click(object sender, RoutedEventArgs e)
+        {
+            GroupChatOverlay.Visibility = Visibility.Visible;
+            rectOverlay.Visibility = Visibility.Visible;
+        }
+
         #endregion
         private void btLogin_Click(object sender, RoutedEventArgs e)
         {
-            ctrl = /*null!;*/new();
-            //LoginOverlay.tbUsername.Text = "test";
-            //LoginOverlay.tbPassword.Password = "test";
+            ctrl = null!;//new();
+            LoginOverlay.tbUsername.Text = "test";
+            LoginOverlay.tbPassword.Password = "test";
 
-            //if (LoginOverlay.tbUsername.Text == "test" && LoginOverlay.tbPassword.Password == "test")
-            //{
-            //    LoginLayout.Visibility = Visibility.Collapsed;
-            //    MainGrid.Visibility = Visibility.Visible;
-            //    return;
-            //}
+            if (LoginOverlay.tbUsername.Text == "test" && LoginOverlay.tbPassword.Password == "test")
+            {
+                LoginLayout.Visibility = Visibility.Collapsed;
+                MainGrid.Visibility = Visibility.Visible;
+                return;
+            }
 
             if (ctrl.TryLogin(LoginOverlay.tbUsername.Text, LoginOverlay.tbPassword.Password))
             {
@@ -139,9 +153,9 @@ namespace Client
                 {
                     ChatsList.Items.Add(us);
                 }
-                //sidePanelOverlay.Name = ctrl.Profile.Nickname;
-                //sidePanelOverlay.MyAvatarSource = ctrl.Avatar;
-                //sidePanelOverlay.IdSource = ctrl.Profile.UserId.ToString();
+                sidePanelOverlay.Name = ctrl.Profile.Nickname;
+                sidePanelOverlay.MyAvatarSource = ctrl.Avatar;
+                sidePanelOverlay.IdSource = ctrl.Profile.UserId.ToString();
             }
             else
             {
@@ -177,12 +191,16 @@ namespace Client
             }
         }
 
-        private void NewChat_Click(object sender, RoutedEventArgs e)
+        private void PrivateChatOverlay_AddClick(object sender, RoutedEventArgs e)
         {
-            ContactsOverlay.Visibility = Visibility.Visible;
-            rectOverlay.Visibility = Visibility.Visible;
+            ctrl.AddPrivateChat(PrivateChatOverlay.tbWhoToAddress.Text);
+            PrivateChatOverlay.Visibility = Visibility.Collapsed;
+        }
 
-            ctrl.AddChat(ContactsOverlay.tbWhoToAddress.Text);
+        private void GroupChatOverlay_AddClick(object sender, RoutedEventArgs e)
+        {
+            ctrl.AddGroupChat(GroupChatOverlay.tbGroupName.Text, GroupChatOverlay.ImagePath);
+            GroupChatOverlay.Visibility = Visibility.Collapsed;
         }
     }
 }

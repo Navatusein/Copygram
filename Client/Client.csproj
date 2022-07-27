@@ -17,13 +17,13 @@
   <ItemGroup>
     <None Remove="Resources\Fonts\sf-compact-medium.otf" />
     <None Remove="Resources\Fonts\sf-compact-thin.otf" />
-    <None Remove="Resources\Icons\add_chat.png" />
     <None Remove="Resources\Icons\channel.png" />
     <None Remove="Resources\Icons\contacts.png" />
     <None Remove="Resources\Icons\cross.png" />
     <None Remove="Resources\Icons\emoji.png" />
     <None Remove="Resources\Icons\folder.png" />
     <None Remove="Resources\Icons\group.png" />
+    <None Remove="Resources\Icons\group_chat.png" />
     <None Remove="Resources\Icons\info.ico" />
     <None Remove="Resources\Icons\insert.png" />
     <None Remove="Resources\Icons\list.png" />
@@ -32,6 +32,7 @@
     <None Remove="Resources\Icons\microphone.png" />
     <None Remove="Resources\Icons\nightmode.png" />
     <None Remove="Resources\Icons\phone.png" />
+    <None Remove="Resources\Icons\private_chat.png" />
     <None Remove="Resources\Icons\saved.png" />
     <None Remove="Resources\Icons\search.png" />
     <None Remove="Resources\Icons\settings.png" />
@@ -59,9 +60,6 @@
     <Resource Include="Resources\Fonts\sf-compact-thin.otf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Resources\Icons\add_chat.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
     <Resource Include="Resources\Icons\channel.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
@@ -80,6 +78,9 @@
     <Resource Include="Resources\Icons\emoji.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\Icons\group_chat.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\Icons\insert.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
@@ -90,6 +91,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Icons\phone.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\private_chat.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Icons\saved.png">

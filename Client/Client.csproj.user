@@ -10,10 +10,13 @@
     <Compile Update="CustomControls\ContactsMenuItem.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="CustomControls\ContactsOverlay.xaml.cs">
+    <Compile Update="CustomControls\PrivateOverlay.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="CustomControls\DonatePage.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="CustomControls\GroupOverlay.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="CustomControls\IconButton.xaml.cs">
@@ -36,10 +39,13 @@
     <Page Update="CustomControls\ContactsMenuItem.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="CustomControls\ContactsOverlay.xaml">
+    <Page Update="CustomControls\PrivateOverlay.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="CustomControls\DonatePage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="CustomControls\GroupOverlay.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="CustomControls\IconButton.xaml">
