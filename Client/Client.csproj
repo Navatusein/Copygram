@@ -21,8 +21,6 @@
     <None Remove="Resources\Icons\channel.png" />
     <None Remove="Resources\Icons\contacts.png" />
     <None Remove="Resources\Icons\cross.png" />
-    <None Remove="Resources\Icons\daymode.png" />
-    <None Remove="Resources\Icons\dots-three-vertical.ico" />
     <None Remove="Resources\Icons\emoji.png" />
     <None Remove="Resources\Icons\folder.png" />
     <None Remove="Resources\Icons\group.png" />
@@ -79,9 +77,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Resources\Icons\daymode.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
     <Resource Include="Resources\Icons\emoji.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
@@ -104,9 +99,6 @@
 
   <ItemGroup>
     <Resource Include="Resources\Icons\contacts.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Icons\dots-three-vertical.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Icons\info.ico">

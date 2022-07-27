@@ -181,8 +181,9 @@ namespace Client
 
         public List<ChatMessage> GetChatOnUser(string nickname)
         {
-            User toSend = users.FirstOrDefault(user => user.Nickname == nickname);
-            int id = chats.FirstOrDefault(chat => chat.ChatMembers.Any(a => a.User == profile)
+            User? toSend = users.FirstOrDefault(user => user.Nickname == nickname);
+
+            int? id = chats.FirstOrDefault(chat => chat.ChatMembers.Any(a => a.User == profile)
                                             && chat.ChatMembers.Any(a => a.User == toSend)).ChatId;
             if (id == -1 || id == null)
                 return null;

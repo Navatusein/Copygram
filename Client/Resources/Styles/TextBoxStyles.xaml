@@ -48,6 +48,8 @@
         <Setter Property="Height" Value="30"/>
         <Setter Property="HorizontalAlignment" Value="Left"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="Margin" Value="10,5"/>
     </Style>
     <Style x:Key="LoginTextBoxStyle" TargetType="TextBox">
@@ -57,6 +59,8 @@
         <Setter Property="Height" Value="30"/>
         <Setter Property="HorizontalAlignment" Value="Left"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="Margin" Value="10,5"/>
     </Style>
 </ResourceDictionary>

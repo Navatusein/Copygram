@@ -18,14 +18,6 @@ namespace Client
         double toSize;
         Controller ctrl = null!;
 
-        private Brush HexConverter(string hex)
-        {
-            BrushConverter bc = new BrushConverter();
-            Brush brush = (Brush)bc.ConvertFrom(hex);
-            brush.Freeze();
-            return brush;
-        }
-
         public MainWindow()
         {
             InitializeComponent();
@@ -132,40 +124,20 @@ namespace Client
 
         }
         #endregion
-
-        #region Login overlay funcs
-        private void TextChangedEvent(object sender, System.Windows.Controls.TextChangedEventArgs e)
-        {
-            if (!string.IsNullOrEmpty(tbUsername.Text) && !string.IsNullOrEmpty(tbPassword.Password))
-            {
-                btLogin.IsEnabled = true;
-                btLogin.Background = HexConverter("#2596be");
-            }
-        }
-
-        private void tbPassword_PasswordChanged(object sender, RoutedEventArgs e)
-        {
-            if (!string.IsNullOrEmpty(tbUsername.Text) && !string.IsNullOrEmpty(tbPassword.Password))
-            {
-                btLogin.IsEnabled = true;
-                btLogin.Background = HexConverter("#2596be");
-            }
-        }
-
         private void btLogin_Click(object sender, RoutedEventArgs e)
         {
             ctrl = null!;//new();
-            tbUsername.Text = "test";
-            tbPassword.Password = "test";
+            LoginOverlay.tbUsername.Text = "test";
+            LoginOverlay.tbPassword.Password = "test";
 
-            if (tbUsername.Text == "test" && tbPassword.Password == "test")
+            if (LoginOverlay.tbUsername.Text == "test" && LoginOverlay.tbPassword.Password == "test")
             {
                 LoginLayout.Visibility = Visibility.Collapsed;
                 MainGrid.Visibility = Visibility.Visible;
                 return;
             }
 
-            if (ctrl.TryLogin(tbUsername.Text, tbPassword.Password))
+            if (ctrl.TryLogin(LoginOverlay.tbUsername.Text, LoginOverlay.tbPassword.Password))
             {
                 LoginLayout.Visibility = Visibility.Collapsed;
                 MainGrid.Visibility = Visibility.Visible;
@@ -177,14 +149,12 @@ namespace Client
             }
             else
             {
-                tbUsername.Clear();
-                tbPassword.Clear();
-                SpeakLable.Text = "Wrong creditinals, dear User!";
-                SpeakLable.Foreground = new SolidColorBrush(Color.FromRgb(153, 0, 0));
+                LoginOverlay.tbUsername.Clear();
+                LoginOverlay.tbPassword.Clear();
+                LoginOverlay.SpeakLable.Text = "Wrong creditinals, dear User!";
+                LoginOverlay.SpeakLable.Foreground = new SolidColorBrush(Color.FromRgb(153, 0, 0));
             }
         }
-        #endregion
-
 
         private void ChatsList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {

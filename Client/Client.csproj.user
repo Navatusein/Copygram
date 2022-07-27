@@ -19,6 +19,9 @@
     <Compile Update="CustomControls\IconButton.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="CustomControls\LoginPage.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="CustomControls\MessageContainer.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -40,6 +43,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="CustomControls\IconButton.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="CustomControls\LoginPage.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="CustomControls\MessageContainer.xaml">

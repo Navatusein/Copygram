@@ -14,26 +14,7 @@
         Title="Copygram" Height="600" Width="1000">
     <Grid>
         <Grid x:Name="LoginLayout" Background="#293a4c" Visibility="Collapsed">
-            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Ellipse Width="100" Height="100" Margin="0,50,0,0">
-                    <Ellipse.Fill>
-                        <ImageBrush ImageSource="Resources/Icons/logotype.ico"/>
-                    </Ellipse.Fill>
-                </Ellipse>
-
-                <TextBlock x:Name="SpeakLable" Style="{StaticResource LoginScreenTextBlock}" Text="Welcome, User!"/>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <TextBlock Style="{StaticResource LoginScreenTextBlock}" Text="Enter your username:"/>
-                    <TextBox x:Name="tbUsername" Style="{StaticResource LoginTextBoxStyle}" TextChanged="TextChangedEvent"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <TextBlock Style="{StaticResource LoginScreenTextBlock}" Text="Enter your password:"/>
-                    <PasswordBox x:Name="tbPassword" Style="{StaticResource LoginPassBoxStyle}" PasswordChanged="tbPassword_PasswordChanged"/>
-                </StackPanel>
-                <Button x:Name="btLogin" Style="{StaticResource LoginButton}" Click="btLogin_Click">
-                    <TextBlock Style="{StaticResource LoginScreenTextBlock}" Margin="25,10" Text="Login"/>
-                </Button>
-            </StackPanel>
+            <cctrl:LoginPage x:Name="LoginOverlay" LoginClick="btLogin_Click"/>
         </Grid> 
         <Grid x:Name="MainGrid" Visibility="Visible">
             <Grid.ColumnDefinitions>
