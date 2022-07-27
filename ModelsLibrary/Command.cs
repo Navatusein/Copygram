@@ -15,7 +15,7 @@ namespace ModelsLibrary
         Exception,
         RequestChanges,
         NewChatMessage,
-        NewSystemMessage
+        NewSystemChatMessage
     }
 
     [Serializable]
