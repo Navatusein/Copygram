@@ -21,7 +21,7 @@
                     <TextBlock Text="Group name:" Style="{StaticResource MenuLabel}"/>
                     <TextBox x:Name="tbGroupName" Margin="15" Background="White"
                              Text="Your group name" Style="{StaticResource TextBoxSearch}"
-                             GotFocus="tbGotFocus" LostFocus="tbLostFocus"/>
+                             GotFocus="tbGotFocus" LostFocus="tbLostFocus" FontSize="16"/>
                 </StackPanel>
                 <Button x:Name="btSelectImage" Content="Select image" Margin="10, 10, 10, 5"
                         Style="{StaticResource CommonButton}" Click="btSelectImage_Click"/>

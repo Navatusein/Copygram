@@ -53,6 +53,7 @@ namespace Client.CustomControls
         private void btSelectImage_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog ofd = new();
+            ofd.Filter = "Image Files(*.BMP;*.JPG;*.GIF)|*.BMP;*.JPG;*.GIF|All files (*.*)|*.*";
             ofd.CheckFileExists = true;
             ofd.CheckPathExists = true;
             if (ofd.ShowDialog() == true)

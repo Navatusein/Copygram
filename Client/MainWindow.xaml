@@ -46,14 +46,14 @@
 
             <Grid x:Name="PrivateOverlayGrid" Grid.RowSpan="2" Grid.ColumnSpan="3" Panel.ZIndex="2" Visibility="Collapsed">
                 <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
+                    <RowDefinition Height="3*"/>
+                    <RowDefinition Height="4*"/>
+                    <RowDefinition Height="3*"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="4*"/>
+                    <ColumnDefinition Width="3*"/>
                 </Grid.ColumnDefinitions>
                 <cctrl:PrivateOverlay Grid.Row="1" Grid.Column="1" x:Name="PrivateChatOverlay" Visibility="Collapsed" 
                                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
@@ -62,14 +62,14 @@
 
             <Grid x:Name="GroupOverlayGrid" Grid.RowSpan="2" Grid.ColumnSpan="3" Panel.ZIndex="2" Visibility="Collapsed">
                 <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
+                    <RowDefinition Height="3*"/>
+                    <RowDefinition Height="4*"/>
+                    <RowDefinition Height="3*"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="4*"/>
+                    <ColumnDefinition Width="3*"/>
                 </Grid.ColumnDefinitions>
                 <cctrl:GroupOverlay Grid.Row="1" Grid.Column="1" x:Name="GroupChatOverlay" Visibility="Collapsed" 
                                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
