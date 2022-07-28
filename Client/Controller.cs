@@ -163,27 +163,16 @@ namespace Client
             }
         }
 
-        public List<ChatMessage> GetChat(string name, int chatId)
+        public List<ChatMessage> GetChat(string name)
         {
             try
             {
-                ChatType type = chats.FirstOrDefault(chat => chat.ChatId == chatId)!.ChatType;
-
-                int? id;
-                if (type == ChatType.Group)
-                {
-                    id = chats.FirstOrDefault(chat => chat.ChatName == name)!.ChatId;
-                }
-                else
-                {
-                    id = chats.FirstOrDefault(chat => chat.ChatMembers.Any(a => a.User == profile)
-                                                && chat.ChatMembers.Any(a => a.User.Nickname == name))!.ChatId;
-                }
-
-                if (id == -1 || id == null)
+                if (string.IsNullOrEmpty(name))
                     return activeChat.Messages;
 
-                Serialize(id);
+                activeChat = chats.FirstOrDefault(chat => chat.ChatName == name)!;
+
+                Serialize(activeChat);
                 Request(CommandType.SyncChatMessage);
 
                 if (RecieveResponse() == ResponseType.Success)
