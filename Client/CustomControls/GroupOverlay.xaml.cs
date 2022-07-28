@@ -30,6 +30,11 @@ namespace Client.CustomControls
             get { return ImageBox.ImageSource.ToString(); }
         }
 
+        public string Invites
+        {
+            get { return tbGroupUsers.Text; }
+        }
+
         public static readonly RoutedEvent UserClickEvent = EventManager.RegisterRoutedEvent(
             "AddClick", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(GroupOverlay));
 
@@ -76,6 +81,12 @@ namespace Client.CustomControls
                 return;
             }
 
+            if (string.IsNullOrEmpty(tbGroupUsers.Text))
+            {
+                tbGroupName.Text = "Should be at least one user";
+                return;
+            }
+
             if (ImagePath == null)
             { 
                 ImageBox.ImageSource = (ImageSource)new ImageSourceConverter().ConvertFromString("../Resources/Icons/group_default.png")!;
@@ -83,18 +94,28 @@ namespace Client.CustomControls
             Visibility = Visibility.Collapsed;
         }
 
-        private void tbGotFocus(object sender, RoutedEventArgs e)
+        private void tbNameGotFocus(object sender, RoutedEventArgs e)
         {
             tbGroupName.Clear();
         }
-        private void tbLostFocus(object sender, RoutedEventArgs e)
+        private void tbNameLostFocus(object sender, RoutedEventArgs e)
         {
             tbGroupName.Text = "Your group name";
+        }
+
+        private void tbInvitesGotFocus(object sender, RoutedEventArgs e)
+        {
+            tbGroupName.Clear();
+        }
+        private void tbInvitesLostFocus(object sender, RoutedEventArgs e)
+        {
+            tbGroupName.Text = "Your invites";
         }
 
         public void Clear()
         {
             tbGroupName.Clear();
+            tbGroupUsers.Clear();
             ImageBox.ImageSource = (ImageSource)new ImageSourceConverter().ConvertFromString("../../../Resources/Icons/group_default.png")!;
         }
     }

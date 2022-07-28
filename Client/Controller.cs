@@ -16,7 +16,10 @@ using System.Windows.Threading;
 #pragma warning disable SYSLIB0011
 
 namespace Client
-{
+{   
+    /// <summary>
+    /// Base controller class
+    /// </summary>
     internal class Controller
     {
         TcpClient client = null!;
@@ -59,12 +62,43 @@ namespace Client
                         MessageBoxButton.OK);
             }
         }
-
+        /// <summary>
+        /// Command constructor
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="data">Data to send</param>
+        /// <returns></returns>
         Command BuildCommand(CommandType type, byte[] data)
         {
             return new Command() { Type = type, Data = data, User = profile };
         }
 
+        /// <summary>
+        /// send request of specific type
+        /// </summary>
+        /// <param name="type">Request command type</param>
+        void Request(CommandType type)
+        {
+            try
+            {
+                using (ns = client.GetStream())
+                {
+                    binFormat.Serialize(ns, BuildCommand(type, buff));
+                    ns.Flush();
+                }
+                buff = null!;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "Request Error",
+                            MessageBoxButton.OK);
+            }
+        }
+
+        /// <summary>
+        /// Recieves server response on Request
+        /// </summary>
+        /// <returns>ResponseType</returns>
         ResponseType RecieveResponse()
         {
             try
@@ -85,6 +119,10 @@ namespace Client
             }
         }
 
+        /// <summary>
+        /// Serializator
+        /// </summary>
+        /// <param name="obj">Data to serialize</param>
         void Serialize(object obj)
         {
             try
@@ -102,6 +140,11 @@ namespace Client
             }
         }
 
+        /// <summary>
+        /// Deserializator
+        /// </summary>
+        /// <param name="byteArray">Data to deserialize</param>
+        /// <returns></returns>
         public object Deserialize(byte[] byteArray)
         {
             try
@@ -120,24 +163,12 @@ namespace Client
             }
         }
 
-        void Request(CommandType type)
-        {
-            try
-            {
-                using (ns = client.GetStream())
-                {
-                    binFormat.Serialize(ns, BuildCommand(type, buff));
-                    ns.Flush();
-                }
-                buff = null!;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "Request Error",
-                            MessageBoxButton.OK);
-            }
-        }
-
+        /// <summary>
+        /// Tries to login user with current credentials
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
         public bool TryLogin(string username, string password)
         {
             try
@@ -168,6 +199,9 @@ namespace Client
             }
         }
 
+        /// <summary>
+        /// Loads data from server
+        /// </summary>
         public void LoadData()
         {
             try
@@ -186,6 +220,11 @@ namespace Client
             }
         }
 
+        /// <summary>
+        /// Sends messsage to srever and recieves reaction
+        /// </summary>
+        /// <param name="messageText"></param>
+        /// <returns></returns>
         public bool SendMessage(string messageText)
         {
             try
@@ -210,6 +249,9 @@ namespace Client
             }
         }
 
+        /// <summary>
+        /// Updates current list of chats
+        /// </summary>
         void UpdateChatLayout()
         {
             try
@@ -224,6 +266,11 @@ namespace Client
             }
         }
 
+        /// <summary>
+        /// Gets chats from server
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public List<ChatMessage> GetChat(string name)
         {
             try
@@ -248,6 +295,10 @@ namespace Client
                 return activeChat.Messages;
             }
         }
+
+        /// <summary>
+        /// Background synchronization
+        /// </summary>
         void StartBackgroundSync()
         {
             try
@@ -264,6 +315,11 @@ namespace Client
             }
         }
 
+        /// <summary>
+        /// Synchronization action
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Timer_Tick(object? sender, EventArgs e)
         {
             try
@@ -281,6 +337,10 @@ namespace Client
             }
         }
 
+        /// <summary>
+        /// Adds private chat
+        /// </summary>
+        /// <param name="nickname"></param>
         public void AddPrivateChat(string nickname)
         {
             try
@@ -319,11 +379,25 @@ namespace Client
             }
         }
 
-        public void AddGroupChat(string nickname, string imagePath)
+        /// <summary>
+        /// Adds group chat
+        /// </summary>
+        /// <param name="nickname"></param>
+        /// <param name="imagePath"></param>
+        /// <param name="logins"></param>
+        public void AddGroupChat(string nickname, string imagePath, string logins)
         {
             try
             {
-                if (nickname == null) return;
+                if (string.IsNullOrEmpty(nickname)|| string.IsNullOrEmpty(logins)) return;
+
+                if (logins.Contains(" "))
+                    logins = logins.Replace(" ", "");
+
+                string[] loginArray = logins.Split(',');
+
+                //Serialize(loginArray);
+                //Request(CommandType.RequestChanges); --> Пока не понятно как получить если данные юзеры и добавлять ли их
 
                 ChatMember me = new ChatMember() { User = profile, ChatMemberRole = ChatMemberRole.Owner };
 
@@ -347,7 +421,9 @@ namespace Client
             }
         }
 
-
+        /// <summary>
+        /// Builds UI elements from current chats
+        /// </summary>
         public void GetCells()
         {
             try

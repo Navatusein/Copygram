@@ -47,7 +47,8 @@ namespace Client
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                sidePanelOverlay.BeginAnimation(WidthProperty, new DoubleAnimation(toSize, 0, TimeSpan.FromSeconds(0.3)));
+                if(sidePanelOverlay.Visibility == Visibility.Visible)
+                    sidePanelOverlay.BeginAnimation(WidthProperty, new DoubleAnimation(toSize, 0, TimeSpan.FromSeconds(0.3)));
                 PrivateChatOverlay.Visibility = Visibility.Collapsed;
                 GroupChatOverlay.Visibility = Visibility.Collapsed;
                 DonateOverlay.Visibility = Visibility.Collapsed;
@@ -207,7 +208,7 @@ namespace Client
 
         private void GroupChatOverlay_AddClick(object sender, RoutedEventArgs e)
         {
-            ctrl.AddGroupChat(GroupChatOverlay.tbGroupName.Text, GroupChatOverlay.ImagePath);
+            ctrl.AddGroupChat(GroupChatOverlay.tbGroupName.Text, GroupChatOverlay.ImagePath, GroupChatOverlay.Invites);
             GroupChatOverlay.Visibility = Visibility.Collapsed;
         }
     }
