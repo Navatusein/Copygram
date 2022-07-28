@@ -163,117 +163,153 @@ namespace Client
             }
         }
 
-        public List<ChatMessage> GetChatOnUser(string nickname)
+        List<ChatMessage> GetChats(string name, bool IsGroup)
         {
-            int? id = chats.FirstOrDefault(chat => chat.ChatMembers.Any(a => a.User == profile)
-                                            && chat.ChatMembers.Any(a => a.User.Nickname == nickname))!.ChatId;
+            try
+            {
+                int? id;
+                if (IsGroup)
+                {
+                    id = chats.FirstOrDefault(chat => chat.ChatType == ChatType.Group
+                                                && chat.ChatName == name)!.ChatId;
+                }
+                else
+                {
+                    id = chats.FirstOrDefault(chat => chat.ChatMembers.Any(a => a.User == profile)
+                                                && chat.ChatMembers.Any(a => a.User.Nickname == name))!.ChatId;
+                }
 
-            if (id == -1 || id == null)
+                if (id == -1 || id == null)
+                    return activeChat.Messages;
+
+                Serialize(id);
+                Request(CommandType.SyncChatMessage);
+
+                if (RecieveResponse() == ResponseType.Success)
+                    activeChat = (Chat)Deserialize(lastResponse.Data);
+
                 return activeChat.Messages;
-
-            Serialize(id);
-            Request(CommandType.SyncChatMessage);
-
-            if (RecieveResponse() == ResponseType.Success)
-                activeChat = (Chat)Deserialize(lastResponse.Data);
-
-            return activeChat.Messages;
-        }
-
-        public List<ChatMessage> GetChatOnGroup(string name)
-        {
-            int? id = chats.FirstOrDefault(chat => chat.ChatType == ChatType.Group && chat.ChatName == name)!.ChatId;
-            if (id == -1 || id == null)
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + "\n" + ex.Source, ex.StackTrace);
                 return activeChat.Messages;
-
-            Serialize(id);
-            Request(CommandType.SyncChatMessage);
-
-            if (RecieveResponse() == ResponseType.Success)
-                activeChat = (Chat)Deserialize(lastResponse.Data);
-
-            return activeChat.Messages;
+            }
         }
-
         void StartBackgroundSync()
         {
-            DispatcherTimer timer = new();
-            timer.Tick += Timer_Tick;
-            timer.Interval = new TimeSpan(0, 0, 15);
-            timer.Start();
+            try
+            {
+                DispatcherTimer timer = new();
+                timer.Tick += Timer_Tick;
+                timer.Interval = new TimeSpan(0, 0, 15);
+                timer.Start();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + "\n" + ex.Source, ex.StackTrace);
+            }
         }
 
         private void Timer_Tick(object? sender, EventArgs e)
         {
-            Request(CommandType.Sync);
-            if (RecieveResponse() == ResponseType.Success)
+            try
             {
-                UpdateChatLayout();
+                Request(CommandType.Sync);
+                if (RecieveResponse() == ResponseType.Success)
+                {
+                    UpdateChatLayout();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + "\n" + ex.Source, ex.StackTrace);
             }
         }
 
         public void AddPrivateChat(string nickname)
         {
-            if (nickname == null) return;
-
-            Serialize(nickname);
-            Request(CommandType.NewChatMessage);
-            User? toUser = null;
-
-            if (RecieveResponse() == ResponseType.Success)
-                toUser = (User)Deserialize(lastResponse.Data);
-
-            if (toUser == null) return;
-
-            ChatMember me = new ChatMember() { User = profile, ChatMemberRole = ChatMemberRole.Owner };
-            ChatMember to = new ChatMember() { User = toUser, ChatMemberRole = ChatMemberRole.Owner };
-
-            chats.Add(activeChat = new Chat()
+            try
             {
-                Avatar = toUser.Avatar,
-                ChatName = toUser.Nickname,
-                ChatMembers = new List<ChatMember>() { me, to },
-                ChatType = ChatType.Private,
-                Messages = new List<ChatMessage>()
-            });
+                if (nickname == null) return;
 
-            UpdateChatLayout();
-            Serialize(activeChat);
-            Request(CommandType.SyncChatMessage);
+                Serialize(nickname);
+                Request(CommandType.NewChatMessage);
+                User? toUser = null;
+
+                if (RecieveResponse() == ResponseType.Success)
+                    toUser = (User)Deserialize(lastResponse.Data);
+
+                if (toUser == null) return;
+
+                ChatMember me = new ChatMember() { User = profile, ChatMemberRole = ChatMemberRole.Owner };
+                ChatMember to = new ChatMember() { User = toUser, ChatMemberRole = ChatMemberRole.Owner };
+
+                chats.Add(activeChat = new Chat()
+                {
+                    Avatar = toUser.Avatar,
+                    ChatName = toUser.Nickname,
+                    ChatMembers = new List<ChatMember>() { me, to },
+                    ChatType = ChatType.Private,
+                    Messages = new List<ChatMessage>()
+                });
+
+                UpdateChatLayout();
+                Serialize(activeChat);
+                Request(CommandType.SyncChatMessage);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + "\n" + ex.Source, ex.StackTrace);
+            }
         }
 
         public void AddGroupChat(string nickname, string imagePath)
         {
-            if (nickname == null) return;
-
-            ChatMember me = new ChatMember() { User = profile, ChatMemberRole = ChatMemberRole.Owner };
-
-            chats.Add(activeChat = new Chat()
+            try
             {
-                Avatar = Encoding.UTF8.GetBytes(imagePath),
-                ChatName = nickname,
-                ChatMembers = new List<ChatMember>() { me },
-                ChatType = ChatType.Group,
-                Messages = new List<ChatMessage>()
-            });
+                if (nickname == null) return;
 
-            UpdateChatLayout();
-            Serialize(activeChat);
-            Request(CommandType.SyncChatMessage);
+                ChatMember me = new ChatMember() { User = profile, ChatMemberRole = ChatMemberRole.Owner };
+
+                chats.Add(activeChat = new Chat()
+                {
+                    Avatar = Encoding.UTF8.GetBytes(imagePath),
+                    ChatName = nickname,
+                    ChatMembers = new List<ChatMember>() { me },
+                    ChatType = ChatType.Group,
+                    Messages = new List<ChatMessage>()
+                });
+
+                UpdateChatLayout();
+                Serialize(activeChat);
+                Request(CommandType.SyncChatMessage);
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message + "\n" + ex.Source, ex.StackTrace);
+            }
         }
 
 
         public void GetCells()
         {
-            ChatList = new();
-            foreach (Chat chat in chats)
+            try
             {
-                ChatList.Add(new UserCell()
+                ChatList = new();
+                foreach (Chat chat in chats)
                 {
-                    AvatarSource = (ImageSource)Deserialize(chat.Avatar),
-                    Nickname = chat.ChatName,
-                    LastMessage = "No message"
-                });
+                    ChatList.Add(new UserCell()
+                    {
+                        AvatarSource = (ImageSource)Deserialize(chat.Avatar),
+                        Nickname = chat.ChatName,
+                        LastMessage = "No message"
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + "\n" + ex.Source, ex.StackTrace);
             }
         }
     }
