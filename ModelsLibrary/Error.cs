@@ -14,7 +14,9 @@ namespace ModelsLibrary
         BadPasswordOrLogin,
         LoginBusy,
         NicknameBusy,
-        UnknownCommand
+        UnknownCommand,
+        UnknownUser,
+        UnknownCommandArguments
     }
 
     [Serializable]

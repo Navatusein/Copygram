@@ -18,6 +18,8 @@ namespace ModelsLibrary
     {
         public MessageType Type { get; private set; }
 
+        public SystemMessageType SystemMessageType { get; set; }
+
         public byte[] Data { get; set; } = null!;
 
         public SystemMessage()
