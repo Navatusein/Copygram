@@ -178,7 +178,7 @@ namespace Client
                 ChatThumbnailGrid.IsEnabled = true;
                 ChatGrid.IsEnabled = true;
 
-                foreach (ChatMessage message in ctrl.GetChatOnUser((ChatsList.SelectedItem as UserCell)!.Nickname))
+                foreach (ChatMessage message in ctrl.GetChat((ChatsList.SelectedItem as UserCell)!.Nickname, ChatsList.SelectedIndex))
                 {
                     MessageChat.Items.Add(new MessageContainer((BitmapImage)ctrl.Deserialize(message.FromUser.Avatar), message.MessageText));
                 }

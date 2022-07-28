@@ -163,15 +163,16 @@ namespace Client
             }
         }
 
-        List<ChatMessage> GetChats(string name, bool IsGroup)
+        public List<ChatMessage> GetChat(string name, int chatId)
         {
             try
             {
+                ChatType type = chats.FirstOrDefault(chat => chat.ChatId == chatId)!.ChatType;
+
                 int? id;
-                if (IsGroup)
+                if (type == ChatType.Group)
                 {
-                    id = chats.FirstOrDefault(chat => chat.ChatType == ChatType.Group
-                                                && chat.ChatName == name)!.ChatId;
+                    id = chats.FirstOrDefault(chat => chat.ChatName == name)!.ChatId;
                 }
                 else
                 {
