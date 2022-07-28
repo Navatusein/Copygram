@@ -51,6 +51,7 @@ namespace Client
                 PrivateChatOverlay.Visibility = Visibility.Collapsed;
                 GroupChatOverlay.Visibility = Visibility.Collapsed;
                 DonateOverlay.Visibility = Visibility.Collapsed;
+                rectOverlay.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -86,6 +87,8 @@ namespace Client
         private void NotImplementedClick(object sender, RoutedEventArgs e)
         {
             sidePanelOverlay.Visibility = Visibility.Collapsed;
+            if(rectOverlay.Visibility == Visibility.Collapsed)
+                rectOverlay.Visibility = Visibility.Visible;
             DonateOverlay.Visibility = Visibility.Visible;
         }
 

@@ -95,7 +95,7 @@ namespace Client.CustomControls
         public void Clear()
         {
             tbGroupName.Clear();
-            ImageBox.ImageSource = (ImageSource)new ImageSourceConverter().ConvertFromString("../Resources/Icons/group_default.png")!;
+            ImageBox.ImageSource = (ImageSource)new ImageSourceConverter().ConvertFromString("../../../Resources/Icons/group_default.png")!;
         }
     }
 }
