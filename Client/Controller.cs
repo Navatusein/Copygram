@@ -55,7 +55,7 @@ namespace Client
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message + "\n" + ex.StackTrace, "Error | " + ex.Source,
+                MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "Controller Constructor Error" ,
                         MessageBoxButton.OK);
             }
         }
@@ -67,86 +67,146 @@ namespace Client
 
         ResponseType RecieveResponse()
         {
-            using (ns = client.GetStream())
+            try
             {
-                buff = new byte[client.ReceiveBufferSize];
-                ns.Read(buff, 0, buff.Length);
-                lastResponse = (Response)binFormat.Deserialize(ns);
+                using (ns = client.GetStream())
+                {
+                    buff = new byte[client.ReceiveBufferSize];
+                    ns.Read(buff, 0, buff.Length);
+                    lastResponse = (Response)binFormat.Deserialize(ns);
+                }
+                return lastResponse.Type;
             }
-            return lastResponse.Type;
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "Recieve Response Error",
+                        MessageBoxButton.OK);
+                return ResponseType.Error;
+            }
         }
 
         void Serialize(object obj)
         {
-            using (ms = new MemoryStream())
+            try
             {
-                binFormat.Serialize(ms, obj);
-                buff = ms.ToArray();
+                using (ms = new MemoryStream())
+                {
+                    binFormat.Serialize(ms, obj);
+                    buff = ms.ToArray();
+                }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "Serialize Error",
+                        MessageBoxButton.OK);
             }
         }
 
         public object Deserialize(byte[] byteArray)
         {
-            using (ms = new MemoryStream())
+            try
             {
-                ms.Write(byteArray, 0, byteArray.Length);
-                return binFormat.Deserialize(ms);
+                using (ms = new MemoryStream())
+                {
+                    ms.Write(byteArray, 0, byteArray.Length);
+                    return binFormat.Deserialize(ms);
+                }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "Deserialize Error",
+                        MessageBoxButton.OK);
+                return null;
             }
         }
 
         void Request(CommandType type)
         {
-            using (ns = client.GetStream())
+            try
             {
-                binFormat.Serialize(ns, BuildCommand(type, buff));
-                ns.Flush();
+                using (ns = client.GetStream())
+                {
+                    binFormat.Serialize(ns, BuildCommand(type, buff));
+                    ns.Flush();
+                }
+                buff = null!;
             }
-            buff = null!;
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "Request Error",
+                            MessageBoxButton.OK);
+            }
         }
 
         public bool TryLogin(string username, string password)
         {
-            Serialize(new LoginData() { Login = username, Password = password });
-            Request(CommandType.Login);
-
-            if (RecieveResponse() == ResponseType.Success)
+            try
             {
-                buff = new byte[client.ReceiveBufferSize];
-                profile = (User)Deserialize(buff);
+                Serialize(new LoginData() { Login = username, Password = password });
+                Request(CommandType.Login);
 
-                avatar = (BitmapImage)Deserialize(profile.Avatar);
-                LoadData();
-                StartBackgroundSync();
-                return true;
+                if (RecieveResponse() == ResponseType.Success)
+                {
+                    buff = new byte[client.ReceiveBufferSize];
+                    profile = (User)Deserialize(buff);
+
+                    avatar = (BitmapImage)Deserialize(profile.Avatar);
+                    LoadData();
+                    StartBackgroundSync();
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
-            else
+            catch (Exception ex)
             {
+                MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "TryLogin Error",
+                            MessageBoxButton.OK);
                 return false;
             }
         }
 
         public void LoadData()
         {
-            Request(CommandType.Sync);
-
-            if (RecieveResponse() == ResponseType.Success)
+            try
             {
-                UpdateChatLayout();
+                Request(CommandType.Sync);
+
+                if (RecieveResponse() == ResponseType.Success)
+                {
+                    UpdateChatLayout();
+                }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "Load Data Error",
+                        MessageBoxButton.OK);
             }
         }
 
         public bool SendMessage(string messageText)
         {
-            Serialize(messageText);
-            Request(CommandType.NewChatMessage);
+            try
+            {
+                Serialize(messageText);
+                Request(CommandType.NewChatMessage);
 
-            if (RecieveResponse() == ResponseType.Success)
-            {
-                return true;//Good :D
+                if (RecieveResponse() == ResponseType.Success)
+                {
+                    return true;//Good :D
+                }
+                else
+                {
+                    return false;//Bad :(
+                }
             }
-            else
+            catch(Exception ex)
             {
-                return false;//Bad :(
+                MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "Send Message Error",
+                        MessageBoxButton.OK);
+                return false;
             }
         }
 
@@ -159,7 +219,8 @@ namespace Client
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message + "\n" + ex.Source, ex.StackTrace);
+                MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "Update Chats Error",
+                        MessageBoxButton.OK);
             }
         }
 
@@ -182,7 +243,8 @@ namespace Client
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message + "\n" + ex.Source, ex.StackTrace);
+                MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "Recieve Chat Error",
+                        MessageBoxButton.OK);
                 return activeChat.Messages;
             }
         }
@@ -197,7 +259,8 @@ namespace Client
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message + "\n" + ex.Source, ex.StackTrace);
+                MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "Background start synchronization Error",
+                        MessageBoxButton.OK);
             }
         }
 
@@ -213,7 +276,8 @@ namespace Client
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message + "\n" + ex.Source, ex.StackTrace);
+                MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "Background update Error",
+                        MessageBoxButton.OK);
             }
         }
 
@@ -250,7 +314,8 @@ namespace Client
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message + "\n" + ex.Source, ex.StackTrace);
+                MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "Add private chat Error",
+                        MessageBoxButton.OK);
             }
         }
 
@@ -277,7 +342,8 @@ namespace Client
             }
             catch(Exception ex)
             {
-                MessageBox.Show(ex.Message + "\n" + ex.Source, ex.StackTrace);
+                MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "Add group chat Error",
+                        MessageBoxButton.OK);
             }
         }
 
@@ -299,7 +365,8 @@ namespace Client
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message + "\n" + ex.Source, ex.StackTrace);
+                MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "Chtas to cells Error",
+                        MessageBoxButton.OK);
             }
         }
     }
