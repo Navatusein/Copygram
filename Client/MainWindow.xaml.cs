@@ -95,6 +95,10 @@ namespace Client
             {
                 rectOverlay.Visibility = Visibility.Collapsed;
             }
+            else
+            {
+                PrivateChatOverlay.Clear();
+            }
         }
 
         private void GroupOverlay_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -102,6 +106,10 @@ namespace Client
             if (GroupChatOverlay.Visibility == Visibility.Collapsed)
             {
                 rectOverlay.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                GroupChatOverlay.Clear();
             }
         }
 
@@ -134,7 +142,7 @@ namespace Client
         #endregion
         private void btLogin_Click(object sender, RoutedEventArgs e)
         {
-            ctrl = null!;//new();
+            ctrl = new();
             LoginOverlay.tbUsername.Text = "test";
             LoginOverlay.tbPassword.Password = "test";
 
@@ -149,18 +157,15 @@ namespace Client
             {
                 LoginLayout.Visibility = Visibility.Collapsed;
                 MainGrid.Visibility = Visibility.Visible;
-                foreach (UserCell us in ctrl.cells)
-                {
-                    ChatsList.Items.Add(us);
-                }
+                ChatsList.ItemsSource = ctrl.ChatList;
+
                 sidePanelOverlay.Name = ctrl.Profile.Nickname;
                 sidePanelOverlay.MyAvatarSource = ctrl.Avatar;
                 sidePanelOverlay.IdSource = ctrl.Profile.UserId.ToString();
             }
             else
             {
-                LoginOverlay.tbUsername.Clear();
-                LoginOverlay.tbPassword.Clear();
+                LoginOverlay.Clear();
                 LoginOverlay.SpeakLable.Text = "Wrong creditinals, dear User!";
                 LoginOverlay.SpeakLable.Foreground = new SolidColorBrush(Color.FromRgb(153, 0, 0));
             }
@@ -173,7 +178,7 @@ namespace Client
                 ChatThumbnailGrid.IsEnabled = true;
                 ChatGrid.IsEnabled = true;
 
-                foreach (ChatMessage message in ctrl.GetChatOnUser((ChatsList.SelectedItem as UserCell).Nickname))
+                foreach (ChatMessage message in ctrl.GetChatOnUser((ChatsList.SelectedItem as UserCell)!.Nickname))
                 {
                     MessageChat.Items.Add(new MessageContainer((BitmapImage)ctrl.Deserialize(message.FromUser.Avatar), message.MessageText));
                 }

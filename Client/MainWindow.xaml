@@ -102,8 +102,8 @@
                 <TextBox x:Name="tbSearch" Text="Search" Style="{StaticResource TextBoxSearch}" GotFocus="tbSearch_GotFocus" LostFocus="tbSearch_LostFocus"/>
             </Border>
 
-            <ListBox x:Name="ChatsList" Grid.Row="1" Grid.Column="1" BorderThickness="1" HorizontalContentAlignment="Stretch" SelectionChanged="ChatsList_SelectionChanged">
-            </ListBox>
+            <ListBox x:Name="ChatsList" Grid.Row="1" Grid.Column="1" BorderThickness="1"
+                     HorizontalContentAlignment="Stretch" SelectionChanged="ChatsList_SelectionChanged"/>
 
             <Grid x:Name="ChatThumbnailGrid" Grid.Row="0" Grid.Column="2" Margin="5">
                 <Grid.ColumnDefinitions>

@@ -7,9 +7,6 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="CustomControls\ContactsMenuItem.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Update="CustomControls\PrivateOverlay.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -36,9 +33,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="CustomControls\ContactsMenuItem.xaml">
-      <SubType>Designer</SubType>
-    </Page>
     <Page Update="CustomControls\PrivateOverlay.xaml">
       <SubType>Designer</SubType>
     </Page>

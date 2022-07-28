@@ -20,7 +20,11 @@ namespace Client.CustomControls
     /// </summary>
     public partial class PrivateOverlay : UserControl
     {
-        string WhoToAddress { get; set; }
+        string WhoToAddress
+        {
+            get { return tbWhoToAddress.Text; }
+        }
+
         public PrivateOverlay()
         {
             InitializeComponent();
@@ -54,7 +58,6 @@ namespace Client.CustomControls
 
         private void Add_Click(object sender, RoutedEventArgs e)
         {
-            WhoToAddress = tbWhoToAddress.Text.Trim();
             Visibility = Visibility.Collapsed;
         }
         private void tbGotFocus(object sender, RoutedEventArgs e)
@@ -64,6 +67,11 @@ namespace Client.CustomControls
         private void tbLostFocus(object sender, RoutedEventArgs e)
         {
             tbWhoToAddress.Text = "Nickname";
+        }
+
+        public void Clear()
+        {
+            tbWhoToAddress.Clear();
         }
     }
 }

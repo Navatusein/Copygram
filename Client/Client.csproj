@@ -24,6 +24,7 @@
     <None Remove="Resources\Icons\folder.png" />
     <None Remove="Resources\Icons\group.png" />
     <None Remove="Resources\Icons\group_chat.png" />
+    <None Remove="Resources\Icons\group_default.png" />
     <None Remove="Resources\Icons\info.ico" />
     <None Remove="Resources\Icons\insert.png" />
     <None Remove="Resources\Icons\list.png" />
@@ -79,6 +80,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Icons\group_chat.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\group_default.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Icons\insert.png">

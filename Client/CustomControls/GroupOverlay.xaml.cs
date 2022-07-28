@@ -21,8 +21,14 @@ namespace Client.CustomControls
     /// </summary>
     public partial class GroupOverlay : UserControl
     {
-        public string GroupName { get; set; }
-        public string ImagePath { get; set; }
+        public string GroupName 
+        {
+            get { return tbGroupName.Text; }
+        }
+        public string ImagePath 
+        { 
+            get { return ImageBox.ImageSource.ToString(); }
+        }
 
         public static readonly RoutedEvent UserClickEvent = EventManager.RegisterRoutedEvent(
             "AddClick", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(GroupOverlay));
@@ -58,8 +64,7 @@ namespace Client.CustomControls
             ofd.CheckPathExists = true;
             if (ofd.ShowDialog() == true)
             {
-                ImagePath = ofd.FileName;
-                ImageBox.ImageSource = (ImageSource)new ImageSourceConverter().ConvertFromString(ofd.FileName);
+                ImageBox.ImageSource = (ImageSource)new ImageSourceConverter().ConvertFromString(ofd.FileName)!;
             }
         }
 
@@ -71,11 +76,9 @@ namespace Client.CustomControls
                 return;
             }
 
-            GroupName = tbGroupName.Text.Trim();
-
             if (ImagePath == null)
             { 
-                //default
+                ImageBox.ImageSource = (ImageSource)new ImageSourceConverter().ConvertFromString("../Resources/Icons/group_default.png")!;
             }
             Visibility = Visibility.Collapsed;
         }
@@ -87,6 +90,12 @@ namespace Client.CustomControls
         private void tbLostFocus(object sender, RoutedEventArgs e)
         {
             tbGroupName.Text = "Your group name";
+        }
+
+        public void Clear()
+        {
+            tbGroupName.Clear();
+            ImageBox.ImageSource = (ImageSource)new ImageSourceConverter().ConvertFromString("../Resources/Icons/group_default.png")!;
         }
     }
 }

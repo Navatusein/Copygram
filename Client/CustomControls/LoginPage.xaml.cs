@@ -88,6 +88,10 @@ namespace Client.CustomControls
             }
         }
 
-
+        public void Clear()
+        {
+            tbPassword.Clear();
+            tbUsername.Clear();
+        }
     }
 }
