@@ -9,7 +9,7 @@ namespace ModelsLibrary
 {
     public enum ChatType
     {
-        Private,
+        Private = 1,
         Group
     }
 

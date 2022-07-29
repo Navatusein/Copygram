@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace ModelsLibrary
 {
+    [Serializable]
     public class SyncChatMessages
     {
         public int MessageId { get; set; }

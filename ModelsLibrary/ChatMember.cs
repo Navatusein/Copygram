@@ -8,7 +8,7 @@ namespace ModelsLibrary
 {
     public enum ChatMemberRole
     {
-        Member,
+        Member = 1,
         Moderator,
         Owner
     }

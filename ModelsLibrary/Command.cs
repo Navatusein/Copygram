@@ -14,8 +14,9 @@ namespace ModelsLibrary
         SyncChatMessage,
         Exception,
         RequestChanges,
+        CheckForUser,
         NewChatMessage,
-        NewSystemMessage
+        NewSystemChatMessage
     }
 
     [Serializable]

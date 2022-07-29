@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ModelsLibrary
 {
-    public enum SystemMessageType
+    public enum SystemChatMessageType
     {
         NewChat,
         UpdateChat
@@ -14,13 +14,15 @@ namespace ModelsLibrary
 
 
     [Serializable]
-    public class SystemMessage : IMessage
+    public class SystemChatMessage : IMessage
     {
         public MessageType Type { get; private set; }
 
-        public byte[] Data { get; set; } = null!;
+        public SystemChatMessageType SystemMessageType { get; set; }
 
-        public SystemMessage()
+        public Chat Chat { get; set; } = null!;
+
+        public SystemChatMessage()
         {
             Type = MessageType.SystemMessage;
         }
