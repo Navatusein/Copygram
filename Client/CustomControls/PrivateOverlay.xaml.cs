@@ -62,13 +62,14 @@ namespace Client.CustomControls
         }
         private void tbGotFocus(object sender, RoutedEventArgs e)
         {
+            tbWhoToAddress.Foreground = new SolidColorBrush(Colors.Black);
             tbWhoToAddress.Clear();
         }
         private void tbLostFocus(object sender, RoutedEventArgs e)
         {
+            tbWhoToAddress.Foreground = new SolidColorBrush(Colors.LightGray);
             tbWhoToAddress.Text = "Nickname";
         }
-
         public void Clear()
         {
             tbWhoToAddress.Clear();
