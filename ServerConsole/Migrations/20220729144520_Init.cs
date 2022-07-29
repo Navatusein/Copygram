@@ -106,7 +106,7 @@ namespace ServerConsole.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Messages",
+                name: "ChatMessages",
                 columns: table => new
                 {
                     ChatMessageId = table.Column<int>(type: "int", nullable: false)
@@ -118,15 +118,15 @@ namespace ServerConsole.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Messages", x => x.ChatMessageId);
+                    table.PrimaryKey("PK_ChatMessages", x => x.ChatMessageId);
                     table.ForeignKey(
-                        name: "FK_Messages_Chats_ChatId",
+                        name: "FK_ChatMessages_Chats_ChatId",
                         column: x => x.ChatId,
                         principalTable: "Chats",
                         principalColumn: "ChatId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Messages_Users_UserId",
+                        name: "FK_ChatMessages_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
@@ -149,19 +149,19 @@ namespace ServerConsole.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Chats_ChatTypeId",
-                table: "Chats",
-                column: "ChatTypeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Messages_ChatId",
-                table: "Messages",
+                name: "IX_ChatMessages_ChatId",
+                table: "ChatMessages",
                 column: "ChatId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Messages_UserId",
-                table: "Messages",
+                name: "IX_ChatMessages_UserId",
+                table: "ChatMessages",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Chats_ChatTypeId",
+                table: "Chats",
+                column: "ChatTypeId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -170,7 +170,7 @@ namespace ServerConsole.Migrations
                 name: "ChatMembers");
 
             migrationBuilder.DropTable(
-                name: "Messages");
+                name: "ChatMessages");
 
             migrationBuilder.DropTable(
                 name: "ChatMemberRoles");

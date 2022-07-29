@@ -13,13 +13,16 @@ namespace ServerConsole
 {
     internal class Client
     {
-        private TCP.User User = null!;
+        public TCP.User User { get; private set; }
 
-        public List<IMessage> Changes { get; set; } = null!;
+        public List<IMessage> Changes { get; set; }
 
-        public Client()
+        public DateTime LastRequest { get; set; }
+
+        public Client(TCP.User user)
         {
-
+            this.User = user;
+            this.Changes = new();
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ServerConsole.Models
 {
-    internal class User
+    public class User
     {
         public int UserId { get; set; }
 
@@ -17,5 +17,7 @@ namespace ServerConsole.Models
         public string Login { get; set; } = null!;
 
         public string Password { get; set; } = null!;
+
+        public virtual HashSet<ChatMember> ChatMembers { get; set; } = new();
     }
 }

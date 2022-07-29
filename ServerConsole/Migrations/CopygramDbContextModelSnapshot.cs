@@ -45,7 +45,7 @@ namespace ServerConsole.Migrations
 
                     b.HasIndex("ChatTypeId");
 
-                    b.ToTable("Chats");
+                    b.ToTable("Chats", (string)null);
                 });
 
             modelBuilder.Entity("ServerConsole.Models.ChatMember", b =>
@@ -73,7 +73,7 @@ namespace ServerConsole.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ChatMembers");
+                    b.ToTable("ChatMembers", (string)null);
                 });
 
             modelBuilder.Entity("ServerConsole.Models.ChatMemberRole", b =>
@@ -90,7 +90,7 @@ namespace ServerConsole.Migrations
 
                     b.HasKey("ChatMemberRoleId");
 
-                    b.ToTable("ChatMemberRoles");
+                    b.ToTable("ChatMemberRoles", (string)null);
                 });
 
             modelBuilder.Entity("ServerConsole.Models.ChatMessage", b =>
@@ -120,7 +120,7 @@ namespace ServerConsole.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Messages");
+                    b.ToTable("ChatMessages", (string)null);
                 });
 
             modelBuilder.Entity("ServerConsole.Models.ChatType", b =>
@@ -137,7 +137,7 @@ namespace ServerConsole.Migrations
 
                     b.HasKey("ChatTypeId");
 
-                    b.ToTable("ChatTypes");
+                    b.ToTable("ChatTypes", (string)null);
                 });
 
             modelBuilder.Entity("ServerConsole.Models.User", b =>
@@ -166,7 +166,7 @@ namespace ServerConsole.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("ServerConsole.Models.Chat", b =>
@@ -210,7 +210,7 @@ namespace ServerConsole.Migrations
             modelBuilder.Entity("ServerConsole.Models.ChatMessage", b =>
                 {
                     b.HasOne("ServerConsole.Models.Chat", "Chat")
-                        .WithMany("Messages")
+                        .WithMany("ChatMessages")
                         .HasForeignKey("ChatId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -230,7 +230,7 @@ namespace ServerConsole.Migrations
                 {
                     b.Navigation("ChatMembers");
 
-                    b.Navigation("Messages");
+                    b.Navigation("ChatMessages");
                 });
 #pragma warning restore 612, 618
         }
