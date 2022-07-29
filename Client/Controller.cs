@@ -67,7 +67,7 @@ namespace Client
         /// </summary>
         /// <param name="type"></param>
         /// <param name="data">Data to send</param>
-        /// <returns></returns>
+        /// <returns>Builded command</returns>
         Command BuildCommand(CommandType type, byte[] data)
         {
             return new Command() { Type = type, Data = data, User = profile };
@@ -229,7 +229,7 @@ namespace Client
         {
             try
             {
-                Serialize(messageText);
+                Serialize(new ChatMessage() { MessageText = messageText, FromUser = profile, ChatId = activeChat.ChatId });
                 Request(CommandType.NewChatMessage);
 
                 if (RecieveResponse() == ResponseType.Success)
