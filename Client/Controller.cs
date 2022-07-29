@@ -472,7 +472,7 @@ namespace Client
                     {
                         AvatarSource = ToBitmapImage(chat.Avatar),
                         Nickname = chat.ChatName,
-                        LastMessage = "No message"
+                        LastMessage = chat.Messages.Last().MessageText
                     });
                 }
             }
