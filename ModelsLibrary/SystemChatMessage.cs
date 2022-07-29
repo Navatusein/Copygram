@@ -9,7 +9,9 @@ namespace ModelsLibrary
     public enum SystemChatMessageType
     {
         NewChat,
-        UpdateChat
+        UpdateChat,
+        AddUser,
+        RemoveUser
     }
 
 
@@ -22,9 +24,11 @@ namespace ModelsLibrary
 
         public Chat Chat { get; set; } = null!;
 
+        public byte[] Data { get; set; } = null!;
+
         public SystemChatMessage()
         {
-            Type = MessageType.SystemMessage;
+            Type = MessageType.SystemChatMessage;
         }
     }
 }

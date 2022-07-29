@@ -9,7 +9,7 @@ namespace ModelsLibrary
     [Serializable]
     public enum MessageType
     {
-        SystemMessage,
+        SystemChatMessage,
         ChatMessage
     }
 
