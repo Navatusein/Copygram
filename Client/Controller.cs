@@ -241,6 +241,7 @@ namespace Client
         internal void CloseServerConnection()
         {
             timer.Stop();
+            Request(CommandType.Disconnect, null);
         }
 
         #endregion
@@ -360,7 +361,7 @@ namespace Client
                     {
                         switch (message.Type)
                         {
-                            case MessageType.SystemMessage:
+                            case MessageType.SystemChatMessage:
 
                                 SystemChatMessage sysMsg = (message as SystemChatMessage)!;
 
