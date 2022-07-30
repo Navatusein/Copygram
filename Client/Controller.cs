@@ -9,6 +9,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
@@ -79,7 +80,7 @@ namespace Client
                 timer = new();
                 timer.Tick += Timer_Tick;
                 timer.Interval = new TimeSpan(0, 0, 10);
-                timer.Start();
+                Task.Run(timer.Start);
             }
             catch (Exception ex)
             {
@@ -237,6 +238,11 @@ namespace Client
             }
         }
 
+        internal void CloseServerConnection()
+        {
+            timer.Stop();
+        }
+
         #endregion
 
         /// <summary>
@@ -330,8 +336,9 @@ namespace Client
         {
             if (!isLast)
             {
-                Request(CommandType.SyncChatMessage, new SyncChatMessages() { ChatId = activeChat.ChatId, MessageCount = 5, MessageId = activeChat.Messages.Last().ChatId });
-                activeChat.Messages.InsertRange(0, Deserialize<List<ChatMessage>>(lastResponse.Data));
+                Request(CommandType.SyncChatMessage, new SyncChatMessages() { ChatId = activeChat.ChatId, MessageCount = 5, MessageId = activeChat.Messages.Last().ChatMessageId });
+                var temp = Deserialize<List<ChatMessage>>(lastResponse.Data);
+                activeChat.Messages.InsertRange(0, temp);
             }
 
             if (Deserialize<List<ChatMessage>>(lastResponse.Data).Count < 5)

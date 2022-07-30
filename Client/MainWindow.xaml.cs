@@ -202,5 +202,10 @@ namespace Client
             if(ctrl.IsAnyChatSelected())
                 ctrl.GetOnScroll();
         }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            ctrl.CloseServerConnection();
+        }
     }
 }

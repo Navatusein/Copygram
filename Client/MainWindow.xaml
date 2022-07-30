@@ -11,6 +11,7 @@
         MinHeight="600" MinWidth="600"
         Icon="Resources/Icons/logotype.ico"
         RenderOptions.BitmapScalingMode="HighQuality"
+        Closing="Window_Closing"
         Title="Copygram" Height="600" Width="1000">
     <Grid>
         <Grid x:Name="LoginLayout" Background="#293a4c" Visibility="Collapsed">
