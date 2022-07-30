@@ -44,7 +44,7 @@ namespace ServerConsole
 
             //DbConnector.Test();
 
-            Task.Run(() => UnavailableCollector());
+            //Task.Run(() => UnavailableCollector());
 
             WaitingForConnection();
         }
@@ -98,9 +98,7 @@ namespace ServerConsole
 
                 if (command.Type == CommandType.RequestChanges)
                 {
-                    byte[] data = null!;
-
-                    if (!clients.ContainsKey(command.User.UserId))
+                    if (!clients.ContainsKey(command.User!.UserId))
                     {
                         SendError(stream, KnownErrors.OutOfSync, command);
                         return;
@@ -109,13 +107,19 @@ namespace ServerConsole
                     Client client = clients[command.User.UserId];
                     client.LastRequest = DateTime.Now;
 
-                    data = Serialization(client.Changes);
+                    byte[] data = Serialization(client.Changes);
+
+                    if (client.Changes.Count > 0)
+                    {
+                        Console.WriteLine("Work");
+                        client.Changes.Clear();
+                    }
 
                     SendResponse(stream, ResponseType.Success, data, command);
                 }
                 else if (command.Type == CommandType.NewChatMessage)
                 {
-                    if (!clients.ContainsKey(command.User.UserId))
+                    if (!clients.ContainsKey(command.User!.UserId))
                     {
                         SendError(stream, KnownErrors.OutOfSync, command);
                         return;
@@ -138,9 +142,9 @@ namespace ServerConsole
 
                     foreach (TCP.User user in users)
                     {
-                        if (clients.ContainsKey(user.UserId))
+                        if (clients.ContainsKey(user.UserId) && user.UserId != command.User.UserId)
                         {
-                            clients[user.UserId].Changes.Append(message);
+                            clients[user.UserId].Changes.Add(message);
                         }
                     }
 
@@ -152,7 +156,7 @@ namespace ServerConsole
                 }
                 else if (command.Type == CommandType.NewSystemChatMessage)
                 {
-                    if (!clients.ContainsKey(command.User.UserId))
+                    if (!clients.ContainsKey(command.User!.UserId))
                     {
                         SendError(stream, KnownErrors.OutOfSync, command);
                         return;
@@ -203,7 +207,7 @@ namespace ServerConsole
                 }
                 else if (command.Type == CommandType.Sync)
                 {
-                    if (clients.ContainsKey(command.User.UserId))
+                    if (clients.ContainsKey(command.User!.UserId))
                     {
                         SendError(stream, KnownErrors.SecondClient, command);
                         return;
@@ -222,7 +226,7 @@ namespace ServerConsole
                 }
                 else if (command.Type == CommandType.SyncChatMessage)
                 {
-                    if (!clients.ContainsKey(command.User.UserId))
+                    if (!clients.ContainsKey(command.User!.UserId))
                     {
                         SendError(stream, KnownErrors.OutOfSync, command);
                         return;
@@ -241,7 +245,7 @@ namespace ServerConsole
                 }
                 else if (command.Type == CommandType.CheckForUser)
                 {
-                    if (!clients.ContainsKey(command.User.UserId))
+                    if (!clients.ContainsKey(command.User!.UserId))
                     {
                         SendError(stream, KnownErrors.OutOfSync, command);
                         return;
@@ -307,6 +311,12 @@ namespace ServerConsole
                 }
                 else if (command.Type == CommandType.Disconnect)
                 {
+                    if (command.User == null)
+                    {
+                        SendError(stream, KnownErrors.OutOfSync, command);
+                        return;
+                    }
+
                     if (!clients.ContainsKey(command.User.UserId))
                     {
                         SendError(stream, KnownErrors.OutOfSync, command);
@@ -314,6 +324,8 @@ namespace ServerConsole
                     }
 
                     clients.Remove(command.User.UserId);
+
+                    SendResponse(stream, ResponseType.Success, null!, command);
                 }
                 else
                 {

@@ -135,7 +135,7 @@ namespace ServerConsole
                 DB.Chat? dbChat = dbContext.Chats.FirstOrDefault(x => x.ChatId == syncChatMessages.ChatId);
 
                 if (dbChat == null)
-                    return null;
+                    return null!;
 
                 int messageIndex = dbChat.ChatMessages.ToList().FindIndex(x => x.ChatMessageId == syncChatMessages.MessageId);
 
@@ -200,26 +200,26 @@ namespace ServerConsole
 
         public static void Test()
         {
-            Bitmap bitmap = new Bitmap("Cat.jpg");
+            //Bitmap bitmap = new Bitmap("Cat.jpg");
 
-            byte[] data;
+            //byte[] data;
 
-            using (MemoryStream ms = new MemoryStream())
-            {
-                bitmap.Save(ms, ImageFormat.Png);
-                data = ms.ToArray();
-            }
+            //using (MemoryStream ms = new MemoryStream())
+            //{
+            //    bitmap.Save(ms, ImageFormat.Png);
+            //    data = ms.ToArray();
+            //}
 
-            using (CopygramDbContext context = new CopygramDbContext())
-            {
-                var user = context.Chats.ToArray()[0];
+            //using (CopygramDbContext context = new CopygramDbContext())
+            //{
+            //    var user = context.Chats.ToArray()[0];
 
-                user.Avatar = data;
+            //    user.Avatar = data;
 
-                context.Chats.Update(user);
+            //    context.Chats.Update(user);
 
-                context.SaveChanges();
-            }
+            //    context.SaveChanges();
+            //}
         }
 
     }
