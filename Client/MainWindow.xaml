@@ -123,7 +123,7 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <ListView x:Name="MessageChat" Grid.Row="0" >
+                <ListView x:Name="MessageChat" Grid.Row="0" ScrollViewer.ScrollChanged="MessageChat_ScrollChanged" >
                     <ListView.Background>
                         <ImageBrush ImageSource="Resources/Wallpapers/DefaultDay.jpg"/>
                     </ListView.Background>

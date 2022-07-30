@@ -178,7 +178,8 @@ namespace Client
             if (e.Key == Key.Enter && !string.IsNullOrEmpty(tbMessage.Text))
             {
                 ctrl.SendMessage(tbMessage.Text.Trim());
-                MessageChat.Items.Add(new ChatMessage() { MessageText = tbMessage.Text.Trim(), FromUser = ctrl.Profile });
+                MessageChat.Items.Add(new MessageContainer() { MessageText = tbMessage.Text.Trim(), AvatartImage = ctrl.Avatar});
+                tbMessage.Clear();
             }
         }
 
@@ -194,6 +195,12 @@ namespace Client
         {
             ctrl.AddGroupChat(GroupChatOverlay.tbGroupName.Text, GroupChatOverlay.ImagePath, GroupChatOverlay.Invites);
             GroupChatOverlay.Visibility = Visibility.Collapsed;
+        }
+
+        private void MessageChat_ScrollChanged(object sender, System.Windows.Controls.ScrollChangedEventArgs e)
+        {
+            if(ctrl.IsAnyChatSelected())
+                ctrl.GetOnScroll();
         }
     }
 }
