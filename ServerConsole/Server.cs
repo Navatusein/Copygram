@@ -305,6 +305,16 @@ namespace ServerConsole
 
                     SendResponse(stream, ResponseType.Success, data, command);
                 }
+                else if (command.Type == CommandType.Disconnect)
+                {
+                    if (!clients.ContainsKey(command.User.UserId))
+                    {
+                        SendError(stream, KnownErrors.OutOfSync, command);
+                        return;
+                    }
+
+                    clients.Remove(command.User.UserId);
+                }
                 else
                 {
                     SendError(stream, KnownErrors.UnknownCommand, command);
