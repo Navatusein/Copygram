@@ -90,7 +90,7 @@
             </ListBox>
 
             <Border Grid.Row="0" Grid.Column="1" Margin="12" Style="{StaticResource TBCornerBorder}">
-                <TextBox x:Name="tbSearch" Text="Search" Style="{StaticResource TextBoxSearch}" GotFocus="tbSearch_GotFocus" LostFocus="tbSearch_LostFocus"/>
+                <TextBox x:Name="tbSearch" Text="Search" Style="{StaticResource TextBoxSearch}" GotFocus="tbSearch_GotFocus" LostFocus="tbSearch_LostFocus" KeyDown="tbSearch_KeyDown"/>
             </Border>
 
             <ListBox x:Name="ChatsList" Grid.Row="1" Grid.Column="1" BorderThickness="1"

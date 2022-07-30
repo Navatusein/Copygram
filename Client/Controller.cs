@@ -35,6 +35,7 @@ namespace Client
         bool isLast = false;
 
         public ObservableCollection<UserCell> ChatList = null!;
+        public ObservableCollection<MessageContainer> MessagesList = null!;
         List<Chat> chats = null!;
 
         public User Profile
@@ -70,6 +71,7 @@ namespace Client
         }
 
         #region Background
+
         /// <summary>
         /// Background synchronization
         /// </summary>
@@ -98,7 +100,47 @@ namespace Client
         {
             try
             {
-                LoadData();
+                if (Request(CommandType.RequestChanges, null) == ResponseType.Success)
+                {
+                    List<IMessage> messages = Deserialize<List<IMessage>>(lastResponse.Data);
+
+                    if (messages != null)
+                    {
+                        foreach (IMessage message in messages)
+                        {
+                            switch (message.Type)
+                            {
+                                case MessageType.SystemChatMessage:
+
+                                    SystemChatMessage sysMsg = (message as SystemChatMessage)!;
+
+                                    switch (sysMsg.SystemMessageType)
+                                    {
+                                        case SystemChatMessageType.NewChat:
+                                            chats.Add(sysMsg.Chat);
+                                            RefreshView();
+                                            break;
+                                        case SystemChatMessageType.UpdateChat:
+                                            int index = chats.FindIndex(chat => chat.ChatId == sysMsg.Chat.ChatId);
+                                            chats[index] = sysMsg.Chat;
+                                            break;
+                                        default:
+                                            break;
+                                    }
+
+                                    break;
+                                case MessageType.ChatMessage:
+                                    ChatMessage chatMsg = (message as ChatMessage)!;
+                                    chats.FirstOrDefault(chat => chat.ChatId == chatMsg.ChatId)!.Messages.Add(chatMsg!);
+                                    if (chatMsg.ChatId == activeChat.ChatId)
+                                        FetchChat(activeChat.ChatName);
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -120,7 +162,7 @@ namespace Client
         {
             try
             {
-                if(toSerialize != null)
+                if (toSerialize != null)
                     Serialize(toSerialize);
 
                 TcpClient client = new();
@@ -211,7 +253,7 @@ namespace Client
                 return img;
             }
         }
-        
+
         /// <summary>
         /// Builds UI elements from current chats
         /// </summary>
@@ -224,9 +266,8 @@ namespace Client
                 {
                     ChatList.Add(new UserCell()
                     {
-                        AvatarSource = ToBitmapImage(chat.Avatar),////////////////////////////////////////////////////////////////////////////////////////////
+                        AvatarSource = ToBitmapImage(chat.Avatar),
                         Nickname = chat.ChatName,
-
                         LastMessage = chat.Messages.Count > 0 ? chat.Messages.Last().MessageText : "No messages"
                     });
                 }
@@ -238,10 +279,19 @@ namespace Client
             }
         }
 
-        internal void CloseServerConnection()
+        public void CloseServerConnection()
         {
-            timer.Stop();
-            Request(CommandType.Disconnect, null);
+            try
+            {
+                if (timer != null)
+                    timer.Stop();
+
+                Request(CommandType.Disconnect, null);
+            }
+            catch
+            {
+
+            }
         }
 
         #endregion
@@ -282,6 +332,23 @@ namespace Client
             }
         }
 
+        public void SearchChat(string text)
+        {
+            ChatList = new();
+            foreach (Chat chat in chats)
+            {
+                if (chat.ChatName.ToLower().Contains(text.ToLower()))
+                {
+                    ChatList.Add(new UserCell()
+                    {
+                        AvatarSource = ToBitmapImage(chat.Avatar),
+                        Nickname = chat.ChatName,
+                        LastMessage = chat.Messages.Count > 0 ? chat.Messages.Last().MessageText : "No message"
+                    });
+                }
+            }
+        }
+
         /// <summary>
         /// Sends messsage to srever and recieves reaction
         /// </summary>
@@ -294,6 +361,7 @@ namespace Client
                 if (Request(CommandType.NewChatMessage, new ChatMessage() { MessageText = messageText, FromUser = profile, ChatId = activeChat.ChatId }) == ResponseType.Success)
                 {
                     chats[chats.FindIndex(chat => chat.ChatId == activeChat.ChatId)].Messages.Add(Deserialize<ChatMessage>(lastResponse.Data));
+                    MessagesList.Add(new MessageContainer() { MessageText = messageText.Trim(), AvatartImage = Avatar });
                     RefreshView();
                 }
             }
@@ -309,7 +377,7 @@ namespace Client
         /// </summary>
         /// <param name="name"></param>
         /// <returns>List of ChatMessages</returns>
-        public List<ChatMessage> GetChat(string name)
+        public void FetchChat(string name)
         {
             try
             {
@@ -320,13 +388,24 @@ namespace Client
 
                 GetOnScroll();
 
-                return activeChat.Messages;
+                if (activeChat != null)
+                {
+                    MessagesList = new();
+
+                    foreach (ChatMessage msg in activeChat.Messages)
+                    {
+                        MessagesList.Add(new MessageContainer()
+                        {
+                            MessageText = msg.MessageText,
+                            AvatartImage = ToBitmapImage(msg.FromUser.Avatar)
+                        });
+                    }
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "Recieve Chat Error",
                         MessageBoxButton.OK);
-                return activeChat.Messages;
             }
         }
 
@@ -344,57 +423,6 @@ namespace Client
 
             if (Deserialize<List<ChatMessage>>(lastResponse.Data).Count < 5)
                 isLast = true;
-        }
-
-        /// <summary>
-        /// Loads data from server
-        /// </summary>
-        public void LoadData()
-        {
-            try
-            {
-                if (Request(CommandType.RequestChanges, null) == ResponseType.Success)
-                {
-                    List<IMessage> messages = Deserialize<List<IMessage>>(lastResponse.Data);
-
-                    foreach (IMessage message in messages)
-                    {
-                        switch (message.Type)
-                        {
-                            case MessageType.SystemChatMessage:
-
-                                SystemChatMessage sysMsg = (message as SystemChatMessage)!;
-
-                                switch (sysMsg.SystemMessageType)
-                                {
-                                    case SystemChatMessageType.NewChat:
-                                        chats.Add(sysMsg.Chat);
-                                        break;
-                                    case SystemChatMessageType.UpdateChat:
-                                        int index = chats.FindIndex(chat => chat.ChatId == sysMsg.Chat.ChatId);
-                                        chats[index] = sysMsg.Chat;
-                                        break;
-                                    default:
-                                        break;
-                                }
-
-                                break;
-                            case MessageType.ChatMessage:
-                                ChatMessage? chat = message as ChatMessage;
-                                chats.FirstOrDefault(chat => chat.ChatId == chat.ChatId)!.Messages.Add(chat!);
-                                RefreshView();
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "Load Data Error",
-                        MessageBoxButton.OK);
-            }
         }
 
         /// <summary>

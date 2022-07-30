@@ -1,6 +1,7 @@
 ﻿using Client.CustomControls;
 using ModelsLibrary;
 using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -144,6 +145,7 @@ namespace Client
                 LoginLayout.Visibility = Visibility.Collapsed;
                 MainGrid.Visibility = Visibility.Visible;
                 ChatsList.ItemsSource = ctrl.ChatList;
+                MessageChat.ItemsSource = ctrl.MessagesList;
 
                 sidePanelOverlay.Name = ctrl.Profile.Nickname;
                 sidePanelOverlay.MyAvatarSource = ctrl.Avatar;
@@ -165,11 +167,8 @@ namespace Client
                 ChatGrid.IsEnabled = true;
 
                 MessageChat.Items.Clear();
-
-                foreach (ChatMessage message in ctrl.GetChat((ChatsList.SelectedItem as UserCell)!.Nickname))
-                {
-                    MessageChat.Items.Add(new MessageContainer(Controller.ToBitmapImage(message.FromUser.Avatar), message.MessageText));
-                }
+                ctrl.FetchChat((ChatsList.SelectedItems as UserCell)!.Nickname);
+                MessageChat.ItemsSource = ctrl.MessagesList;
             }
         }
 
@@ -178,7 +177,6 @@ namespace Client
             if (e.Key == Key.Enter && !string.IsNullOrEmpty(tbMessage.Text))
             {
                 ctrl.SendMessage(tbMessage.Text.Trim());
-                MessageChat.Items.Add(new MessageContainer() { MessageText = tbMessage.Text.Trim(), AvatartImage = ctrl.Avatar});
                 tbMessage.Clear();
             }
         }
@@ -206,6 +204,14 @@ namespace Client
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             ctrl.CloseServerConnection();
+        }
+
+        private void tbSearch_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                ctrl.SearchChat(tbSearch.Text);
+            }
         }
     }
 }
