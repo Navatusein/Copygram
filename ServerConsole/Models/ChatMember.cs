@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ServerConsole.Models
 {
-    internal class ChatMember
+    public class ChatMember
     {
         public int ChatMemberId { get; set; }
 

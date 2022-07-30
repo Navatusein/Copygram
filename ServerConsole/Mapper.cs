@@ -21,7 +21,7 @@ namespace ServerConsole
             tcpChat.ChatName = dbChat.ChatName;
             tcpChat.Avatar = dbChat.Avatar;
             tcpChat.ChatMembers = dbChat.ChatMembers.Select(x => DbModelToTcpModel(x)).ToList();
-            tcpChat.Messages = dbChat.Messages.TakeLast(messagesCount).Select(x => DbModelToTcpModel(x)).ToList();
+            tcpChat.Messages = dbChat.ChatMessages.TakeLast(messagesCount).Select(x => DbModelToTcpModel(x)).ToList();
 
             return tcpChat;
         }
@@ -62,6 +62,30 @@ namespace ServerConsole
             return tcpUser;
         }
 
+        public static DB.Chat TcpModelToDbModel(TCP.Chat tcpChat)
+        {
+            DB.Chat dbChat = new();
+
+            dbChat.ChatId = tcpChat.ChatId;
+            dbChat.ChatTypeId = (int)tcpChat.ChatType;
+            dbChat.ChatName = tcpChat.ChatName;
+            dbChat.Avatar = tcpChat.Avatar;
+
+            return dbChat;
+        }
+
+        public static DB.ChatMember TcpModelToDbModel(TCP.ChatMember tcpChatMember)
+        {
+            DB.ChatMember dbChatMember = new();
+
+            dbChatMember.ChatMemberId = tcpChatMember.ChatMemberId;
+            dbChatMember.UserId = tcpChatMember.User.UserId;
+            dbChatMember.ChatId = tcpChatMember.ChatMemberId;
+            dbChatMember.ChatMemberId = (int)tcpChatMember.ChatMemberRole;
+
+            return dbChatMember;
+        }
+
         public static DB.User TcpModelToDbModel(TCP.User tcpUser, string login, string password)
         {
             DB.User dbUser = new();
@@ -73,6 +97,19 @@ namespace ServerConsole
             dbUser.Password = password;
 
             return dbUser;
+        }
+
+        public static DB.ChatMessage TcpModelToDbModel(TCP.ChatMessage tcpChatMessage)
+        {
+            DB.ChatMessage dbChatMessage = new();
+
+            dbChatMessage.ChatMessageId = tcpChatMessage.ChatMessageId;
+            dbChatMessage.ChatId = tcpChatMessage.ChatId;
+            dbChatMessage.UserId = tcpChatMessage.FromUser.UserId;
+            dbChatMessage.MessageText = tcpChatMessage.MessageText;
+            dbChatMessage.DispatchTime = tcpChatMessage.DispatchTime;
+
+            return dbChatMessage;
         }
     }
 }

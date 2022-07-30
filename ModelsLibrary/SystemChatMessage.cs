@@ -24,7 +24,7 @@ namespace ModelsLibrary
 
         public SystemChatMessage()
         {
-            Type = MessageType.SystemMessage;
+            Type = MessageType.SystemChatMessage;
         }
     }
 }

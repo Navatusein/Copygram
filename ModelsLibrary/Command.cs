@@ -16,7 +16,8 @@ namespace ModelsLibrary
         RequestChanges,
         CheckForUser,
         NewChatMessage,
-        NewSystemChatMessage
+        NewSystemChatMessage,
+        Disconnect
     }
 
     [Serializable]

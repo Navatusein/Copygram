@@ -12,7 +12,7 @@ using ServerConsole.Models;
 namespace ServerConsole.Migrations
 {
     [DbContext(typeof(CopygramDbContext))]
-    [Migration("20220724190325_Init")]
+    [Migration("20220729144520_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -122,7 +122,7 @@ namespace ServerConsole.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Messages");
+                    b.ToTable("ChatMessages");
                 });
 
             modelBuilder.Entity("ServerConsole.Models.ChatType", b =>
@@ -212,7 +212,7 @@ namespace ServerConsole.Migrations
             modelBuilder.Entity("ServerConsole.Models.ChatMessage", b =>
                 {
                     b.HasOne("ServerConsole.Models.Chat", "Chat")
-                        .WithMany("Messages")
+                        .WithMany("ChatMessages")
                         .HasForeignKey("ChatId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -232,7 +232,7 @@ namespace ServerConsole.Migrations
                 {
                     b.Navigation("ChatMembers");
 
-                    b.Navigation("Messages");
+                    b.Navigation("ChatMessages");
                 });
 #pragma warning restore 612, 618
         }
