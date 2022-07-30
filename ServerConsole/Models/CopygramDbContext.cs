@@ -25,7 +25,7 @@ namespace ServerConsole.Models
         {
             optionsBuilder
                 .UseLazyLoadingProxies()
-                .UseSqlServer("Data Source=178.151.124.250,21062; Initial Catalog=Copygram; User Id=sa; Password=cUarOm9If67yI6sFQBa6rOlJ; Trusted_Connection=false;");
+                .UseSqlServer("Data Source=178.151.124.250,21062; Initial Catalog=Copygram; User Id=sa; Password=cUarOm9If67yI6sFQBa6rOlJ; Trusted_Connection=false;MultipleActiveResultSets=true;");
         }
     }
 }

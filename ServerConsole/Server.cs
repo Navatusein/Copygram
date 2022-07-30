@@ -42,6 +42,8 @@ namespace ServerConsole
 
             serverWork = true;
 
+            //DbConnector.Test();
+
             Task.Run(() => UnavailableCollector());
 
             WaitingForConnection();
@@ -53,7 +55,7 @@ namespace ServerConsole
             {
                 Thread.Sleep(10000);
 
-                List<int> unavailableClientsId = clients.Where(x => (DateTime.Now - x.Value.LastRequest).TotalSeconds == 10)
+                List<int> unavailableClientsId = clients.Where(x => (DateTime.Now - x.Value.LastRequest).TotalSeconds >= 15)
                     .Select(x => x.Key)
                     .ToList();
 
@@ -91,8 +93,8 @@ namespace ServerConsole
                     semaphore.Release();
                     return;
                 }
-
-                Console.WriteLine($"[{DateTime.Now.TimeOfDay}] Get command {command.Type}");
+                string debugNickname = command.User == null ? "unknown" : command.User.Nickname;
+                Console.WriteLine($"[{DateTime.Now.TimeOfDay}] {debugNickname}: Get command {command.Type}");
 
                 if (command.Type == CommandType.RequestChanges)
                 {
@@ -231,7 +233,9 @@ namespace ServerConsole
 
                     TCP.SyncChatMessages syncChatMessages = Deserialization<TCP.SyncChatMessages>(command.Data);
 
-                    byte[] data = Serialization(DbConnector.SyncChatMessages(syncChatMessages));
+                    var a = DbConnector.SyncChatMessages(syncChatMessages);
+
+                    byte[] data = Serialization(a);
 
                     SendResponse(stream, ResponseType.Success, data, command);
                 }
@@ -359,7 +363,8 @@ namespace ServerConsole
 
         private void SendResponse(NetworkStream stream, ResponseType type, byte[] data, Command command)
         {
-            Console.WriteLine($"[{DateTime.Now.TimeOfDay}] Send response on command {command.Type}, {type}");
+            string debugNickname = command.User == null ? "unknown" : command.User.Nickname;
+            Console.WriteLine($"[{DateTime.Now.TimeOfDay}] {debugNickname}: Send response on command {command.Type}, {type}");
 
             TCP.Response response = new();
             response.Type = type;

@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 using TCP = ModelsLibrary;
 using DB = ServerConsole.Models;
+using System.Drawing.Imaging;
 
 namespace ServerConsole
 {
@@ -131,11 +132,24 @@ namespace ServerConsole
 
             using (CopygramDbContext dbContext = new())
             {
-                chatMessages = dbContext.ChatMessages.Where(x => x.ChatId == syncChatMessages.ChatId)
-                    .SkipWhile(x => x.ChatMessageId == syncChatMessages.MessageId)
-                    .Take(syncChatMessages.MessageCount)
-                    .Select(x => Mapper.DbModelToTcpModel(x))
-                    .ToList();
+                DB.Chat? dbChat = dbContext.Chats.FirstOrDefault(x => x.ChatId == syncChatMessages.ChatId);
+
+                if (dbChat == null)
+                    return null;
+
+                int messageIndex = dbChat.ChatMessages.ToList().FindIndex(x => x.ChatMessageId == syncChatMessages.MessageId);
+
+                int range = syncChatMessages.MessageCount;
+                int startIndex = messageIndex - range;
+
+                if (startIndex < 0)
+                {
+                    range += startIndex;
+                    startIndex = 0;
+                }
+
+                List<DB.ChatMessage> dbChatMessages = dbChat.ChatMessages.ToList().GetRange(startIndex, range);
+                chatMessages = dbChatMessages.Select(x => Mapper.DbModelToTcpModel(x)).ToList();
             }
 
             return chatMessages;
@@ -182,6 +196,30 @@ namespace ServerConsole
             }
 
             return tcpUser;
+        }
+
+        public static void Test()
+        {
+            Bitmap bitmap = new Bitmap("Cat.jpg");
+
+            byte[] data;
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                bitmap.Save(ms, ImageFormat.Png);
+                data = ms.ToArray();
+            }
+
+            using (CopygramDbContext context = new CopygramDbContext())
+            {
+                var user = context.Chats.ToArray()[0];
+
+                user.Avatar = data;
+
+                context.Chats.Update(user);
+
+                context.SaveChanges();
+            }
         }
 
     }
