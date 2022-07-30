@@ -31,7 +31,6 @@
             <local:SidePanelMenuItem x:Name="GroupBtn" IconImageSource="../Resources/Icons/group.png" TextSource="New Group"/>
             <local:SidePanelMenuItem x:Name="ChannelBtn" IconImageSource="../Resources/Icons/channel.png" TextSource="New Channel"/>
             <local:SidePanelMenuItem x:Name="ContactsBtn" IconImageSource="../Resources/Icons/contacts.png" TextSource="Contacts"/>
-            <local:SidePanelMenuItem x:Name="PhoneBtn" IconImageSource="../Resources/Icons/phone.png" TextSource="Calls"/>
             <local:SidePanelMenuItem x:Name="SavedBtn" IconImageSource="../Resources/Icons/saved.png" TextSource="Saved Messages"/>
             <local:SidePanelMenuItem x:Name="SettingsBtn" IconImageSource="../Resources/Icons/settings.png" TextSource="Settings"/>
             <local:SidePanelMenuItem x:Name="NightModeBtn" IconImageSource="../Resources/Icons/nightmode.png" TextSource="Night Mode"/>

@@ -20,50 +20,40 @@ namespace Client
         public MainWindow()
         {
             InitializeComponent();
+
+            ctrl = new();
+
             LoginLayout.Visibility = Visibility.Visible;
             MainGrid.Visibility = Visibility.Collapsed;
             BackgroundOverlayGrid.Visibility = Visibility.Visible;
             SidePanelOverlayGrid.Visibility = Visibility.Visible;
-            ContactsOverlayGrid.Visibility = Visibility.Visible;
+            PrivateOverlayGrid.Visibility = Visibility.Visible;
+            GroupOverlayGrid.Visibility = Visibility.Visible;
             DonatePlsGrid.Visibility = Visibility.Visible;
+            ChatThumbnailGrid.IsEnabled = false;
+            ChatGrid.IsEnabled = false;
             toSize = Width / 4;
 
-
-            //UserCell cell = null;
-            //int count = 1;
-            //while (count != 5)
-            //{
-            //    cell = new("test" + count, "Hello, World!", (count > 2 ? count : 0), new BitmapImage(new Uri("../../../Resources/Icons/user.png", UriKind.Relative)));
-            //    count++;
-            //    ChatsList.Items.Add(cell);
-            //}
         }
 
         private void rectOverlay_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                sidePanelOverlay.BeginAnimation(WidthProperty, new DoubleAnimation(toSize, 0, TimeSpan.FromSeconds(0.3)));
-                rectOverlay.BeginAnimation(HeightProperty, new DoubleAnimation(this.Height, 0, TimeSpan.FromSeconds(0.3)));
-                ContactsOverlay.Visibility = Visibility.Collapsed;
+                if (sidePanelOverlay.Visibility == Visibility.Visible)
+                    sidePanelOverlay.BeginAnimation(WidthProperty, new DoubleAnimation(toSize, 0, TimeSpan.FromSeconds(0.3)));
+                PrivateChatOverlay.Visibility = Visibility.Collapsed;
+                GroupChatOverlay.Visibility = Visibility.Collapsed;
                 DonateOverlay.Visibility = Visibility.Collapsed;
+                rectOverlay.Visibility = Visibility.Collapsed;
             }
         }
 
-        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            if (rectOverlay.Height > 0 || rectOverlay.Width > 0)
-            {
-                rectOverlay.Width = this.Width;
-                rectOverlay.Height = this.Height;
-            }
-        }
-
+        #region Focus events
         private void tbSearch_GotFocus(object sender, RoutedEventArgs e)
         {
             tbSearch.Clear();
         }
-
         private void tbSearch_LostFocus(object sender, RoutedEventArgs e)
         {
             tbSearch.Text = "Search";
@@ -72,12 +62,13 @@ namespace Client
         {
             tbMessage.Clear();
         }
-
         private void tbMessage_LostFocus(object sender, RoutedEventArgs e)
         {
             tbMessage.Text = "Write a message...";
         }
+        #endregion
 
+        #region Overlays functions
         private void IconButton_Tap(object sender, RoutedEventArgs e)
         {
             sidePanelOverlay.Visibility = Visibility.Visible;
@@ -87,23 +78,35 @@ namespace Client
             rectOverlay.BeginAnimation(HeightProperty, new DoubleAnimation(0, this.Height, TimeSpan.FromSeconds(0.5)));
         }
 
-        private void sidePanel_ContactClick(object sender, RoutedEventArgs e)
+        private void NotImplementedClick(object sender, RoutedEventArgs e)
         {
             sidePanelOverlay.Visibility = Visibility.Collapsed;
-            ContactsOverlay.Visibility = Visibility.Visible;
-        }
-
-        private void sidePanelOverlay_NotContactClick(object sender, RoutedEventArgs e)
-        {
-            sidePanelOverlay.Visibility = Visibility.Collapsed;
+            if (rectOverlay.Visibility == Visibility.Collapsed)
+                rectOverlay.Visibility = Visibility.Visible;
             DonateOverlay.Visibility = Visibility.Visible;
         }
 
-        private void ContactsOverlay_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        private void PrivateOverlay_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            if (ContactsOverlay.Visibility == Visibility.Collapsed)
+            if (PrivateChatOverlay.Visibility == Visibility.Collapsed)
             {
                 rectOverlay.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                PrivateChatOverlay.Clear();
+            }
+        }
+
+        private void GroupOverlay_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (GroupChatOverlay.Visibility == Visibility.Collapsed)
+            {
+                rectOverlay.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                GroupChatOverlay.Clear();
             }
         }
 
@@ -115,59 +118,32 @@ namespace Client
             }
         }
 
-        private void tbMessage_KeyDown(object sender, KeyEventArgs e)
+        private void DonateOverlay_CloseClick(object sender, RoutedEventArgs e)
         {
-            if (e.Key == Key.Enter && !string.IsNullOrEmpty(tbMessage.Text))
-            {
-                ctrl.SendMessage(tbMessage.Text.Trim());
-				MessageChat.Items.Add( new ChatMessage() { MessageText = tbMessage.Text, FromUser = ctrl.Profile});
-            }
+            rectOverlay.Visibility = Visibility.Collapsed;
+            DonateOverlay.Visibility = Visibility.Collapsed;
         }
 
-        private void TextChangedEvent(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        private void AddPrivate_Click(object sender, RoutedEventArgs e)
         {
-            if (!string.IsNullOrEmpty(tbUsername.Text) && !string.IsNullOrEmpty(tbPassword.Password))
-            {
-                btLogin.IsEnabled = true;
-                btLogin.Background = HexConverter("#2596be");
-            }
+            PrivateChatOverlay.Visibility = Visibility.Visible;
+            rectOverlay.Visibility = Visibility.Visible;
         }
 
-        private void tbPassword_PasswordChanged(object sender, RoutedEventArgs e)
+        private void AddGroup_Click(object sender, RoutedEventArgs e)
         {
-            if (!string.IsNullOrEmpty(tbUsername.Text) && !string.IsNullOrEmpty(tbPassword.Password))
-            {
-                btLogin.IsEnabled = true;
-                btLogin.Background = HexConverter("#2596be");
-            }
+            GroupChatOverlay.Visibility = Visibility.Visible;
+            rectOverlay.Visibility = Visibility.Visible;
         }
 
-        private Brush HexConverter(string hex)
-        {
-            BrushConverter bc = new BrushConverter();
-            Brush brush = (Brush)bc.ConvertFrom(hex);
-            brush.Freeze();
-            return brush;
-        }
-
+        #endregion
         private void btLogin_Click(object sender, RoutedEventArgs e)
         {
-            ctrl = null!;//new();
-            tbUsername.Text = "test";
-            tbPassword.Password = "test";
-
-            if (tbUsername.Text == "test" && tbPassword.Password == "test")
+            if (ctrl.TryLogin(LoginOverlay.tbUsername.Text, LoginOverlay.tbPassword.Password))
             {
                 LoginLayout.Visibility = Visibility.Collapsed;
                 MainGrid.Visibility = Visibility.Visible;
-                return;
-            }
-
-            if (ctrl.TryLogin(tbUsername.Text, tbPassword.Password))
-            {
-                LoginLayout.Visibility = Visibility.Collapsed;
-                MainGrid.Visibility = Visibility.Visible;
-                ChatsList.ItemsSource = ctrl.chats;
+                ChatsList.ItemsSource = ctrl.ChatList;
 
                 sidePanelOverlay.Name = ctrl.Profile.Nickname;
                 sidePanelOverlay.MyAvatarSource = ctrl.Avatar;
@@ -175,17 +151,61 @@ namespace Client
             }
             else
             {
-                tbUsername.Clear();
-                tbPassword.Clear();
-                SpeakLable.Text = "Wrong creditinals, dear User!";
-                SpeakLable.Foreground = new SolidColorBrush(Color.FromRgb(153, 0, 0));
+                LoginOverlay.Clear();
+                LoginOverlay.SpeakLable.Text = "Wrong creditinals, dear User!";
+                LoginOverlay.SpeakLable.Foreground = new SolidColorBrush(Color.FromRgb(153, 0, 0));
             }
         }
 
-        private void DonateOverlay_CloseClick(object sender, RoutedEventArgs e)
+        private void ChatsList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            rectOverlay.Visibility = Visibility.Collapsed;
-            DonateOverlay.Visibility = Visibility.Collapsed;
+            if (ChatsList.SelectedIndex != -1 || ChatsList.SelectedItem != null)
+            {
+                ChatThumbnailGrid.IsEnabled = true;
+                ChatGrid.IsEnabled = true;
+
+                MessageChat.Items.Clear();
+
+                foreach (ChatMessage message in ctrl.GetChat((ChatsList.SelectedItem as UserCell)!.Nickname))
+                {
+                    MessageChat.Items.Add(new MessageContainer(Controller.ToBitmapImage(message.FromUser.Avatar), message.MessageText));
+                }
+            }
+        }
+
+        private void tbMessage_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter && !string.IsNullOrEmpty(tbMessage.Text))
+            {
+                ctrl.SendMessage(tbMessage.Text.Trim());
+                MessageChat.Items.Add(new MessageContainer() { MessageText = tbMessage.Text.Trim(), AvatartImage = ctrl.Avatar});
+                tbMessage.Clear();
+            }
+        }
+
+        private void PrivateChatOverlay_AddClick(object sender, RoutedEventArgs e)
+        {
+            if (ctrl.AddPrivateChat(PrivateChatOverlay.tbWhoToAddress.Text))
+            {
+                PrivateChatOverlay.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void GroupChatOverlay_AddClick(object sender, RoutedEventArgs e)
+        {
+            ctrl.AddGroupChat(GroupChatOverlay.tbGroupName.Text, GroupChatOverlay.ImagePath, GroupChatOverlay.Invites);
+            GroupChatOverlay.Visibility = Visibility.Collapsed;
+        }
+
+        private void MessageChat_ScrollChanged(object sender, System.Windows.Controls.ScrollChangedEventArgs e)
+        {
+            if(ctrl.IsAnyChatSelected())
+                ctrl.GetOnScroll();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            ctrl.CloseServerConnection();
         }
     }
 }

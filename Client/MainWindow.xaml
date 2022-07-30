@@ -11,40 +11,11 @@
         MinHeight="600" MinWidth="600"
         Icon="Resources/Icons/logotype.ico"
         RenderOptions.BitmapScalingMode="HighQuality"
+        Closing="Window_Closing"
         Title="Copygram" Height="600" Width="1000">
     <Grid>
         <Grid x:Name="LoginLayout" Background="#293a4c" Visibility="Collapsed">
-            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Ellipse Width="100" Height="100" Margin="0,50,0,0">
-                    <Ellipse.Fill>
-                        <ImageBrush ImageSource="Resources/Icons/logotype.ico"/>
-                    </Ellipse.Fill>
-                </Ellipse>
-                
-                <TextBlock x:Name="SpeakLable" Style="{StaticResource LoginScreenTextBlock}" HorizontalAlignment="Center">
-                    Welcome, User!
-                </TextBlock>
-                
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <TextBlock Style="{StaticResource LoginScreenTextBlock}"> Enter your username: </TextBlock>
-                    <TextBox x:Name="tbUsername" Background="WhiteSmoke" BorderThickness="0" 
-                             Width="400" Height="30" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" 
-                             Margin="10,5" TextChanged="TextChangedEvent" ></TextBox>
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <TextBlock Style="{StaticResource LoginScreenTextBlock}"> Enter your password: </TextBlock>
-                    <PasswordBox x:Name="tbPassword" Background="WhiteSmoke" BorderThickness="0" 
-                                 Width="400" Height="30" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" 
-                                 Margin="10,5" PasswordChanged="tbPassword_PasswordChanged"></PasswordBox>
-                </StackPanel>
-                <Button x:Name="btLogin" HorizontalAlignment="Center" VerticalAlignment="Center" 
-                        Background="LightGray" Style="{StaticResource LoginButton}" IsEnabled="False" Click="btLogin_Click">
-                    <TextBlock Style="{StaticResource LoginScreenTextBlock}" Margin="25,10,25,10" HorizontalAlignment="Center">
-                        Login
-                    </TextBlock>
-                </Button>
-            </StackPanel>
+            <cctrl:LoginPage x:Name="LoginOverlay" LoginClick="btLogin_Click"/>
         </Grid> 
         <Grid x:Name="MainGrid" Visibility="Visible">
             <Grid.ColumnDefinitions>
@@ -58,31 +29,44 @@
             </Grid.RowDefinitions>
 
             <Grid x:Name="BackgroundOverlayGrid" Grid.RowSpan="2" Grid.ColumnSpan="3" Panel.ZIndex="1" Visibility="Collapsed">
-                <Rectangle Name="rectOverlay" MouseDown="rectOverlay_MouseDown" 
+                <Viewbox Stretch="Fill">
+                    <Rectangle Name="rectOverlay" MouseDown="rectOverlay_MouseDown" 
                            Stroke="Black" StrokeThickness="2" 
                            Fill="Black" Opacity="0.3" 
-                           Visibility="Collapsed" />
+                           Visibility="Collapsed"/>
+                </Viewbox>
             </Grid>
 
             <Grid x:Name="SidePanelOverlayGrid" Grid.RowSpan="2" Grid.ColumnSpan="3" Panel.ZIndex="2" Visibility="Collapsed" >
                 <cctrl:SidePanelMenu x:Name="sidePanelOverlay" Background="White" Grid.Column="0"
                             HorizontalAlignment="Left" Visibility="Collapsed" 
-                            VerticalAlignment="Stretch" ContactClick="sidePanel_ContactClick" NotContactClick="sidePanelOverlay_NotContactClick"
+                            VerticalAlignment="Stretch" NotImplementedClick="NotImplementedClick"
                             MyAvatarSource="Resources/Icons/logotype.ico"
                             MyUsernameSource="Anthony" IdSource="+000 (00) 000 00 00"/>
             </Grid>
 
-            <Grid x:Name="ContactsOverlayGrid" Grid.RowSpan="2" Grid.ColumnSpan="3" Panel.ZIndex="2" Visibility="Collapsed">
+            <Grid x:Name="PrivateOverlayGrid" Grid.RowSpan="2" Grid.ColumnSpan="3" Panel.ZIndex="2" Visibility="Collapsed">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="3*"/>
+                    <RowDefinition Height="4*"/>
+                    <RowDefinition Height="3*"/>
+                </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="4*"/>
+                    <ColumnDefinition Width="3*"/>
                 </Grid.ColumnDefinitions>
-                <cctrl:ContactsOverlay Grid.Column="1" x:Name="ContactsOverlay" Visibility="Collapsed" 
+                <cctrl:PrivateOverlay Grid.Row="1" Grid.Column="1" x:Name="PrivateChatOverlay" Visibility="Collapsed" 
                                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                                       IsVisibleChanged="ContactsOverlay_IsVisibleChanged"/>
+                                       IsVisibleChanged="PrivateOverlay_IsVisibleChanged" AddClick="PrivateChatOverlay_AddClick"/>
             </Grid>
 
+            <Grid x:Name="GroupOverlayGrid" Grid.RowSpan="2" Grid.ColumnSpan="3" Panel.ZIndex="2" Visibility="Collapsed">
+                <cctrl:GroupOverlay Grid.Row="1" Grid.Column="1" x:Name="GroupChatOverlay" Visibility="Collapsed" 
+                                       HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="75"
+                                       IsVisibleChanged="GroupOverlay_IsVisibleChanged" AddClick="GroupChatOverlay_AddClick"/>
+            </Grid>
+                
             <Grid x:Name="DonatePlsGrid" Grid.RowSpan="2" Grid.ColumnSpan="3" Panel.ZIndex="2" Visibility="Collapsed">
                 <cctrl:DonatePage Grid.Column="1" x:Name="DonateOverlay" Visibility="Collapsed"
                                   HorizontalAlignment="Center" VerticalAlignment="Center"
@@ -95,7 +79,13 @@
 
             <ListBox Grid.Row="1" Grid.Column="0" x:Name="FoldersGrid" Background="#293a4c" BorderThickness="0">
                 <ListBoxItem Style="{StaticResource ListBoxItemDefaultStyle}">
-                    <cctrl:IconButton IconImageSource="Resources/Icons/folder.png"/>
+                    <cctrl:IconButton IconImageSource="Resources/Icons/folder.png" Click="NotImplementedClick"/>
+                </ListBoxItem>
+                <ListBoxItem Style="{StaticResource ListBoxItemDefaultStyle}">
+                    <cctrl:IconButton IconImageSource="Resources/Icons/private_chat.png" Click="AddPrivate_Click"/>
+                </ListBoxItem>
+                <ListBoxItem Style="{StaticResource ListBoxItemDefaultStyle}">
+                    <cctrl:IconButton IconImageSource="Resources/Icons/group_chat.png" Click="AddGroup_Click"/>
                 </ListBoxItem>
             </ListBox>
 
@@ -103,11 +93,8 @@
                 <TextBox x:Name="tbSearch" Text="Search" Style="{StaticResource TextBoxSearch}" GotFocus="tbSearch_GotFocus" LostFocus="tbSearch_LostFocus"/>
             </Border>
 
-            <ListBox x:Name="ChatsList" Grid.Row="1" Grid.Column="1" BorderThickness="1" HorizontalContentAlignment="Stretch">
-                <ListBoxItem>
-                    <cctrl:UserCell Style="{StaticResource DefaultChatUser}"/>
-                </ListBoxItem>
-            </ListBox>
+            <ListBox x:Name="ChatsList" Grid.Row="1" Grid.Column="1" BorderThickness="1"
+                     HorizontalContentAlignment="Stretch" SelectionChanged="ChatsList_SelectionChanged"/>
 
             <Grid x:Name="ChatThumbnailGrid" Grid.Row="0" Grid.Column="2" Margin="5">
                 <Grid.ColumnDefinitions>
@@ -123,11 +110,11 @@
                     <TextBlock Text="last seen long time ago" Style="{StaticResource LastSeenLabel}"/>
                 </StackPanel>
 
-                <cctrl:IconButton Grid.Column="2" IconImageSource="Resources/Icons/search.png"/>
+                <cctrl:IconButton Grid.Column="2" IconImageSource="Resources/Icons/search.png" Click="NotImplementedClick"/>
 
-                <cctrl:IconButton Grid.Column="3" IconImageSource="Resources/Icons/info.ico"/>
+                <cctrl:IconButton Grid.Column="3" IconImageSource="Resources/Icons/info.ico" Click="NotImplementedClick"/>
 
-                <cctrl:IconButton Grid.Column="4" IconImageSource="Resources/Icons/list.png"/>
+                <cctrl:IconButton Grid.Column="4" IconImageSource="Resources/Icons/list.png" Click="NotImplementedClick"/>
             </Grid>
 
             <Grid x:Name="ChatGrid" Grid.Column="2" Grid.Row="1">
@@ -137,29 +124,14 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <ListView x:Name="MessageChat" Grid.Row="0" ItemContainerStyle="{StaticResource MessageContainer}">
+                <ListView x:Name="MessageChat" Grid.Row="0" ScrollViewer.ScrollChanged="MessageChat_ScrollChanged" >
                     <ListView.Background>
                         <ImageBrush ImageSource="Resources/Wallpapers/DefaultDay.jpg"/>
                     </ListView.Background>
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Vertical" Margin="5, 10">
-                                <!--<Ellipse Height="30" Width="30">
-                                    <Ellipse.Fill>
-                                        <ImageBrush ImageSource="{Binding Avatar}"/>
-                                    </Ellipse.Fill>
-                                </Ellipse>-->
-                                <Border Background="Gray" CornerRadius="10">
-                                    <TextBlock Style="{StaticResource MessageStyle}" Text="{Binding MessageText}"/>
-                                </Border>
-                                <!--<TextBlock Style="{StaticResource LastSeenLabel}" />-->
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
                 </ListView>
 
                 <Grid x:Name="MessageSets" Grid.Row="1">
-                    
+
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*"/>
                         <ColumnDefinition Width="7*"/>
@@ -167,19 +139,17 @@
                         <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
 
-                    <cctrl:IconButton Grid.Column="0" IconImageSource="Resources/Icons/insert.png"/>
+                    <cctrl:IconButton Grid.Column="0" IconImageSource="Resources/Icons/insert.png" Click="NotImplementedClick"/>
 
                     <TextBox x:Name="tbMessage" Grid.Column="1" Text="Write a message..." Style="{StaticResource TextBoxMessage}" 
                              GotFocus="tbMessage_GotFocus" LostFocus="tbMessage_LostFocus" KeyDown="tbMessage_KeyDown"/>
 
-                    <cctrl:IconButton Grid.Column="2" IconImageSource="Resources/Icons/emoji.png"/>
+                    <cctrl:IconButton Grid.Column="2" IconImageSource="Resources/Icons/emoji.png" Click="NotImplementedClick"/>
 
-                    <cctrl:IconButton Grid.Column="3" IconImageSource="Resources/Icons/microphone.png"/>
+                    <cctrl:IconButton Grid.Column="3" IconImageSource="Resources/Icons/microphone.png" Click="NotImplementedClick"/>
 
                 </Grid>
-
             </Grid>
-
         </Grid>
     </Grid>
 </Window>

@@ -38,11 +38,11 @@ namespace Client.CustomControls
                 typeof(string),
                 typeof(UserCell));
 
-        public static readonly DependencyProperty DateProperty
-            = DependencyProperty.Register(
-                "Date",
-                typeof(string),
-                typeof(UserCell));
+        //public static readonly DependencyProperty DateProperty
+        //    = DependencyProperty.Register(
+        //        "Date",
+        //        typeof(string),
+        //        typeof(UserCell));
 
         public static readonly DependencyProperty UnreadMessageCountProperty
             = DependencyProperty.Register(
@@ -65,11 +65,11 @@ namespace Client.CustomControls
             get => (string)GetValue(LastMessageProperty);
             set => SetValue(LastMessageProperty, value);
         }
-        public string Date
-        {
-            get => (string)GetValue(DateProperty);
-            set => SetValue(DateProperty, value);
-        }
+        //public string Date
+        //{
+        //    get => (string)GetValue(DateProperty);
+        //    set => SetValue(DateProperty, value);
+        //}
         public int UnreadMessageCount
         {
             get => (int)GetValue(UnreadMessageCountProperty);

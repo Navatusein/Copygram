@@ -56,44 +56,25 @@ namespace Client.CustomControls
             set => SetValue(IdSourceProperty, value);
         }
 
-        public static readonly RoutedEvent ContactClickEvent = EventManager.RegisterRoutedEvent(
-            "ContactClick", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(SidePanelMenuItem));
 
-        public event RoutedEventHandler ContactClick
+        public static readonly RoutedEvent NotImplementedEvent = EventManager.RegisterRoutedEvent(
+            "NotImplementedClick", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(SidePanelMenuItem));
+
+        public event RoutedEventHandler NotImplementedClick
         {
-            add { AddHandler(ContactClickEvent, value); }
-            remove { RemoveHandler(ContactClickEvent, value); }
+            add { AddHandler(NotImplementedEvent, value); }
+            remove { RemoveHandler(NotImplementedEvent, value); }
         }
 
-        void RaiseContactEvent()
+        void RaiseNotImplementedEvent()
         {
-            RoutedEventArgs newEventArgs = new RoutedEventArgs(SidePanelMenu.ContactClickEvent);
+            RoutedEventArgs newEventArgs = new RoutedEventArgs(SidePanelMenu.NotImplementedEvent);
             RaiseEvent(newEventArgs);
         }
 
-        void OnContactClick()
+        void OnNotImplementedClick()
         {
-            RaiseContactEvent();
-        }
-
-        public static readonly RoutedEvent NotContactClickEvent = EventManager.RegisterRoutedEvent(
-            "NotContactClick", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(SidePanelMenuItem));
-
-        public event RoutedEventHandler NotContactClick
-        {
-            add { AddHandler(NotContactClickEvent, value); }
-            remove { RemoveHandler(NotContactClickEvent, value); }
-        }
-
-        void RaiseNotContactEvent()
-        {
-            RoutedEventArgs newEventArgs = new RoutedEventArgs(SidePanelMenu.NotContactClickEvent);
-            RaiseEvent(newEventArgs);
-        }
-
-        void OnNotContactClick()
-        {
-            RaiseNotContactEvent();
+            RaiseNotImplementedEvent();
         }
 
         public SidePanelMenu()
@@ -101,13 +82,12 @@ namespace Client.CustomControls
             InitializeComponent();
             this.DataContext = this;
 
-            ContactsBtn.PreviewMouseLeftButtonUp += (sender, args) => OnContactClick();
-            GroupBtn.PreviewMouseLeftButtonUp += (sender, args) => OnNotContactClick();
-            ChannelBtn.PreviewMouseLeftButtonUp += (sender, args) => OnNotContactClick();
-            PhoneBtn.PreviewMouseLeftButtonUp += (sender, args) => OnNotContactClick();
-            SavedBtn.PreviewMouseLeftButtonUp += (sender, args) => OnNotContactClick();
-            SettingsBtn.PreviewMouseLeftButtonUp += (sender, args) => OnNotContactClick();
-            NightModeBtn.PreviewMouseLeftButtonUp += (sender, args) => OnNotContactClick();
+            ContactsBtn.PreviewMouseLeftButtonUp += (sender, args) => OnNotImplementedClick();
+            GroupBtn.PreviewMouseLeftButtonUp += (sender, args) => OnNotImplementedClick();
+            ChannelBtn.PreviewMouseLeftButtonUp += (sender, args) => OnNotImplementedClick();
+            SavedBtn.PreviewMouseLeftButtonUp += (sender, args) => OnNotImplementedClick();
+            SettingsBtn.PreviewMouseLeftButtonUp += (sender, args) => OnNotImplementedClick();
+            NightModeBtn.PreviewMouseLeftButtonUp += (sender, args) => OnNotImplementedClick();
         }
     }
 }

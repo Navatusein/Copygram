@@ -20,11 +20,11 @@
     <None Remove="Resources\Icons\channel.png" />
     <None Remove="Resources\Icons\contacts.png" />
     <None Remove="Resources\Icons\cross.png" />
-    <None Remove="Resources\Icons\daymode.png" />
-    <None Remove="Resources\Icons\dots-three-vertical.ico" />
     <None Remove="Resources\Icons\emoji.png" />
     <None Remove="Resources\Icons\folder.png" />
     <None Remove="Resources\Icons\group.png" />
+    <None Remove="Resources\Icons\group_chat.png" />
+    <None Remove="Resources\Icons\group_default.png" />
     <None Remove="Resources\Icons\info.ico" />
     <None Remove="Resources\Icons\insert.png" />
     <None Remove="Resources\Icons\list.png" />
@@ -33,6 +33,7 @@
     <None Remove="Resources\Icons\microphone.png" />
     <None Remove="Resources\Icons\nightmode.png" />
     <None Remove="Resources\Icons\phone.png" />
+    <None Remove="Resources\Icons\private_chat.png" />
     <None Remove="Resources\Icons\saved.png" />
     <None Remove="Resources\Icons\search.png" />
     <None Remove="Resources\Icons\settings.png" />
@@ -75,10 +76,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Resources\Icons\daymode.png">
+    <Resource Include="Resources\Icons\emoji.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Resources\Icons\emoji.png">
+    <Resource Include="Resources\Icons\group_chat.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\group_default.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Icons\insert.png">
@@ -93,6 +97,9 @@
     <Resource Include="Resources\Icons\phone.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\Icons\private_chat.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\Icons\saved.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
@@ -100,9 +107,6 @@
 
   <ItemGroup>
     <Resource Include="Resources\Icons\contacts.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Icons\dots-three-vertical.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Icons\info.ico">
