@@ -166,9 +166,8 @@ namespace Client
                 ChatThumbnailGrid.IsEnabled = true;
                 ChatGrid.IsEnabled = true;
 
-                MessageChat.Items.Clear();
-                ctrl.FetchChat((ChatsList.SelectedItems as UserCell)!.Nickname);
                 MessageChat.ItemsSource = ctrl.MessagesList;
+                Task.Run(() => ctrl.NewMessagesAdded((ChatsList.SelectedItems as UserCell)!.Nickname));
             }
         }
 
@@ -176,29 +175,27 @@ namespace Client
         {
             if (e.Key == Key.Enter && !string.IsNullOrEmpty(tbMessage.Text))
             {
-                ctrl.SendMessage(tbMessage.Text.Trim());
+                Task.Run(() => ctrl.SendMessage(tbMessage.Text.Trim()));
                 tbMessage.Clear();
             }
         }
 
         private void PrivateChatOverlay_AddClick(object sender, RoutedEventArgs e)
         {
-            if (ctrl.AddPrivateChat(PrivateChatOverlay.tbWhoToAddress.Text))
-            {
+            if (Task.Run(() => ctrl.AddPrivateChat(PrivateChatOverlay.tbWhoToAddress.Text)).Result)
                 PrivateChatOverlay.Visibility = Visibility.Collapsed;
-            }
         }
 
         private void GroupChatOverlay_AddClick(object sender, RoutedEventArgs e)
         {
-            ctrl.AddGroupChat(GroupChatOverlay.tbGroupName.Text, GroupChatOverlay.ImagePath, GroupChatOverlay.Invites);
-            GroupChatOverlay.Visibility = Visibility.Collapsed;
+            if(Task.Run(() => ctrl.AddGroupChat(GroupChatOverlay.tbGroupName.Text, GroupChatOverlay.ImagePath, GroupChatOverlay.Invites)).Result)
+                GroupChatOverlay.Visibility = Visibility.Collapsed;
         }
 
         private void MessageChat_ScrollChanged(object sender, System.Windows.Controls.ScrollChangedEventArgs e)
         {
             if(ctrl.IsAnyChatSelected())
-                ctrl.GetOnScroll();
+                Task.Run(() => ctrl.GetOnScroll());
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

@@ -118,7 +118,7 @@ namespace Client
                                     {
                                         case SystemChatMessageType.NewChat:
                                             chats.Add(sysMsg.Chat);
-                                            RefreshView();
+                                            NewChatsAdded();
                                             break;
                                         case SystemChatMessageType.UpdateChat:
                                             int index = chats.FindIndex(chat => chat.ChatId == sysMsg.Chat.ChatId);
@@ -130,10 +130,12 @@ namespace Client
 
                                     break;
                                 case MessageType.ChatMessage:
+
                                     ChatMessage chatMsg = (message as ChatMessage)!;
-                                    chats.FirstOrDefault(chat => chat.ChatId == chatMsg.ChatId)!.Messages.Add(chatMsg!);
+                                    chats.FirstOrDefault(chat => chat.ChatId == chatMsg.ChatId)!.Messages.Add(chatMsg);
+
                                     if (chatMsg.ChatId == activeChat.ChatId)
-                                        FetchChat(activeChat.ChatName);
+                                        NewMessagesAdded(activeChat.ChatName);
                                     break;
                                 default:
                                     break;
@@ -257,7 +259,7 @@ namespace Client
         /// <summary>
         /// Builds UI elements from current chats
         /// </summary>
-        public void RefreshView()
+        public void NewChatsAdded()
         {
             try
             {
@@ -279,14 +281,51 @@ namespace Client
             }
         }
 
+        /// <summary>
+        /// Reflects selected chat
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns>List of ChatMessages</returns>
+        public void NewMessagesAdded(string name)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(name))
+                    throw new ArgumentNullException("name");
+
+                activeChat = chats.FirstOrDefault(chat => chat.ChatName.Equals(name))!;
+
+                GetOnScroll();
+
+                if (activeChat != null)
+                {
+                    MessagesList = new();
+
+                    foreach (ChatMessage msg in activeChat.Messages)
+                    {
+                        MessagesList.Add(new MessageContainer()
+                        {
+                            MessageText = msg.MessageText,
+                            AvatartImage = ToBitmapImage(msg.FromUser.Avatar)
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "Recieve Chat Error",
+                        MessageBoxButton.OK);
+            }
+        }
+
         public void CloseServerConnection()
         {
             try
             {
                 if (timer != null)
                     timer.Stop();
-
-                Request(CommandType.Disconnect, null);
+                if(ep != null)
+                    Request(CommandType.Disconnect, null);
             }
             catch
             {
@@ -313,7 +352,7 @@ namespace Client
                     if (Request(CommandType.Sync, null) == ResponseType.Success)
                     {
                         chats = Deserialize<List<Chat>>(lastResponse.Data);
-                        RefreshView();
+                        NewChatsAdded();
                         StartBackgroundSync();
                         return true;
                     }
@@ -362,49 +401,12 @@ namespace Client
                 {
                     chats[chats.FindIndex(chat => chat.ChatId == activeChat.ChatId)].Messages.Add(Deserialize<ChatMessage>(lastResponse.Data));
                     MessagesList.Add(new MessageContainer() { MessageText = messageText.Trim(), AvatartImage = Avatar });
-                    RefreshView();
+                    NewMessagesAdded(activeChat.ChatName);
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "Send Message Error",
-                        MessageBoxButton.OK);
-            }
-        }
-
-        /// <summary>
-        /// Reflects selected chat
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns>List of ChatMessages</returns>
-        public void FetchChat(string name)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(name))
-                    throw new ArgumentNullException("name");
-
-                activeChat = chats.FirstOrDefault(chat => chat.ChatName.Equals(name))!;
-
-                GetOnScroll();
-
-                if (activeChat != null)
-                {
-                    MessagesList = new();
-
-                    foreach (ChatMessage msg in activeChat.Messages)
-                    {
-                        MessagesList.Add(new MessageContainer()
-                        {
-                            MessageText = msg.MessageText,
-                            AvatartImage = ToBitmapImage(msg.FromUser.Avatar)
-                        });
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "Recieve Chat Error",
                         MessageBoxButton.OK);
             }
         }
@@ -452,7 +454,7 @@ namespace Client
                 });
 
                 Request(CommandType.NewSystemChatMessage, new SystemChatMessage() { SystemMessageType = SystemChatMessageType.NewChat, Chat = activeChat });
-                RefreshView();
+                NewChatsAdded();
                 return true;
             }
             catch (Exception ex)
@@ -469,11 +471,11 @@ namespace Client
         /// <param name="nickname"></param>
         /// <param name="imagePath"></param>
         /// <param name="logins"></param>
-        public void AddGroupChat(string nickname, string imagePath, string logins)
+        public bool AddGroupChat(string nickname, string imagePath, string logins)
         {
             try
             {
-                if (string.IsNullOrEmpty(nickname) || string.IsNullOrEmpty(logins)) return;
+                if (string.IsNullOrEmpty(nickname) || string.IsNullOrEmpty(logins)) return false;
 
                 if (logins.Contains(" "))
                     logins = logins.Replace(" ", "");
@@ -490,6 +492,8 @@ namespace Client
                         members.Add(temp);
                     }
                 }
+
+                if(members.Count < 1) return false;
 
                 List<ChatMember> chatMembers = new();
                 chatMembers.Add(new ChatMember() { User = profile, ChatMemberRole = ChatMemberRole.Owner });
@@ -509,15 +513,16 @@ namespace Client
                 });
 
                 Request(CommandType.NewSystemChatMessage, new SystemChatMessage() { SystemMessageType = SystemChatMessageType.NewChat, Chat = activeChat });
-                RefreshView();
+                NewChatsAdded();
+                return true;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "Add group chat Error",
                         MessageBoxButton.OK);
+                return false;
             }
         }
-
 
     }
 }
