@@ -22,14 +22,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="ModelsLibrary">
-      <HintPath>..\ModelsLibrary\bin\Debug\net6.0\ModelsLibrary.dll</HintPath>
-    </Reference>
+    <Folder Include="Exceptions\" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Exceptions\" />
-    <Folder Include="Migrations\" />
+    <Reference Include="ModelsLibrary">
+      <HintPath>..\ModelsLibrary\bin\Debug\net6.0\ModelsLibrary.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+    </Reference>
   </ItemGroup>
 
 </Project>
