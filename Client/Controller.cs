@@ -11,6 +11,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
@@ -29,12 +30,14 @@ namespace Client
         IPEndPoint ep = null!;
 
         bool isLast = false;
-        bool loginStatus = false;
 
-        public ObservableCollection<UserCell> ChatList = null!;
-        public ObservableCollection<MessageContainer> MessagesList = null!;
+        #region Collections
+        ObservableCollection<UserCell> ChatList = null!;
+        ObservableCollection<MessageContainer> MessagesList = null!;
         List<Chat> chats = null!;
+        #endregion
 
+        #region Props
         public User Profile
         {
             get { return profile; }
@@ -45,23 +48,24 @@ namespace Client
             get { return avatar; }
         }
 
-        public bool IsLoggedIn
+        public bool IsLast
         {
-            get { return loginStatus; }
+            get { return isLast; }
+            set { isLast = value; }
         }
 
-        public bool IsAnyChatSelected()
-        {
-            if (activeChat == null)
-                return false;
-            else
-                return true;
+        public Chat? GetActiveChat
+        { 
+            get { return activeChat == null ? null : activeChat; }
         }
+        #endregion
 
-        public Controller()
+        public Controller(ObservableCollection<UserCell> cl, ObservableCollection<MessageContainer> ml)
         {
             try
             {
+                ChatList = cl;
+                MessagesList = ml;
                 ep = new IPEndPoint(IPAddress.Parse("178.151.124.250"), 27015);
             }
             catch (Exception ex)
@@ -82,7 +86,7 @@ namespace Client
             {
                 DispatcherTimer timer = new();
                 timer.Tick += Timer_Tick;
-                timer.Interval = new TimeSpan(0, 0, 10);
+                timer.Interval = new TimeSpan(0, 0, 5);
                 Task.Run(timer.Start);
             }
             catch (Exception ex)
@@ -103,41 +107,41 @@ namespace Client
             {
                 Response response = Request(CommandType.RequestChanges, null);
 
-                if (response.Type == ResponseType.Success)
+                if (response.Type == ResponseType.Error)
+                    return;
+
+                List<IMessage> messages = StreamTools.Deserialize<List<IMessage>>(response.Data);
+
+                if (messages == null)
+                    return;
+
+                foreach (IMessage message in messages)
                 {
-                    List<IMessage> messages = StreamTools.Deserialize<List<IMessage>>(response.Data);
-
-                    if (messages == null)
-                        return;
-
-                    foreach (IMessage message in messages)
+                    if (message.Type == MessageType.SystemChatMessage)
                     {
-                        if (message.Type == MessageType.SystemChatMessage)
-                        {
-                            SystemChatMessage sysMsg = (message as SystemChatMessage)!;
+                        SystemChatMessage sysMsg = (message as SystemChatMessage)!;
 
-                            if (sysMsg.SystemMessageType == SystemChatMessageType.NewChat)
-                            {
-                                chats.Add(sysMsg.Chat);
-                                NewChatsAdded();
-                            }
-                            else
-                            {
-                                int index = chats.FindIndex(chat => chat.ChatId == sysMsg.Chat.ChatId);
-                                chats[index] = sysMsg.Chat;
-                            }
+                        if (sysMsg.SystemMessageType == SystemChatMessageType.NewChat)
+                        {
+                            chats.Add(sysMsg.Chat);
+                            NewChatsAdded();
                         }
                         else
                         {
-                            ChatMessage chatMsg = (message as ChatMessage)!;
-                            chats.FirstOrDefault(chat => chat.ChatId == chatMsg.ChatId)!.Messages.Add(chatMsg);
-
-                            if (chatMsg.ChatId == activeChat.ChatId)
-                                NewMessagesAdded(activeChat.ChatName);
+                            int index = chats.FindIndex(chat => chat.ChatId == sysMsg.Chat.ChatId);
+                            chats[index] = sysMsg.Chat;
                         }
                     }
-                }
+                    else
+                    {
+                        ChatMessage chatMsg = (message as ChatMessage)!;
+                        chats.FirstOrDefault(chat => chat.ChatId == chatMsg.ChatId)!.Messages.Add(chatMsg);
+                        NewChatsAdded();
 
+                        if (chatMsg.ChatId == activeChat.ChatId)
+                            NewMessagesAdded(activeChat.ChatId);
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -145,6 +149,94 @@ namespace Client
                         MessageBoxButton.OK);
             }
         }
+        #endregion
+
+        #region View Loads
+
+        /// <summary>
+        /// Reflects chats
+        /// </summary>
+        public void NewChatsAdded()
+        {
+            try
+            {
+                ChatList.Clear();
+                foreach (Chat chat in chats)
+                {
+                    User otherUser = chat.ChatMembers.FirstOrDefault(member => member.User.UserId != profile.UserId)!.User;
+                    ChatList.Add(new UserCell()
+                    {
+                        ChatId = chat.ChatId,
+
+                        AvatarSource = chat.ChatType == ChatType.Private ? 
+                        StreamTools.ToBitmapImage(otherUser.Avatar) : StreamTools.ToBitmapImage(chat.Avatar),
+
+                        Nickname = chat.ChatName == profile.Nickname ? otherUser.Nickname : chat.ChatName,
+
+                        LastMessage = chat.Messages.Count > 0 ? chat.Messages.Last().MessageText : "No messages"
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "Chats to cells Error",
+                        MessageBoxButton.OK);
+            }
+        }
+
+        /// <summary>
+        /// Reflects selected chat
+        /// </summary>
+        /// <param name="name"></param>
+        public void NewMessagesAdded(int chatId)
+        {
+            try
+            {
+                if (chatId < 0 || isLast)
+                    return;
+
+                activeChat = chats.FirstOrDefault(chat => chat.ChatId == chatId)!;
+
+                if (activeChat.Messages.Count == 0)
+                {
+                    MessagesList.Clear();
+                    return;
+                }
+
+                int limit = 15;
+
+                SyncChatMessages dataToSend = new()
+                {
+                    ChatId = activeChat.ChatId,
+                    MessageCount = limit,
+                    MessageId = activeChat.Messages.First().ChatMessageId
+                };
+
+                Response response = Request(CommandType.SyncChatMessage, dataToSend);
+                List<ChatMessage> data = StreamTools.Deserialize<List<ChatMessage>>(response.Data);
+                activeChat.Messages.InsertRange(0, data);
+
+                if (data.Count < limit)
+                    isLast = true;
+
+                MessagesList.Clear();
+
+                foreach (ChatMessage msg in activeChat.Messages)
+                {
+                    MessagesList.Add(new MessageContainer()
+                    {
+                        MessageText = msg.MessageText,
+                        AvatartImage = StreamTools.ToBitmapImage(msg.FromUser.Avatar)
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "Recieve Chat Error",
+                        MessageBoxButton.OK);
+            }
+        }
+
         #endregion
 
         #region System funcs
@@ -184,73 +276,7 @@ namespace Client
                             MessageBoxButton.OK);
                 return new Response() { Type = ResponseType.Error };
             }
-        }
-
-        /// <summary>
-        /// Builds UI elements from current chats
-        /// </summary>
-        public void NewChatsAdded()
-        {
-            try
-            {
-                ChatList = new();
-                foreach (Chat chat in chats)
-                {
-                    ChatList.Add(new UserCell()
-                    {
-                        AvatarSource = StreamTools.ToBitmapImage(chat.Avatar),
-                        Nickname = chat.ChatName,
-                        LastMessage = chat.Messages.Count > 0 ? chat.Messages.Last().MessageText : "No messages"
-                    });
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "Chats to cells Error",
-                        MessageBoxButton.OK);
-            }
-        }
-
-        /// <summary>
-        /// Reflects selected chat
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns>List of ChatMessages</returns>
-        public void NewMessagesAdded(string chatName)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(chatName))
-                    return;
-
-                if (activeChat != null && activeChat.ChatName == chatName)
-                    return;
-
-                activeChat = chats.FirstOrDefault(chat => chat.ChatName.Equals(chatName))!;
-                isLast = false;
-
-                if (activeChat == null)
-                    return;
-
-                GetOnScroll();
-
-                MessagesList = new();
-
-                foreach (ChatMessage msg in activeChat.Messages)
-                {
-                    MessagesList.Add(new MessageContainer()
-                    {
-                        MessageText = msg.MessageText,
-                        AvatartImage = StreamTools.ToBitmapImage(msg.FromUser.Avatar)
-                    });
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "Recieve Chat Error",
-                        MessageBoxButton.OK);
-            }
-        }
+        }     
 
         /// <summary>
         /// Closes server connection
@@ -259,6 +285,28 @@ namespace Client
         {
             if (ep != null)
                 Request(CommandType.Disconnect, null);
+        }
+
+        /// <summary>
+        /// Supposed to search chat
+        /// </summary>
+        /// <param name="text">Name of chat</param>
+        public void SearchChat(string name)
+        {
+            ChatList = new();
+
+            foreach (Chat chat in chats)
+            {
+                if (chat.ChatName.ToLower().Contains(name.ToLower()))
+                {
+                    ChatList.Add(new UserCell()
+                    {
+                        AvatarSource = StreamTools.ToBitmapImage(chat.Avatar),
+                        Nickname = chat.ChatName,
+                        LastMessage = chat.Messages.Count > 0 ? chat.Messages.Last().MessageText : "No message"
+                    });
+                }
+            }
         }
 
         #endregion
@@ -292,7 +340,6 @@ namespace Client
                 NewChatsAdded();
                 StartBackgroundSync();
 
-                loginStatus = true;
                 return true;
             }
             catch (Exception ex)
@@ -300,28 +347,6 @@ namespace Client
                 MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "TryLogin Error",
                             MessageBoxButton.OK);
                 return false;
-            }
-        }
-
-        /// <summary>
-        /// Supposed to search chat
-        /// </summary>
-        /// <param name="text">Name of chat</param>
-        public void SearchChat(string name)
-        {
-            ChatList = new();
-
-            foreach (Chat chat in chats)
-            {
-                if (chat.ChatName.ToLower().Contains(name.ToLower()))
-                {
-                    ChatList.Add(new UserCell()
-                    {
-                        AvatarSource = StreamTools.ToBitmapImage(chat.Avatar),
-                        Nickname = chat.ChatName,
-                        LastMessage = chat.Messages.Count > 0 ? chat.Messages.Last().MessageText : "No message"
-                    });
-                }
             }
         }
 
@@ -350,37 +375,14 @@ namespace Client
 
                 chats[index].Messages.Add(StreamTools.Deserialize<ChatMessage>(response.Data));
 
-                MessagesList.Add(new MessageContainer() { MessageText = messageText.Trim(), AvatartImage = Avatar });
-                NewMessagesAdded(activeChat.ChatName);
+                MessagesList.Add(new MessageContainer() { MessageText = messageText.Trim(), AvatartImage = avatar });
+                NewMessagesAdded(activeChat.ChatId);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "Send Message Error",
                         MessageBoxButton.OK);
             }
-        }
-
-        /// <summary>
-        /// Gets old messages on scroll
-        /// </summary>
-        public void GetOnScroll()
-        {
-            if (isLast)
-                return;
-
-            SyncChatMessages dataToSend = new()
-            {
-                ChatId = activeChat.ChatId,
-                MessageCount = 5,
-                MessageId = activeChat.Messages.Last().ChatMessageId
-            };
-
-            Response response = Request(CommandType.SyncChatMessage, dataToSend);
-            var data = StreamTools.Deserialize<List<ChatMessage>>(response.Data);
-            activeChat.Messages.InsertRange(0, data);
-
-            if (data.Count < 5)
-                isLast = true;
         }
 
         /// <summary>
@@ -431,7 +433,7 @@ namespace Client
         /// <param name="nickname"></param>
         /// <param name="imagePath"></param>
         /// <param name="logins"></param>
-        public bool AddGroupChat(string nickname, string imagePath, string logins)
+        public bool AddGroupChat(string nickname, byte[] image, string logins)
         {
             try
             {
@@ -443,17 +445,14 @@ namespace Client
                 string[] loginArray = logins.Split(',');
 
                 List<User> members = new();
-                User data;
                 Response? response = null!;
 
                 foreach (string log in loginArray)
                 {
-                    data = new() { Nickname = nickname };
-
-                    response = Request(CommandType.CheckForUser, data);
+                    response = Request(CommandType.CheckForUser, log);
 
                     if (response.Type == ResponseType.Success)
-                        members.Add(data);
+                        members.Add(StreamTools.Deserialize<User>(response.Data));
                 }
 
                 if (members.Count < 1) return false;
@@ -468,7 +467,7 @@ namespace Client
 
                 chats.Add(activeChat = new Chat()
                 {
-                    Avatar = Encoding.UTF8.GetBytes(imagePath),
+                    Avatar = image,
                     ChatName = nickname,
                     ChatMembers = chatMembers,
                     ChatType = ChatType.Group,

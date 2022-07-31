@@ -32,7 +32,7 @@
                 <Button x:Name="btSelectImage" Content="Select image" Margin="10, 50, 10, 10"
                         Style="{StaticResource CommonButton}" Click="btSelectImage_Click"/>
                 <Button x:Name="btAdd" Content="Create" Margin="10, 5, 10, 0"
-                        Style="{StaticResource CommonButton}" Click="btAdd_Click"/>
+                        Style="{StaticResource CommonButton}"/>
             </StackPanel>
             <Ellipse Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5, 10">
                 <Ellipse.Fill>

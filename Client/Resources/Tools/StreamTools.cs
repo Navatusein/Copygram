@@ -97,5 +97,6 @@ namespace Client.Resources.Tools
             binFormatter.Serialize(netStream, cmd);
             netStream.Flush();
         }
+
     }
 }
