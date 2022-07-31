@@ -85,12 +85,22 @@ namespace Client.Resources.Tools
             }
         }
 
+        /// <summary>
+        /// Gets from network
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <returns>Response</returns>
         public static Response NetworkGet(Stream stream)
         {
             BinaryFormatter binFormatter = new BinaryFormatter();
             return (Response)binFormatter.Deserialize(stream);
         }
 
+        /// <summary>
+        /// Sends Command over network
+        /// </summary>
+        /// <param name="netStream"></param>
+        /// <param name="cmd"></param>
         public static void NetworkSend(NetworkStream netStream, Command cmd)
         {
             BinaryFormatter binFormatter = new BinaryFormatter();

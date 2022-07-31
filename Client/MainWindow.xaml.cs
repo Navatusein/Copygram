@@ -34,16 +34,18 @@ namespace Client
             Chat.ItemsSource = MessagesList;
 
             LoginLayout.Visibility = Visibility.Visible;
-            MainGrid.Visibility = Visibility.Collapsed;
             BackgroundOverlayGrid.Visibility = Visibility.Visible;
             SidePanelOverlayGrid.Visibility = Visibility.Visible;
             PrivateOverlayGrid.Visibility = Visibility.Visible;
             GroupOverlayGrid.Visibility = Visibility.Visible;
             DonatePlsGrid.Visibility = Visibility.Visible;
-            ChatThumbnailGrid.IsEnabled = false;
-            ChatGrid.IsEnabled = false;
-            toSize = Width / 4;
 
+            MainGrid.Visibility = Visibility.Collapsed;
+            ChatThumbnailGrid.Visibility = Visibility.Collapsed;
+
+            MessageSets.IsEnabled = false;
+
+            toSize = Width / 4;
         }
 
         private void rectOverlay_MouseDown(object sender, MouseButtonEventArgs e)
@@ -92,41 +94,33 @@ namespace Client
         private void NotImplementedClick(object sender, RoutedEventArgs e)
         {
             sidePanelOverlay.Visibility = Visibility.Collapsed;
+
             if (rectOverlay.Visibility == Visibility.Collapsed)
                 rectOverlay.Visibility = Visibility.Visible;
+
             DonateOverlay.Visibility = Visibility.Visible;
         }
 
         private void PrivateOverlay_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (PrivateChatOverlay.Visibility == Visibility.Collapsed)
-            {
                 rectOverlay.Visibility = Visibility.Collapsed;
-            }
             else
-            {
                 PrivateChatOverlay.Clear();
-            }
         }
 
         private void GroupOverlay_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (GroupChatOverlay.Visibility == Visibility.Collapsed)
-            {
                 rectOverlay.Visibility = Visibility.Collapsed;
-            }
             else
-            {
                 GroupChatOverlay.Clear();
-            }
         }
 
         private void DonateOverlay_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (DonateOverlay.Visibility == Visibility.Collapsed)
-            {
                 rectOverlay.Visibility = Visibility.Collapsed;
-            }
         }
 
         private void DonateOverlay_CloseClick(object sender, RoutedEventArgs e)
@@ -178,8 +172,8 @@ namespace Client
                 else
                     ctrl.IsLast = false;
 
-                ChatThumbnailGrid.IsEnabled = true;
-                ChatGrid.IsEnabled = true;
+                ChatThumbnailGrid.Visibility = Visibility.Visible;
+                MessageSets.IsEnabled = true;
 
                 ctrl.NewMessagesAdded(chatId);
 
