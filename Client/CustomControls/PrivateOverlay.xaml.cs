@@ -29,6 +29,8 @@ namespace Client.CustomControls
         {
             InitializeComponent();
             this.DataContext = this;
+
+            CreateBtn.PreviewMouseLeftButtonUp += (sender, args) => OnClick();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -68,7 +70,6 @@ namespace Client.CustomControls
         private void tbLostFocus(object sender, RoutedEventArgs e)
         {
             tbWhoToAddress.Foreground = new SolidColorBrush(Colors.LightGray);
-            tbWhoToAddress.Text = "Nickname";
         }
         public void Clear()
         {

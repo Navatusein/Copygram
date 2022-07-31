@@ -94,7 +94,8 @@
             </Border>
 
             <ListBox x:Name="ChatsList" Grid.Row="1" Grid.Column="1" BorderThickness="1"
-                     HorizontalContentAlignment="Stretch" SelectionChanged="ChatsList_SelectionChanged"/>
+                     HorizontalContentAlignment="Stretch" SelectionChanged="ChatsList_SelectionChanged" 
+                     ItemsSource="{Binding ChatList}"/>
 
             <Grid x:Name="ChatThumbnailGrid" Grid.Row="0" Grid.Column="2" Margin="5">
                 <Grid.ColumnDefinitions>
@@ -106,7 +107,7 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Orientation="Vertical">
-                    <TextBlock Text="Name Surname" Style="{StaticResource NameLabel}"/>
+                    <TextBlock x:Name="Username" Text="Name Surname" Style="{StaticResource NameLabel}"/>
                     <TextBlock Text="last seen long time ago" Style="{StaticResource LastSeenLabel}"/>
                 </StackPanel>
 
@@ -124,7 +125,9 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <ListView x:Name="MessageChat" Grid.Row="0" ScrollViewer.ScrollChanged="MessageChat_ScrollChanged" >
+                <ListView x:Name="Chat" Grid.Row="0" ScrollViewer.ScrollChanged="MessageChat_ScrollChanged"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                          ItemsSource="{Binding MessagesList}">
                     <ListView.Background>
                         <ImageBrush ImageSource="Resources/Wallpapers/DefaultDay.jpg"/>
                     </ListView.Background>

@@ -1,4 +1,5 @@
 ﻿using Client.CustomControls;
+using Client.Resources.Tools;
 using ModelsLibrary;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -23,16 +23,13 @@ namespace Client
     /// </summary>
     internal class Controller
     {
-        BinaryFormatter binFormat = null!;
         User profile = null!;
         BitmapImage avatar = null!;
-        Response lastResponse = null!;
         Chat activeChat = null!;
-        DispatcherTimer timer = null!;
         IPEndPoint ep = null!;
 
-        byte[] buff = null!;
         bool isLast = false;
+        bool loginStatus = false;
 
         public ObservableCollection<UserCell> ChatList = null!;
         public ObservableCollection<MessageContainer> MessagesList = null!;
@@ -48,6 +45,11 @@ namespace Client
             get { return avatar; }
         }
 
+        public bool IsLoggedIn
+        {
+            get { return loginStatus; }
+        }
+
         public bool IsAnyChatSelected()
         {
             if (activeChat == null)
@@ -60,7 +62,6 @@ namespace Client
         {
             try
             {
-                binFormat = new BinaryFormatter();
                 ep = new IPEndPoint(IPAddress.Parse("178.151.124.250"), 27015);
             }
             catch (Exception ex)
@@ -79,7 +80,7 @@ namespace Client
         {
             try
             {
-                timer = new();
+                DispatcherTimer timer = new();
                 timer.Tick += Timer_Tick;
                 timer.Interval = new TimeSpan(0, 0, 10);
                 Task.Run(timer.Start);
@@ -100,49 +101,43 @@ namespace Client
         {
             try
             {
-                if (Request(CommandType.RequestChanges, null) == ResponseType.Success)
+                Response response = Request(CommandType.RequestChanges, null);
+
+                if (response.Type == ResponseType.Success)
                 {
-                    List<IMessage> messages = Deserialize<List<IMessage>>(lastResponse.Data);
+                    List<IMessage> messages = StreamTools.Deserialize<List<IMessage>>(response.Data);
 
-                    if (messages != null)
+                    if (messages == null)
+                        return;
+
+                    foreach (IMessage message in messages)
                     {
-                        foreach (IMessage message in messages)
+                        if (message.Type == MessageType.SystemChatMessage)
                         {
-                            switch (message.Type)
+                            SystemChatMessage sysMsg = (message as SystemChatMessage)!;
+
+                            if (sysMsg.SystemMessageType == SystemChatMessageType.NewChat)
                             {
-                                case MessageType.SystemChatMessage:
-
-                                    SystemChatMessage sysMsg = (message as SystemChatMessage)!;
-
-                                    switch (sysMsg.SystemMessageType)
-                                    {
-                                        case SystemChatMessageType.NewChat:
-                                            chats.Add(sysMsg.Chat);
-                                            NewChatsAdded();
-                                            break;
-                                        case SystemChatMessageType.UpdateChat:
-                                            int index = chats.FindIndex(chat => chat.ChatId == sysMsg.Chat.ChatId);
-                                            chats[index] = sysMsg.Chat;
-                                            break;
-                                        default:
-                                            break;
-                                    }
-
-                                    break;
-                                case MessageType.ChatMessage:
-
-                                    ChatMessage chatMsg = (message as ChatMessage)!;
-                                    chats.FirstOrDefault(chat => chat.ChatId == chatMsg.ChatId)!.Messages.Add(chatMsg);
-
-                                    if (chatMsg.ChatId == activeChat.ChatId)
-                                        NewMessagesAdded(activeChat.ChatName);
-                                    break;
-                                default:
-                                    break;
+                                chats.Add(sysMsg.Chat);
+                                NewChatsAdded();
                             }
+                            else
+                            {
+                                int index = chats.FindIndex(chat => chat.ChatId == sysMsg.Chat.ChatId);
+                                chats[index] = sysMsg.Chat;
+                            }
+                        }
+                        else
+                        {
+                            ChatMessage chatMsg = (message as ChatMessage)!;
+                            chats.FirstOrDefault(chat => chat.ChatId == chatMsg.ChatId)!.Messages.Add(chatMsg);
+
+                            if (chatMsg.ChatId == activeChat.ChatId)
+                                NewMessagesAdded(activeChat.ChatName);
                         }
                     }
                 }
+
             }
             catch (Exception ex)
             {
@@ -160,99 +155,34 @@ namespace Client
         /// <param name="type">Request command type</param>
         /// <param name="toSerialize">Data to send on request</param>
         /// <returns>Type of response</returns>
-        ResponseType Request(CommandType type, object? toSerialize)
+        Response Request(CommandType type, object? toSerialize)
         {
             try
             {
+                byte[] data = null!;
+
                 if (toSerialize != null)
-                    Serialize(toSerialize);
+                    data = StreamTools.Serialize(toSerialize)!;
 
                 TcpClient client = new();
+
                 client.Connect(ep);
 
-                NetworkStream ns = client.GetStream();
-                binFormat.Serialize(ns, new Command() { Type = type, Data = buff, User = profile });
-                ns.Flush();
-                buff = null!;
+                NetworkStream netStream = client.GetStream();
+                Command command = new() { Type = type, Data = data, User = profile };
+                StreamTools.NetworkSend(netStream, command);
 
-                StreamReader reader = new(ns, Encoding.UTF8);
-                lastResponse = (Response)binFormat.Deserialize(reader.BaseStream);
-                ns.Close();
+                StreamReader reader = new(netStream, Encoding.UTF8);
+                Response response = StreamTools.NetworkGet(reader.BaseStream);
+                netStream.Close();
 
-                return lastResponse.Type;
+                return response;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "Request Error",
                             MessageBoxButton.OK);
-                return ResponseType.Error;
-            }
-        }
-
-        /// <summary>
-        /// Serializator
-        /// </summary>
-        /// <param name="obj">Data to serialize</param>
-        void Serialize(object obj)
-        {
-            try
-            {
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    binFormat.Serialize(ms, obj);
-                    buff = ms.ToArray();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "Serialize Error",
-                        MessageBoxButton.OK);
-            }
-        }
-
-        /// <summary>
-        /// Deserializator
-        /// </summary>
-        /// <param name="byteArray">Data to deserialize</param>
-        /// <returns></returns>
-        T Deserialize<T>(byte[] data)
-        {
-            if (data != null)
-            {
-                T DeserializedObject;
-
-                using (MemoryStream ms = new MemoryStream(data))
-                {
-                    DeserializedObject = (T)binFormat.Deserialize(ms);
-                }
-
-                return DeserializedObject;
-            }
-            else
-                throw new Exception("Argument could not be deserialized");
-        }
-
-        /// <summary>
-        /// Special converter for images
-        /// </summary>
-        /// <param name="data">image byte array</param>
-        /// <returns>BitmapImage</returns>
-        public static BitmapImage ToBitmapImage(byte[] data)
-        {
-            using (MemoryStream ms = new MemoryStream(data))
-            {
-                BitmapImage img = new BitmapImage();
-                img.BeginInit();
-                img.CacheOption = BitmapCacheOption.OnLoad;
-                img.StreamSource = ms;
-                img.EndInit();
-
-                if (img.CanFreeze)
-                {
-                    img.Freeze();
-                }
-
-                return img;
+                return new Response() { Type = ResponseType.Error };
             }
         }
 
@@ -268,7 +198,7 @@ namespace Client
                 {
                     ChatList.Add(new UserCell()
                     {
-                        AvatarSource = ToBitmapImage(chat.Avatar),
+                        AvatarSource = StreamTools.ToBitmapImage(chat.Avatar),
                         Nickname = chat.ChatName,
                         LastMessage = chat.Messages.Count > 0 ? chat.Messages.Last().MessageText : "No messages"
                     });
@@ -286,29 +216,33 @@ namespace Client
         /// </summary>
         /// <param name="name"></param>
         /// <returns>List of ChatMessages</returns>
-        public void NewMessagesAdded(string name)
+        public void NewMessagesAdded(string chatName)
         {
             try
             {
-                if (string.IsNullOrEmpty(name))
-                    throw new ArgumentNullException("name");
+                if (string.IsNullOrEmpty(chatName))
+                    return;
 
-                activeChat = chats.FirstOrDefault(chat => chat.ChatName.Equals(name))!;
+                if (activeChat != null && activeChat.ChatName == chatName)
+                    return;
+
+                activeChat = chats.FirstOrDefault(chat => chat.ChatName.Equals(chatName))!;
+                isLast = false;
+
+                if (activeChat == null)
+                    return;
 
                 GetOnScroll();
 
-                if (activeChat != null)
-                {
-                    MessagesList = new();
+                MessagesList = new();
 
-                    foreach (ChatMessage msg in activeChat.Messages)
+                foreach (ChatMessage msg in activeChat.Messages)
+                {
+                    MessagesList.Add(new MessageContainer()
                     {
-                        MessagesList.Add(new MessageContainer()
-                        {
-                            MessageText = msg.MessageText,
-                            AvatartImage = ToBitmapImage(msg.FromUser.Avatar)
-                        });
-                    }
+                        MessageText = msg.MessageText,
+                        AvatartImage = StreamTools.ToBitmapImage(msg.FromUser.Avatar)
+                    });
                 }
             }
             catch (Exception ex)
@@ -318,19 +252,13 @@ namespace Client
             }
         }
 
+        /// <summary>
+        /// Closes server connection
+        /// </summary>
         public void CloseServerConnection()
         {
-            try
-            {
-                if (timer != null)
-                    timer.Stop();
-                if(ep != null)
-                    Request(CommandType.Disconnect, null);
-            }
-            catch
-            {
-
-            }
+            if (ep != null)
+                Request(CommandType.Disconnect, null);
         }
 
         #endregion
@@ -345,23 +273,27 @@ namespace Client
         {
             try
             {
-                if (Request(CommandType.Login, new LoginData() { Login = username, Password = password }) == ResponseType.Success)
-                {
-                    profile = Deserialize<User>(lastResponse.Data);
-                    avatar = ToBitmapImage(profile.Avatar);////////////////////////////////////////////////////////////////////////////////////////////
-                    if (Request(CommandType.Sync, null) == ResponseType.Success)
-                    {
-                        chats = Deserialize<List<Chat>>(lastResponse.Data);
-                        NewChatsAdded();
-                        StartBackgroundSync();
-                        return true;
-                    }
+                LoginData dataToSend = new() { Login = username, Password = password };
+
+                Response response = Request(CommandType.Login, dataToSend);
+
+                if (response.Type == ResponseType.Error)
                     return false;
-                }
-                else
-                {
+
+                profile = StreamTools.Deserialize<User>(response.Data);
+                avatar = StreamTools.ToBitmapImage(profile.Avatar);
+
+                response = Request(CommandType.Sync, null);
+
+                if (response.Type == ResponseType.Error)
                     return false;
-                }
+
+                chats = StreamTools.Deserialize<List<Chat>>(response.Data);
+                NewChatsAdded();
+                StartBackgroundSync();
+
+                loginStatus = true;
+                return true;
             }
             catch (Exception ex)
             {
@@ -371,16 +303,21 @@ namespace Client
             }
         }
 
-        public void SearchChat(string text)
+        /// <summary>
+        /// Supposed to search chat
+        /// </summary>
+        /// <param name="text">Name of chat</param>
+        public void SearchChat(string name)
         {
             ChatList = new();
+
             foreach (Chat chat in chats)
             {
-                if (chat.ChatName.ToLower().Contains(text.ToLower()))
+                if (chat.ChatName.ToLower().Contains(name.ToLower()))
                 {
                     ChatList.Add(new UserCell()
                     {
-                        AvatarSource = ToBitmapImage(chat.Avatar),
+                        AvatarSource = StreamTools.ToBitmapImage(chat.Avatar),
                         Nickname = chat.ChatName,
                         LastMessage = chat.Messages.Count > 0 ? chat.Messages.Last().MessageText : "No message"
                     });
@@ -397,12 +334,24 @@ namespace Client
         {
             try
             {
-                if (Request(CommandType.NewChatMessage, new ChatMessage() { MessageText = messageText, FromUser = profile, ChatId = activeChat.ChatId }) == ResponseType.Success)
+                ChatMessage dataToSend = new()
                 {
-                    chats[chats.FindIndex(chat => chat.ChatId == activeChat.ChatId)].Messages.Add(Deserialize<ChatMessage>(lastResponse.Data));
-                    MessagesList.Add(new MessageContainer() { MessageText = messageText.Trim(), AvatartImage = Avatar });
-                    NewMessagesAdded(activeChat.ChatName);
-                }
+                    MessageText = messageText,
+                    FromUser = profile,
+                    ChatId = activeChat.ChatId
+                };
+
+                Response response = Request(CommandType.NewChatMessage, dataToSend);
+
+                if (response.Type == ResponseType.Error)
+                    return;
+
+                int index = chats.FindIndex(chat => chat.ChatId == activeChat.ChatId);
+
+                chats[index].Messages.Add(StreamTools.Deserialize<ChatMessage>(response.Data));
+
+                MessagesList.Add(new MessageContainer() { MessageText = messageText.Trim(), AvatartImage = Avatar });
+                NewMessagesAdded(activeChat.ChatName);
             }
             catch (Exception ex)
             {
@@ -416,14 +365,21 @@ namespace Client
         /// </summary>
         public void GetOnScroll()
         {
-            if (!isLast)
-            {
-                Request(CommandType.SyncChatMessage, new SyncChatMessages() { ChatId = activeChat.ChatId, MessageCount = 5, MessageId = activeChat.Messages.Last().ChatMessageId });
-                var temp = Deserialize<List<ChatMessage>>(lastResponse.Data);
-                activeChat.Messages.InsertRange(0, temp);
-            }
+            if (isLast)
+                return;
 
-            if (Deserialize<List<ChatMessage>>(lastResponse.Data).Count < 5)
+            SyncChatMessages dataToSend = new()
+            {
+                ChatId = activeChat.ChatId,
+                MessageCount = 5,
+                MessageId = activeChat.Messages.Last().ChatMessageId
+            };
+
+            Response response = Request(CommandType.SyncChatMessage, dataToSend);
+            var data = StreamTools.Deserialize<List<ChatMessage>>(response.Data);
+            activeChat.Messages.InsertRange(0, data);
+
+            if (data.Count < 5)
                 isLast = true;
         }
 
@@ -437,23 +393,27 @@ namespace Client
             {
                 if (nickname == null) return false;
 
-                if (Request(CommandType.CheckForUser, new User() { Nickname = nickname }) == ResponseType.Error) return false;
+                Response response = Request(CommandType.CheckForUser, nickname);
 
-                User toUser = Deserialize<User>(lastResponse.Data);
+                if (response.Type == ResponseType.Error) return false;
+
+                User toUser = StreamTools.Deserialize<User>(response.Data);
 
                 ChatMember me = new ChatMember() { User = profile, ChatMemberRole = ChatMemberRole.Owner };
                 ChatMember to = new ChatMember() { User = toUser, ChatMemberRole = ChatMemberRole.Owner };
 
                 chats.Add(activeChat = new Chat()
                 {
-                    Avatar = toUser.Avatar,////////////////////////////////////////////////////////////////////////////////////////////
+                    Avatar = toUser.Avatar,
                     ChatName = toUser.Nickname,
                     ChatMembers = new List<ChatMember>() { me, to },
                     ChatType = ChatType.Private,
                     Messages = new List<ChatMessage>()
                 });
 
-                Request(CommandType.NewSystemChatMessage, new SystemChatMessage() { SystemMessageType = SystemChatMessageType.NewChat, Chat = activeChat });
+                SystemChatMessage dataToSend = new() { SystemMessageType = SystemChatMessageType.NewChat, Chat = activeChat };
+
+                Request(CommandType.NewSystemChatMessage, dataToSend);
                 NewChatsAdded();
                 return true;
             }
@@ -483,17 +443,20 @@ namespace Client
                 string[] loginArray = logins.Split(',');
 
                 List<User> members = new();
-                User temp;
+                User data;
+                Response? response = null!;
 
                 foreach (string log in loginArray)
                 {
-                    if (Request(CommandType.CheckForUser, temp = new User() { Nickname = nickname }) == ResponseType.Success)
-                    {
-                        members.Add(temp);
-                    }
+                    data = new() { Nickname = nickname };
+
+                    response = Request(CommandType.CheckForUser, data);
+
+                    if (response.Type == ResponseType.Success)
+                        members.Add(data);
                 }
 
-                if(members.Count < 1) return false;
+                if (members.Count < 1) return false;
 
                 List<ChatMember> chatMembers = new();
                 chatMembers.Add(new ChatMember() { User = profile, ChatMemberRole = ChatMemberRole.Owner });
@@ -505,14 +468,16 @@ namespace Client
 
                 chats.Add(activeChat = new Chat()
                 {
-                    Avatar = Encoding.UTF8.GetBytes(imagePath),////////////////////////////////////////////////////////////////////////////////////////////
+                    Avatar = Encoding.UTF8.GetBytes(imagePath),
                     ChatName = nickname,
                     ChatMembers = chatMembers,
                     ChatType = ChatType.Group,
                     Messages = new List<ChatMessage>()
                 });
 
-                Request(CommandType.NewSystemChatMessage, new SystemChatMessage() { SystemMessageType = SystemChatMessageType.NewChat, Chat = activeChat });
+                SystemChatMessage dataToSend = new() { SystemMessageType = SystemChatMessageType.NewChat, Chat = activeChat };
+
+                Request(CommandType.NewSystemChatMessage, dataToSend);
                 NewChatsAdded();
                 return true;
             }

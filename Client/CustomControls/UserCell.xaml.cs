@@ -91,6 +91,7 @@ namespace Client.CustomControls
         {
             InitializeComponent();
             this.DataContext = this;
+
             if (string.IsNullOrEmpty(name) || count < 0) return;
             
             Nickname = name;

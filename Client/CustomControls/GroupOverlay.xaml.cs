@@ -58,6 +58,8 @@ namespace Client.CustomControls
         public GroupOverlay()
         {
             InitializeComponent();
+            this.DataContext = DataContext;
+
             btAdd.PreviewMouseLeftButtonUp += (sender, args) => OnClick();
         }
 
@@ -100,16 +102,18 @@ namespace Client.CustomControls
         }
         private void tbNameLostFocus(object sender, RoutedEventArgs e)
         {
-            tbGroupName.Text = "Your group name";
+            if(string.IsNullOrEmpty(tbGroupName.Text))
+                tbGroupName.Text = "Your group name";
         }
 
         private void tbInvitesGotFocus(object sender, RoutedEventArgs e)
         {
-            tbGroupName.Clear();
+            tbGroupUsers.Clear();
         }
         private void tbInvitesLostFocus(object sender, RoutedEventArgs e)
         {
-            tbGroupName.Text = "Your invites";
+            if (string.IsNullOrEmpty(tbGroupUsers.Text))
+                tbGroupUsers.Text = "Your invites";
         }
 
         public void Clear()

@@ -1,12 +1,10 @@
 ﻿using Client.CustomControls;
-using ModelsLibrary;
 using System;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
 
 namespace Client
 {
@@ -145,7 +143,7 @@ namespace Client
                 LoginLayout.Visibility = Visibility.Collapsed;
                 MainGrid.Visibility = Visibility.Visible;
                 ChatsList.ItemsSource = ctrl.ChatList;
-                MessageChat.ItemsSource = ctrl.MessagesList;
+                Chat.ItemsSource = ctrl.MessagesList;
 
                 sidePanelOverlay.Name = ctrl.Profile.Nickname;
                 sidePanelOverlay.MyAvatarSource = ctrl.Avatar;
@@ -163,11 +161,15 @@ namespace Client
         {
             if (ChatsList.SelectedIndex != -1 || ChatsList.SelectedItem != null)
             {
+                string chatname = (ChatsList.SelectedItem as UserCell)!.Nickname;
+
                 ChatThumbnailGrid.IsEnabled = true;
                 ChatGrid.IsEnabled = true;
 
-                MessageChat.ItemsSource = ctrl.MessagesList;
-                Task.Run(() => ctrl.NewMessagesAdded((ChatsList.SelectedItems as UserCell)!.Nickname));
+                ctrl.NewMessagesAdded(chatname);
+                Chat.ItemsSource = ctrl.MessagesList;
+
+                Username.Text = chatname;
             }
         }
 
@@ -175,27 +177,39 @@ namespace Client
         {
             if (e.Key == Key.Enter && !string.IsNullOrEmpty(tbMessage.Text))
             {
-                Task.Run(() => ctrl.SendMessage(tbMessage.Text.Trim()));
+                ctrl.SendMessage(tbMessage.Text.Trim());
                 tbMessage.Clear();
+                Chat.ItemsSource = ctrl.MessagesList;
             }
         }
 
         private void PrivateChatOverlay_AddClick(object sender, RoutedEventArgs e)
         {
-            if (Task.Run(() => ctrl.AddPrivateChat(PrivateChatOverlay.tbWhoToAddress.Text)).Result)
+            if (ctrl.AddPrivateChat(PrivateChatOverlay.tbWhoToAddress.Text))
+            {
                 PrivateChatOverlay.Visibility = Visibility.Collapsed;
+                ChatsList.ItemsSource = ctrl.ChatList;
+            }
         }
 
         private void GroupChatOverlay_AddClick(object sender, RoutedEventArgs e)
         {
-            if(Task.Run(() => ctrl.AddGroupChat(GroupChatOverlay.tbGroupName.Text, GroupChatOverlay.ImagePath, GroupChatOverlay.Invites)).Result)
+            if (ctrl.AddGroupChat(GroupChatOverlay.tbGroupName.Text,
+                GroupChatOverlay.ImagePath, GroupChatOverlay.Invites))
+            {
                 GroupChatOverlay.Visibility = Visibility.Collapsed;
+                ChatsList.ItemsSource = ctrl.ChatList;
+            }
+
         }
 
         private void MessageChat_ScrollChanged(object sender, System.Windows.Controls.ScrollChangedEventArgs e)
         {
-            if(ctrl.IsAnyChatSelected())
-                Task.Run(() => ctrl.GetOnScroll());
+            if (ctrl.IsAnyChatSelected())
+            {
+                ctrl.GetOnScroll();
+                Chat.ItemsSource = ctrl.MessagesList;
+            }
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -208,6 +222,7 @@ namespace Client
             if (e.Key == Key.Enter)
             {
                 ctrl.SearchChat(tbSearch.Text);
+                ChatsList.ItemsSource = ctrl.ChatList;
             }
         }
     }
