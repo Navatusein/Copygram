@@ -1,18 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Microsoft.Win32;
 
 namespace Client.CustomControls
@@ -50,7 +40,6 @@ namespace Client.CustomControls
             this.DataContext = DataContext;
 
             btAdd.PreviewMouseLeftButtonUp += (sender, args) => OnClick();
-            ImageBox.ImageSource = (ImageSource)new ImageSourceConverter().ConvertFromString("../../../Resources/Icons/group_default.png")!;
             Image = File.ReadAllBytes("../../../Resources/Icons/group_default.png");
         }
 
