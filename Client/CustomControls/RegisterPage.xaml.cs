@@ -12,26 +12,41 @@ namespace Client.CustomControls
     /// </summary>
     public partial class RegisterPage : UserControl
     {
+        /// <summary>
+        /// Routed event
+        /// </summary>
         public static readonly RoutedEvent RegisterClickEvent = EventManager.RegisterRoutedEvent(
             "RegisterClick", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(RegisterPage));
 
+        /// <summary>
+        /// Property for routed event
+        /// </summary>
         public event RoutedEventHandler RegisterClick
         {
             add { AddHandler(RegisterClickEvent, value); }
             remove { RemoveHandler(RegisterClickEvent, value); }
         }
 
+        /// <summary>
+        /// On routed event
+        /// </summary>
         void RaiseRegisterClickEvent()
         {
             RoutedEventArgs newEventArgs = new RoutedEventArgs(RegisterPage.RegisterClickEvent);
             RaiseEvent(newEventArgs);
         }
 
+        /// <summary>
+        /// Raises routed event
+        /// </summary>
         void OnRegisterClick()
         {
             RaiseRegisterClickEvent();
         }
 
+        /// <summary>
+        /// Avatar in bytes
+        /// </summary>
         public byte[] AvatarImage{ get; set; }
 
         public RegisterPage()
@@ -40,9 +55,14 @@ namespace Client.CustomControls
             this.DataContext = this;
 
             btRegister.PreviewMouseLeftButtonUp += (sender, args) => OnRegisterClick();
-            AvatarImage = File.ReadAllBytes("../../../Resources/Icons/default_user.png");
+            AvatarImage = File.ReadAllBytes("../../../Resources/Icons/default_user.png");//Default avatar
         }
 
+        /// <summary>
+        /// Checks if all text was filled
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void TextChangedEvent(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             if (!string.IsNullOrEmpty(tbUsername.Text) && 
@@ -54,6 +74,11 @@ namespace Client.CustomControls
             }
         }
 
+        /// <summary>
+        /// Check if password was filled
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void tbPassword_PasswordChanged(object sender, RoutedEventArgs e)
         {
             if (!string.IsNullOrEmpty(tbUsername.Text) &&
@@ -65,6 +90,9 @@ namespace Client.CustomControls
             }
         }
 
+        /// <summary>
+        /// Clears input text
+        /// </summary>
         public void Clear()
         {
             tbPassword.Clear();
@@ -72,6 +100,11 @@ namespace Client.CustomControls
             tbLogin.Clear();
         }
 
+        /// <summary>
+        /// Gets avatar from file
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void IconButton_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog ofd = new();

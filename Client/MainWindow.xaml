@@ -108,7 +108,7 @@
 
                 <StackPanel Orientation="Vertical">
                     <TextBlock x:Name="Username" Text="Name Surname" Style="{StaticResource NameLabel}"/>
-                    <TextBlock Text="last seen long time ago" Style="{StaticResource LastSeenLabel}"/>
+                    <TextBlock x:Name="TimeStamp" Text="last seen long time ago" Style="{StaticResource LastSeenLabel}"/>
                 </StackPanel>
 
                 <cctrl:IconButton x:Name="ibSearch" Style="{StaticResource DefaultImageSize}" Grid.Column="2" IconImageSource="Resources/Icons/search.png" Click="NotImplementedClick"/>
@@ -126,7 +126,7 @@
                 </Grid.RowDefinitions>
 
                 <ListView x:Name="Chat" Grid.Row="0" PreviewMouseWheel="Chat_MouseWheel" ScrollViewer.CanContentScroll="True"
-                          ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                          ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                     <ListView.Background>
                         <ImageBrush ImageSource="Resources/Wallpapers/DefaultDay.jpg"/>
                     </ListView.Background>
