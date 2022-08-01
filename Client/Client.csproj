@@ -20,6 +20,7 @@
     <None Remove="Resources\Icons\channel.png" />
     <None Remove="Resources\Icons\contacts.png" />
     <None Remove="Resources\Icons\cross.png" />
+    <None Remove="Resources\Icons\default_user.png" />
     <None Remove="Resources\Icons\emoji.png" />
     <None Remove="Resources\Icons\folder.png" />
     <None Remove="Resources\Icons\group.png" />
@@ -65,6 +66,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Icons\cross.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\default_user.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Icons\folder.png">

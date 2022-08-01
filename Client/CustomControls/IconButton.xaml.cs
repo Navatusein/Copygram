@@ -52,6 +52,30 @@ namespace Client.CustomControls
             RaiseClickEvent();
         }
 
+        public static readonly DependencyProperty DesiredHeightProperty
+            = DependencyProperty.Register(
+        "DesiredHeight",
+        typeof(int),
+        typeof(IconButton));
+
+        public int DesiredHeight
+        {
+            get => (int)GetValue(DesiredHeightProperty);
+            set => SetValue(DesiredHeightProperty, value);
+        }
+
+        public static readonly DependencyProperty DesiredWidthProperty
+            = DependencyProperty.Register(
+        "DesiredWidth",
+        typeof(int),
+        typeof(IconButton));
+
+        public int DesiredWidth
+        {
+            get => (int)GetValue(DesiredWidthProperty);
+            set => SetValue(DesiredWidthProperty, value);
+        }
+
         public IconButton()
         {
             InitializeComponent();

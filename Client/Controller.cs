@@ -11,6 +11,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
@@ -364,6 +365,33 @@ namespace Client
 
                 Sync();
                 
+                StartBackgroundSync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "TryLogin Error",
+                            MessageBoxButton.OK);
+                return false;
+            }
+        }
+
+        public bool TryRegister(string username, string login, string password, byte[] avatarImage)
+        {
+            try
+            {
+                User loginUser = new() { Nickname = username, Avatar = avatarImage };
+                LoginData dataToSend = new() { Login = login, Password = password, User = loginUser };
+
+                Response response = Request(CommandType.Register, dataToSend);
+
+                if (response.Type == ResponseType.Error) return false;
+
+                profile = StreamTools.Deserialize<User>(response.Data);
+
+                Sync();
+
                 StartBackgroundSync();
 
                 return true;

@@ -216,7 +216,8 @@ namespace Client
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if(LoginLayout.Visibility == Visibility.Collapsed)
+            if(LoginLayout.Visibility == Visibility.Collapsed &&
+                RegisterOverlay.Visibility == Visibility.Collapsed)
                 ctrl.CloseServerConnection();
         }
 
@@ -275,6 +276,32 @@ namespace Client
                         }
                     }
                 }   
+            }
+        }
+
+        private void LoginOverlay_RegisterClick(object sender, RoutedEventArgs e)
+        {
+            RegisterOverlay.Visibility = Visibility.Visible;
+            LoginOverlay.Visibility = Visibility.Collapsed;
+        }
+
+        private void RegisterOverlay_RegisterClick(object sender, RoutedEventArgs e)
+        {
+            if (ctrl.TryRegister(RegisterOverlay.tbUsername.Text, RegisterOverlay.tbLogin.Text,
+                RegisterOverlay.tbPassword.Password, RegisterOverlay.AvatarImage))
+            {
+                LoginLayout.Visibility = Visibility.Collapsed;
+                MainGrid.Visibility = Visibility.Visible;
+
+                sidePanelOverlay.MyUsernameSource = ctrl.Profile.Nickname;
+                sidePanelOverlay.MyAvatarSource = StreamTools.ToBitmapImage(ctrl.Profile.Avatar);
+                sidePanelOverlay.IdSource = ctrl.Profile.UserId.ToString();
+            }
+            else
+            {
+                RegisterOverlay.Clear();
+                RegisterOverlay.SpeakLable.Text = "Wrong creditinals, dear User!";
+                RegisterOverlay.SpeakLable.Foreground = new SolidColorBrush(Color.FromRgb(153, 0, 0));
             }
         }
     }

@@ -25,10 +25,10 @@
     <Compile Update="CustomControls\MessageContainer.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="CustomControls\SidePanelMenuItem.xaml.cs">
+    <Compile Update="CustomControls\RegisterPage.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="SignUp.xaml.cs">
+    <Compile Update="CustomControls\SidePanelMenuItem.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -51,6 +51,9 @@
     <Page Update="CustomControls\MessageContainer.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="CustomControls\RegisterPage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="CustomControls\SidePanelMenuItem.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -70,9 +73,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Resources\Styles\UserControlSpecificStyles.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="SignUp.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
