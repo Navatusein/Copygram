@@ -8,7 +8,7 @@
     <Grid>
         <Border Style="{StaticResource IconCornerBorder}">
             <Button x:Name="MyBtn" Style="{StaticResource IconButton}" >
-                <Ellipse Height="25" Width="25">
+                <Ellipse Height="{Binding DesiredHeight}" Width="{Binding DesiredWidth}">
                     <Ellipse.Fill>
                         <ImageBrush ImageSource="{Binding IconImageSource}" RenderOptions.BitmapScalingMode="HighQuality"/>
                     </Ellipse.Fill>

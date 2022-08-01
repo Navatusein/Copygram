@@ -1,17 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Client.CustomControls
 {
@@ -38,18 +31,23 @@ namespace Client.CustomControls
                 typeof(string),
                 typeof(UserCell));
 
-        //public static readonly DependencyProperty DateProperty
-        //    = DependencyProperty.Register(
-        //        "Date",
-        //        typeof(string),
-        //        typeof(UserCell));
-
         public static readonly DependencyProperty UnreadMessageCountProperty
             = DependencyProperty.Register(
                 "UnreadMessageCount",
                 typeof(int),
                 typeof(UserCell));
 
+        public static readonly DependencyProperty ChatIdProperty
+            = DependencyProperty.Register(
+                "ChatId",
+                typeof(int),
+                typeof(UserCell));
+
+        public int ChatId
+        {
+            get => (int)GetValue(ChatIdProperty);
+            set => SetValue(ChatIdProperty, value);
+        }
         public ImageSource AvatarSource
         {
             get => (ImageSource)GetValue(AvatarSourceProperty);
@@ -65,11 +63,6 @@ namespace Client.CustomControls
             get => (string)GetValue(LastMessageProperty);
             set => SetValue(LastMessageProperty, value);
         }
-        //public string Date
-        //{
-        //    get => (string)GetValue(DateProperty);
-        //    set => SetValue(DateProperty, value);
-        //}
         public int UnreadMessageCount
         {
             get => (int)GetValue(UnreadMessageCountProperty);
@@ -91,6 +84,7 @@ namespace Client.CustomControls
         {
             InitializeComponent();
             this.DataContext = this;
+
             if (string.IsNullOrEmpty(name) || count < 0) return;
             
             Nickname = name;
@@ -112,6 +106,13 @@ namespace Client.CustomControls
         {
             UnreadCountBubble.Visibility = Visibility.Collapsed;
             Bubble.Visibility = Visibility.Collapsed;
+        }
+
+        private void TextBlock_TargetUpdated(object sender, DataTransferEventArgs e)
+        {
+            if(LastMessage.Length > 15)
+                LastMessage = LastMessage.Substring(0, 10) + "...";
+
         }
     }
 }

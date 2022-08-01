@@ -1,17 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Client.CustomControls
 {
@@ -50,6 +40,30 @@ namespace Client.CustomControls
         void OnClick()
         {
             RaiseClickEvent();
+        }
+
+        public static readonly DependencyProperty DesiredHeightProperty
+            = DependencyProperty.Register(
+        "DesiredHeight",
+        typeof(int),
+        typeof(IconButton));
+
+        public int DesiredHeight
+        {
+            get => (int)GetValue(DesiredHeightProperty);
+            set => SetValue(DesiredHeightProperty, value);
+        }
+
+        public static readonly DependencyProperty DesiredWidthProperty
+            = DependencyProperty.Register(
+        "DesiredWidth",
+        typeof(int),
+        typeof(IconButton));
+
+        public int DesiredWidth
+        {
+            get => (int)GetValue(DesiredWidthProperty);
+            set => SetValue(DesiredWidthProperty, value);
         }
 
         public IconButton()

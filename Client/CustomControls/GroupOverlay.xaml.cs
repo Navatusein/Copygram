@@ -1,17 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Microsoft.Win32;
 
 namespace Client.CustomControls
@@ -21,19 +12,7 @@ namespace Client.CustomControls
     /// </summary>
     public partial class GroupOverlay : UserControl
     {
-        public string GroupName 
-        {
-            get { return tbGroupName.Text; }
-        }
-        public string ImagePath 
-        { 
-            get { return ImageBox.ImageSource.ToString(); }
-        }
-
-        public string Invites
-        {
-            get { return tbGroupUsers.Text; }
-        }
+        public byte[] Image { get; set; }
 
         public static readonly RoutedEvent UserClickEvent = EventManager.RegisterRoutedEvent(
             "AddClick", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(GroupOverlay));
@@ -46,7 +25,7 @@ namespace Client.CustomControls
 
         void RaiseClickEvent()
         {
-            RoutedEventArgs newEventArgs = new RoutedEventArgs(PrivateOverlay.UserClickEvent);
+            RoutedEventArgs newEventArgs = new RoutedEventArgs(GroupOverlay.UserClickEvent);
             RaiseEvent(newEventArgs);
         }
 
@@ -58,7 +37,10 @@ namespace Client.CustomControls
         public GroupOverlay()
         {
             InitializeComponent();
+            this.DataContext = DataContext;
+
             btAdd.PreviewMouseLeftButtonUp += (sender, args) => OnClick();
+            Image = File.ReadAllBytes("../../../Resources/Icons/group_default.png");
         }
 
         private void btSelectImage_Click(object sender, RoutedEventArgs e)
@@ -70,46 +52,30 @@ namespace Client.CustomControls
             if (ofd.ShowDialog() == true)
             {
                 ImageBox.ImageSource = (ImageSource)new ImageSourceConverter().ConvertFromString(ofd.FileName)!;
+                Image = File.ReadAllBytes(ofd.FileName);
             }
         }
 
-        private void btAdd_Click(object sender, RoutedEventArgs e)
+        private void tbNameGotFocus(object sender, RoutedEventArgs e) 
         {
-            if (string.IsNullOrEmpty(tbGroupName.Text))
-            {
-                tbGroupName.Text = "Enter Name!";
-                return;
-            }
-
-            if (string.IsNullOrEmpty(tbGroupUsers.Text))
-            {
-                tbGroupName.Text = "Should be at least one user";
-                return;
-            }
-
-            if (ImagePath == null)
-            { 
-                ImageBox.ImageSource = (ImageSource)new ImageSourceConverter().ConvertFromString("../Resources/Icons/group_default.png")!;
-            }
-            Visibility = Visibility.Collapsed;
-        }
-
-        private void tbNameGotFocus(object sender, RoutedEventArgs e)
-        {
-            tbGroupName.Clear();
+            if(string.IsNullOrEmpty(tbGroupName.Text))
+                tbGroupName.Clear();
         }
         private void tbNameLostFocus(object sender, RoutedEventArgs e)
         {
-            tbGroupName.Text = "Your group name";
+            if(string.IsNullOrEmpty(tbGroupName.Text))
+                tbGroupName.Text = "Your group name";
         }
 
         private void tbInvitesGotFocus(object sender, RoutedEventArgs e)
         {
-            tbGroupName.Clear();
+            if(string.IsNullOrEmpty(tbGroupUsers.Text))
+                tbGroupUsers.Clear();
         }
         private void tbInvitesLostFocus(object sender, RoutedEventArgs e)
         {
-            tbGroupName.Text = "Your invites";
+            if (string.IsNullOrEmpty(tbGroupUsers.Text))
+                tbGroupUsers.Text = "Your invites";
         }
 
         public void Clear()

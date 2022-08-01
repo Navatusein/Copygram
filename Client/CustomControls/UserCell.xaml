@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              RenderOptions.BitmapScalingMode="HighQuality"
              mc:Ignorable="d" 
-             d:DesignHeight="80" d:DesignWidth="350" MouseDown="UserControl_MouseDown">
+             d:DesignHeight="80" d:DesignWidth="350" MouseDown="UserControl_MouseDown"
+             Tag="{Binding ChatId}">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*"/>
@@ -29,12 +30,11 @@
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource NameLabel}" Text="{Binding Nickname}"/>
-            <TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource LastSeenLabel}" Text="{Binding LastMessage}"/>
-            <!--<TextBlock Grid.Row="0" Grid.Column="1" Style="{StaticResource DateLabel}" Text="{Binding Date}"/>-->
+            <TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource LastSeenLabel}" Text="{Binding LastMessage, NotifyOnTargetUpdated=True}" TargetUpdated="TextBlock_TargetUpdated"/>
 
-            <Border x:Name="Bubble"  Grid.Row="1" Grid.Column="1" Background="#bbbbbb" CornerRadius="15" Height="20" Width="20" Visibility="Collapsed" >
+            <Border x:Name="Bubble" Grid.Row="1" Grid.Column="1" Background="#bbbbbb" CornerRadius="15" Height="20" Width="20" Visibility="Collapsed" >
                 <TextBlock x:Name="UnreadCountBubble" Visibility="Collapsed" Style="{StaticResource NotSeenAmountLabel}"
-                           Text="{Binding UnreadMessageCount, NotifyOnTargetUpdated=True}" TargetUpdated="UnreadCountBubble_SourceUpdated" FontSize="10"/>
+                           Text="{Binding UnreadMessageCount, NotifyOnSourceUpdated=True}" SourceUpdated="UnreadCountBubble_SourceUpdated" FontSize="10"/>
             </Border>
         </Grid>
     </Grid>

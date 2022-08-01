@@ -31,7 +31,7 @@
                 </StackPanel>
             </StackPanel>
             <Separator Grid.Row="2"/>
-            <Button Grid.Row="3" Content="Create" HorizontalAlignment="Center"
+            <Button x:Name="CreateBtn" Grid.Row="3" Content="Create" HorizontalAlignment="Center"
                     Style="{StaticResource CommonButton}" Click="Add_Click"/>
         </Grid>
     </Border>

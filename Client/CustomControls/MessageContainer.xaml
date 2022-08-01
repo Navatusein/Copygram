@@ -20,7 +20,7 @@
             </Ellipse>
         <Border x:Name="MessageBorder" Grid.Column="1" CornerRadius="16" Background="WhiteSmoke">
             <TextBlock x:Name="Message" Text="{Binding MessageText}" AllowDrop="True"
-                       HorizontalAlignment="Left" VerticalAlignment="Center"  Margin="10, 5, 10, 5" TextWrapping="WrapWithOverflow"/>
+                       HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10, 5, 10, 5" TextWrapping="Wrap"/>
         </Border>
     </Grid>
 </UserControl>
