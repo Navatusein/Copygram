@@ -312,7 +312,7 @@ namespace Client
             switch (error.Type)
             {
                 case KnownErrors.UnknownError:
-                    MessageBox.Show("Unknown error", "Unknown Error", MessageBoxButton.OK);
+                    MessageBox.Show(error.Text, "Unknown Error", MessageBoxButton.OK);
                     break;
                 case KnownErrors.OutOfSync:
                     Sync();
@@ -334,6 +334,9 @@ namespace Client
                 case KnownErrors.UnknownUser:
                     break;
                 case KnownErrors.UnknownCommandArguments:
+                    break;
+                case KnownErrors.ProcessingError:
+                    MessageBox.Show(error.Text, "Something went wrong", MessageBoxButton.OK);
                     break;
                 default:
                     break;
