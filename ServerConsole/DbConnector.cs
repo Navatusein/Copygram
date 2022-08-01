@@ -15,6 +15,14 @@ namespace ServerConsole
 {
     internal class DbConnector
     {
+        /// <summary>
+        /// Function to check if the login is free to register.
+        /// </summary>
+        /// <param name="login">Login to check</param>
+        /// <returns>
+        /// True if the login is free. 
+        /// False if login is busy.
+        /// </returns>
         public static bool IsLoginAllowed(string login)
         {
             bool allowed = false;
@@ -27,6 +35,14 @@ namespace ServerConsole
             return allowed;
         }
 
+        /// <summary>
+        /// Function to check if the nickname is free to register.
+        /// </summary>
+        /// <param name="nickname">Nickname to check</param>
+        /// <returns>
+        /// True if the nickname is free. 
+        /// False if nickname is busy.
+        /// </returns>
         public static bool IsNicknameAllowed(string nickname)
         {
             bool allowed = false;
@@ -39,6 +55,12 @@ namespace ServerConsole
             return allowed;
         }
 
+        /// <summary>
+        /// The function of adding a new client to the database.
+        /// </summary>
+        /// <param name="user">User object</param>
+        /// <param name="login">User login</param>
+        /// <param name="password">User password</param>
         public static void RegisterNewUser(ref TCP.User user, string login, string password)
         {
             using (CopygramDbContext dbContext = new())
@@ -53,6 +75,10 @@ namespace ServerConsole
             }
         }
 
+        /// <summary>
+        /// Function for adding a new message to the database.
+        /// </summary>
+        /// <param name="tcpChatMessage">Message object</param>
         public static void RegisterNewMessage(ref TCP.ChatMessage tcpChatMessage)
         {
             using (CopygramDbContext dbContext = new())
@@ -67,23 +93,36 @@ namespace ServerConsole
             }
         }
 
+        /// <summary>
+        /// Function for adding a new chat to the database.
+        /// </summary>
+        /// <param name="tcpChat">Chat object</param>
         public static void RegisterNewChat(ref TCP.Chat tcpChat)
         {
             using (CopygramDbContext dbContext = new())
             {
                 DB.Chat dbChat = Mapper.TcpModelToDbModel(tcpChat);
 
-                List<DB.ChatMember> dbChatMembers = tcpChat.ChatMembers.Select(x => Mapper.TcpModelToDbModel(x)).ToList();
-
                 var dbChatData = dbContext.Chats.Add(dbChat);
-                dbContext.ChatMembers.AddRange(dbChatMembers);
 
                 dbContext.SaveChanges();
 
-                tcpChat.ChatId = dbChatData.Entity.ChatId;
+                int chatId = tcpChat.ChatId = dbChatData.Entity.ChatId;
+
+                List<DB.ChatMember> dbChatMembers = tcpChat.ChatMembers.Select(x => Mapper.TcpModelToDbModel(x)).ToList();
+
+                dbChatMembers.ForEach(x => x.ChatId = chatId);
+
+                dbContext.ChatMembers.AddRange(dbChatMembers);
+
+                dbContext.SaveChanges();
             }
         }
 
+        /// <summary>
+        /// The function of updating the chat in the database.
+        /// </summary>
+        /// <param name="tcpChat">Chat object</param>
         public static void UpdateChat(TCP.Chat tcpChat)
         {
             using (CopygramDbContext dbContext = new())
@@ -110,6 +149,11 @@ namespace ServerConsole
             }
         }
 
+        /// <summary>
+        /// A function to get a list of chats for a specific user.
+        /// </summary>
+        /// <param name="tcpUser">User object</param>
+        /// <returns></returns>
         public static List<TCP.Chat> SyncChats(TCP.User tcpUser)
         {
             List<TCP.Chat> tcpChatList = new();
@@ -126,6 +170,11 @@ namespace ServerConsole
             return tcpChatList;
         }
 
+        /// <summary>
+        /// Function to synchronize part of the messages in the chat.
+        /// </summary>
+        /// <param name="syncChatMessages">Synchronization class object</param>
+        /// <returns>List of requested messages</returns>
         public static List<TCP.ChatMessage> SyncChatMessages(TCP.SyncChatMessages syncChatMessages)
         {
             List<TCP.ChatMessage> chatMessages;
@@ -155,6 +204,11 @@ namespace ServerConsole
             return chatMessages;
         }
 
+        /// <summary>
+        /// A function to get a list of users from a chat.
+        /// </summary>
+        /// <param name="chatId">Chat ID to get users from</param>
+        /// <returns>A list of users</returns>
         public static List<TCP.User> GetUsersFromChat(int chatId)
         {
             List<TCP.User> users;
@@ -167,6 +221,14 @@ namespace ServerConsole
             return users;
         }
 
+        /// <summary>
+        /// Function for checking and finding a user by login and password.
+        /// </summary>
+        /// <param name="loginData">LoginData object containing login and password</param>
+        /// <returns>
+        /// User object if found.
+        /// Null if the user is not found.
+        /// </returns>
         public static TCP.User? TryToLogin(TCP.LoginData loginData)
         {
             TCP.User? tcpUser = null;
@@ -181,6 +243,11 @@ namespace ServerConsole
             return tcpUser;
         }
 
+        /// <summary>
+        /// Function to check and get a user object with a given nickname.
+        /// </summary>
+        /// <param name="nickname">User nickname</param>
+        /// <returns>User object</returns>
         public static TCP.User? CheckForUser(string nickname)
         {
             TCP.User? tcpUser = null;
@@ -197,30 +264,5 @@ namespace ServerConsole
 
             return tcpUser;
         }
-
-        public static void Test()
-        {
-            //Bitmap bitmap = new Bitmap("Cat.jpg");
-
-            //byte[] data;
-
-            //using (MemoryStream ms = new MemoryStream())
-            //{
-            //    bitmap.Save(ms, ImageFormat.Png);
-            //    data = ms.ToArray();
-            //}
-
-            //using (CopygramDbContext context = new CopygramDbContext())
-            //{
-            //    var user = context.Chats.ToArray()[0];
-
-            //    user.Avatar = data;
-
-            //    context.Chats.Update(user);
-
-            //    context.SaveChanges();
-            //}
-        }
-
     }
 }
