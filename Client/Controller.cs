@@ -293,7 +293,7 @@ namespace Client
         /// <param name="text">Name of chat</param>
         public void SearchChat(string name)
         {
-            ChatList = new();
+            ChatList.Clear();
 
             foreach (Chat chat in chats)
             {
