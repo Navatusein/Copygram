@@ -303,6 +303,10 @@ namespace Client
             }
         }
 
+        /// <summary>
+        /// prcoesses errors from response
+        /// </summary>
+        /// <param name="response">Response with error type</param>
         void OnError(Response response)
         { 
             Error error = StreamTools.Deserialize<Error>(response.Data);
