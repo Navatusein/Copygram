@@ -45,6 +45,38 @@ namespace Client.CustomControls
         }
 
         /// <summary>
+        /// Routed event
+        /// </summary>
+        public static readonly RoutedEvent GoBackClickEvent = EventManager.RegisterRoutedEvent(
+            "GoBackClick", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(RegisterPage));
+
+        /// <summary>
+        /// Property for routed event
+        /// </summary>
+        public event RoutedEventHandler GoBackClick
+        {
+            add { AddHandler(GoBackClickEvent, value); }
+            remove { RemoveHandler(GoBackClickEvent, value); }
+        }
+
+        /// <summary>
+        /// On routed event
+        /// </summary>
+        void RaiseGoBackClickEvent()
+        {
+            RoutedEventArgs newEventArgs = new RoutedEventArgs(RegisterPage.GoBackClickEvent);
+            RaiseEvent(newEventArgs);
+        }
+
+        /// <summary>
+        /// Raises routed event
+        /// </summary>
+        void OnGoBackClick()
+        {
+            RaiseGoBackClickEvent();
+        }
+
+        /// <summary>
         /// Avatar in bytes
         /// </summary>
         public byte[] AvatarImage{ get; set; }
@@ -55,6 +87,7 @@ namespace Client.CustomControls
             this.DataContext = this;
 
             btRegister.PreviewMouseLeftButtonUp += (sender, args) => OnRegisterClick();
+            FckGoBack.PreviewMouseLeftButtonUp += (Sender, args) => OnGoBackClick();
             AvatarImage = File.ReadAllBytes("../../../Resources/Icons/default_user.png");//Default avatar
         }
 

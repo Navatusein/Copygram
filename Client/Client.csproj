@@ -22,6 +22,7 @@
     <None Remove="Resources\Icons\cross.png" />
     <None Remove="Resources\Icons\default_user.png" />
     <None Remove="Resources\Icons\emoji.png" />
+    <None Remove="Resources\Icons\fck_go_back.png" />
     <None Remove="Resources\Icons\folder.png" />
     <None Remove="Resources\Icons\group.png" />
     <None Remove="Resources\Icons\group_chat.png" />
@@ -42,6 +43,12 @@
     <None Remove="Resources\Icons\user.png" />
     <None Remove="Resources\Wallpapers\DefaultDay.jpg" />
     <None Remove="Resources\Wallpapers\DefaultNight.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Icons\fck_go_back.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>

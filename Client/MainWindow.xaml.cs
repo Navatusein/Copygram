@@ -303,6 +303,14 @@ namespace Client
         {
             RegisterOverlay.Visibility = Visibility.Visible;
             LoginOverlay.Visibility = Visibility.Collapsed;
+            LoginOverlay.Clear();
+        }
+
+        private void RegisterOverlay_GoBackClick(object sender, RoutedEventArgs e)
+        {
+            RegisterOverlay.Visibility = Visibility.Collapsed;
+            LoginOverlay.Visibility = Visibility.Visible;
+            RegisterOverlay.Clear();
         }
 
         void RegisterOverlay_RegisterClick(object sender, RoutedEventArgs e)
