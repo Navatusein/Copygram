@@ -372,6 +372,9 @@ namespace Client
             }
         }
 
+        /// <summary>
+        /// Syunchronizes chat messages
+        /// </summary>
         void Sync()
         {
             Response response = Request(CommandType.Sync, null);
