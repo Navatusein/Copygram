@@ -10,42 +10,65 @@ namespace Client.CustomControls
     /// </summary>
     public partial class LoginPage : UserControl
     {
-
+        /// <summary>
+        /// Routed event
+        /// </summary>
         public static readonly RoutedEvent LoginClickEvent = EventManager.RegisterRoutedEvent(
             "LoginClick", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(LoginPage));
 
+        /// <summary>
+        /// Property for attached event
+        /// </summary>
         public event RoutedEventHandler LoginClick
         {
             add { AddHandler(LoginClickEvent, value); }
             remove { RemoveHandler(LoginClickEvent, value); }
         }
 
+        /// <summary>
+        /// On routed event
+        /// </summary>
         void RaiseLoginClickEvent()
         {
             RoutedEventArgs newEventArgs = new RoutedEventArgs(LoginPage.LoginClickEvent);
             RaiseEvent(newEventArgs);
         }
 
+        /// <summary>
+        /// Raises routed event
+        /// </summary>
         void OnLoginClick()
         {
             RaiseLoginClickEvent();
         }
 
+        /// <summary>
+        /// Routed event
+        /// </summary>
         public static readonly RoutedEvent RegisterClickEvent = EventManager.RegisterRoutedEvent(
             "RegisterClick", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(LoginPage));
 
+        /// <summary>
+        /// Routed event property
+        /// </summary>
         public event RoutedEventHandler RegisterClick
         {
             add { AddHandler(RegisterClickEvent, value); }
             remove { RemoveHandler(RegisterClickEvent, value); }
         }
 
+        /// <summary>
+        /// On routed event
+        /// </summary>
         void RaiseRegisterClickEvent()
         {
             RoutedEventArgs newEventArgs = new RoutedEventArgs(LoginPage.RegisterClickEvent);
             RaiseEvent(newEventArgs);
         }
 
+        /// <summary>
+        /// Raises routed event
+        /// </summary>
         void OnRegisterClick()
         {
             RaiseRegisterClickEvent();
@@ -60,6 +83,11 @@ namespace Client.CustomControls
             btRegister.PreviewMouseLeftButtonUp += (sender, args) => OnRegisterClick();
         }
 
+        /// <summary>
+        /// Checking creditinal to enable login
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void TextChangedEvent(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             if (!string.IsNullOrEmpty(tbUsername.Text) && !string.IsNullOrEmpty(tbPassword.Password))
@@ -69,6 +97,11 @@ namespace Client.CustomControls
             }
         }
 
+        /// <summary>
+        /// Checking creditinal to enable login
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void tbPassword_PasswordChanged(object sender, RoutedEventArgs e)
         {
             if (!string.IsNullOrEmpty(tbUsername.Text) && !string.IsNullOrEmpty(tbPassword.Password))
@@ -78,6 +111,9 @@ namespace Client.CustomControls
             }
         }
 
+        /// <summary>
+        /// Clears all input text
+        /// </summary>
         public void Clear()
         {
             tbPassword.Clear();

@@ -13,7 +13,6 @@
         <Setter Property="AvatarSource" Value="../Icons/logotype.ico"/>
         <Setter Property="Nickname" Value="Copygram Team"/>
         <Setter Property="LastMessage" Value="Hello there!"/>
-        <Setter Property="UnreadMessageCount" Value="1"/>
     </Style>
     <Style x:Key="DefaultImageSize" TargetType="local:IconButton">
         <Setter Property="DesiredHeight" Value="30"/>

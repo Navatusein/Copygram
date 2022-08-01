@@ -14,7 +14,7 @@
             <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right">
-            <local:IconButton x:Name="btExit" IconImageSource="../resources/Icons/cross.png" MouseEnter="IconButton_MouseEnter" MouseLeave="IconButton_MouseLeave"/>
+            <local:IconButton DesiredHeight="30" DesiredWidth="30" x:Name="btExit" IconImageSource="../resources/Icons/cross.png" MouseEnter="IconButton_MouseEnter" MouseLeave="IconButton_MouseLeave"/>
         </StackPanel>
         <StackPanel Grid.Row="1" Orientation="Vertical">
             <Ellipse Width="50" Height="50" Margin="10">

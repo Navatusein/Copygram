@@ -13,9 +13,10 @@ namespace Client.Resources.Tools
     public static class StreamTools
     {
         /// <summary>
-        /// Serializator
+        /// Serializer
         /// </summary>
-        /// <param name="obj">Data to serialize</param>
+        /// <param name="obj">Object to serialize</param>
+        /// <returns>Serialized object</returns>
         public static byte[]? Serialize(object obj)
         {
             try
@@ -44,7 +45,7 @@ namespace Client.Resources.Tools
         /// Deserializator
         /// </summary>
         /// <param name="byteArray">Data to deserialize</param>
-        /// <returns></returns>
+        /// <returns>Deserialized object</returns>
         public static T Deserialize<T>(byte[] data)
         {
 
@@ -66,8 +67,8 @@ namespace Client.Resources.Tools
         /// <summary>
         /// Special converter for images
         /// </summary>
-        /// <param name="data">image byte array</param>
-        /// <returns>BitmapImage</returns>
+        /// <param name="data">Image as byte array</param>
+        /// <returns>BitmapImage from givent array</returns>
         public static BitmapImage ToBitmapImage(byte[] data)
         {
             using (MemoryStream ms = new MemoryStream(data))
@@ -86,10 +87,10 @@ namespace Client.Resources.Tools
         }
 
         /// <summary>
-        /// Gets from network
+        /// Gets response from network
         /// </summary>
-        /// <param name="stream"></param>
-        /// <returns>Response</returns>
+        /// <param name="stream">Stream from which to get</param>
+        /// <returns>Response from stream</returns>
         public static Response NetworkGet(Stream stream)
         {
             BinaryFormatter binFormatter = new BinaryFormatter();
@@ -97,10 +98,10 @@ namespace Client.Resources.Tools
         }
 
         /// <summary>
-        /// Sends Command over network
+        /// Sends Command over NetworkStream
         /// </summary>
-        /// <param name="netStream"></param>
-        /// <param name="cmd"></param>
+        /// <param name="netStream">NetworkStream where to send</param>
+        /// <param name="cmd">Command to send</param>
         public static void NetworkSend(NetworkStream netStream, Command cmd)
         {
             BinaryFormatter binFormatter = new BinaryFormatter();

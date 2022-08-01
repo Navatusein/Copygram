@@ -22,30 +22,31 @@ namespace Client
     /// </summary>
     internal class Controller
     {
-        User profile = null!;
-        Chat activeChat = null!;
-        IPEndPoint ep = null!;
+        User profile = null!; //Your user profile
+        Chat activeChat = null!; //Chat wich is currently open
+        IPEndPoint ep = null!; //Sever endpoint
 
-        bool isLast = false;
+        public bool isLast = false; //Is loaded message was last in sequence
 
         #region Collections
-        ObservableCollection<UserCell> ChatList = null!;
-        ObservableCollection<MessageContainer> MessagesList = null!;
-        List<Chat> chats = null!;
+        ObservableCollection<UserCell> ChatList = null!; //GUI Collection of your chats
+        ObservableCollection<MessageContainer> MessagesList = null!; //GUI Collection of messages from active chat
+        List<Chat> chats = null!; //Collections of your chats
         #endregion
 
         #region Props
+
+        /// <summary>
+        /// Property to get you as user
+        /// </summary>
         public User Profile
         {
             get { return profile; }
         }
 
-        public bool IsLast
-        {
-            get { return isLast; }
-            set { isLast = value; }
-        }
-
+        /// <summary>
+        /// Property get open chat
+        /// </summary>
         public Chat? GetActiveChat
         { 
             get { return activeChat == null ? null : activeChat; }
@@ -77,7 +78,7 @@ namespace Client
             try
             {
                 DispatcherTimer timer = new();
-                timer.Tick += Timer_Tick;
+                timer.Tick += BackgroundSync;
                 timer.Interval = new TimeSpan(0, 0, 5);
                 Task.Run(timer.Start);
             }
@@ -89,23 +90,23 @@ namespace Client
         }
 
         /// <summary>
-        /// Synchronization action
+        /// Back ground synchronization
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Timer_Tick(object? sender, EventArgs e)
+        private void BackgroundSync(object? sender, EventArgs e)
         {
             try
             {
-                Response response = Request(CommandType.RequestChanges, null);
+                Response response = Request(CommandType.RequestChanges, null); //Sending request to get changes
 
                 if (response.Type == ResponseType.Error) return;
 
-                List<IMessage> messages = StreamTools.Deserialize<List<IMessage>>(response.Data);
+                List<IMessage> messages = StreamTools.Deserialize<List<IMessage>>(response.Data); //Getting new message objects
 
                 if (messages == null) return;
 
-                foreach (IMessage message in messages)
+                foreach (IMessage message in messages)//Processing of each type of new change
                 {
                     if (message.Type == MessageType.SystemChatMessage)
                     {
@@ -131,8 +132,8 @@ namespace Client
                     }
                 }
 
-                if(messages.Count > 0)
-                    NewChatsAdded();
+                if(messages.Count > 0) //if any change was made
+                    NewChatsAdded(); //Refreshes collection of chats
             }
             catch (Exception ex)
             {
@@ -146,7 +147,7 @@ namespace Client
         #region View Loads
 
         /// <summary>
-        /// Reflects chats
+        /// Rwfreshes collection chats
         /// </summary>
         public void NewChatsAdded()
         {
@@ -155,8 +156,9 @@ namespace Client
                 ChatList.Clear();
                 foreach (Chat chat in chats)
                 {
-                    User otherUser = chat.ChatMembers.FirstOrDefault(member => member.User.UserId != profile.UserId)!.User;
-                    ChatList.Add(new UserCell()
+                    User otherUser = chat.ChatMembers.FirstOrDefault(member => member.User.UserId != profile.UserId)!.User; //Getting other user from this chat
+                    
+                    ChatList.Add(new UserCell() //Adding this chat to GUI
                     {
                         ChatId = chat.ChatId,
 
@@ -177,9 +179,9 @@ namespace Client
         }
 
         /// <summary>
-        /// Reflects selected chat
+        /// Refreshes selected chat messages
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="name">active chat id</param>
         public void NewMessagesAdded(int chatId)
         {
             try
@@ -193,7 +195,7 @@ namespace Client
 
                 foreach (ChatMessage msg in activeChat.Messages)
                 {
-                    MessagesList.Add(new MessageContainer()
+                    MessagesList.Add(new MessageContainer()//Adding message to GUI
                     {
                         MessageText = msg.MessageText,
                         AvatartImage = StreamTools.ToBitmapImage(msg.FromUser.Avatar)
@@ -207,6 +209,10 @@ namespace Client
             }
         }
 
+        /// <summary>
+        /// Loads old messages on scroll
+        /// </summary>
+        /// <param name="chatId">Chat id which to load</param>
         public void ScrollToOldMessages(int chatId)
         {
             try
@@ -222,23 +228,23 @@ namespace Client
                     return;
                 }
 
-                int limit = 15;
+                int limit = 12; //Amount of messages to get from server
 
-                SyncChatMessages dataToSend = new()
+                SyncChatMessages dataToSend = new()//Creating data request info
                 {
                     ChatId = activeChat.ChatId,
                     MessageCount = limit,
                     MessageId = activeChat.Messages.First().ChatMessageId
                 };
 
-                Response response = Request(CommandType.SyncChatMessage, dataToSend);
-                List<ChatMessage> data = StreamTools.Deserialize<List<ChatMessage>>(response.Data);
-                activeChat.Messages.InsertRange(0, data);
+                Response response = Request(CommandType.SyncChatMessage, dataToSend); //Sending request
+                List<ChatMessage> data = StreamTools.Deserialize<List<ChatMessage>>(response.Data);//Getting new list of messages
+                activeChat.Messages.InsertRange(0, data);//Inserting them into chat
 
-                if (data.Count < limit)
+                if (data.Count < limit)//If no more messages
                     isLast = true;
 
-                NewMessagesAdded(chatId);
+                NewMessagesAdded(chatId);//Refreshes GUI messages
             }
             catch (Exception ex)
             {
@@ -269,7 +275,7 @@ namespace Client
                 TcpClient client = new();
                 Response response = null!;
                 
-                if (!client.ConnectAsync(ep).Wait(300))
+                if (!client.ConnectAsync(ep).Wait(300))//Checking if server is active
                 {
                     byte[] dataToSend = StreamTools.Serialize(new Error() {
                         Type = KnownErrors.UnknownError,
@@ -280,14 +286,14 @@ namespace Client
                 }
 
                 NetworkStream netStream = client.GetStream();
-                Command command = new() { Type = type, Data = data, User = profile };
+                Command command = new() { Type = type, Data = data, User = profile };//Command to send
                 StreamTools.NetworkSend(netStream, command);
 
                 StreamReader reader = new(netStream, Encoding.UTF8);
-                response = StreamTools.NetworkGet(reader.BaseStream);
+                response = StreamTools.NetworkGet(reader.BaseStream);//Getting response
                 netStream.Close();
 
-                if (response.Type == ResponseType.Error) OnError(response);
+                if (response.Type == ResponseType.Error) OnError(response);//If response is error - processing it
 
                 return response;
             }
@@ -300,18 +306,17 @@ namespace Client
         }     
 
         /// <summary>
-        /// Closes server connection
+        /// Closes server connection on close
         /// </summary>
         public void CloseServerConnection()
         {
             Response response = Request(CommandType.Disconnect, null);
-            if(response.Type == ResponseType.Error) OnError(response);
         }
 
         /// <summary>
-        /// Supposed to search chat
+        /// Searches chat
         /// </summary>
-        /// <param name="text">Name of chat</param>
+        /// <param name="text">Name of chat to find</param>
         public void SearchChat(string name)
         {
             try
@@ -322,7 +327,7 @@ namespace Client
                 {
                     if (chat.ChatName.ToLower().Contains(name.ToLower()))
                     {
-                        ChatList.Add(new UserCell()
+                        ChatList.Add(new UserCell()//Adding chat with similar name as given
                         {
                             AvatarSource = StreamTools.ToBitmapImage(chat.Avatar),
                             Nickname = chat.ChatName,
@@ -339,7 +344,7 @@ namespace Client
         }
 
         /// <summary>
-        /// prcoesses errors from response
+        /// Prcoesses errors from response
         /// </summary>
         /// <param name="response">Response with error type</param>
         void OnError(Response response)
@@ -387,24 +392,24 @@ namespace Client
         /// <summary>
         /// Tries to login user with current credentials
         /// </summary>
-        /// <param name="username"></param>
-        /// <param name="password"></param>
+        /// <param name="login">Input login</param>
+        /// <param name="password">Input password</param>
         /// <returns>Status of login info</returns>
-        public bool TryLogin(string username, string password)
+        public bool TryLogin(string login, string password)
         {
             try
             {
-                LoginData dataToSend = new() { Login = username, Password = password };
+                LoginData dataToSend = new() { Login = login, Password = password };
 
-                Response response = Request(CommandType.Login, dataToSend);
+                Response response = Request(CommandType.Login, dataToSend);//Sending request for login
 
                 if (response.Type == ResponseType.Error) return false;
 
-                profile = StreamTools.Deserialize<User>(response.Data);
+                profile = StreamTools.Deserialize<User>(response.Data);//Getting user from response
 
-                Sync();
+                Sync();//Synchronizes 
                 
-                StartBackgroundSync();
+                StartBackgroundSync();//Launches bg synchronization
 
                 return true;
             }
@@ -416,22 +421,30 @@ namespace Client
             }
         }
 
+        /// <summary>
+        /// Tries to register user with given credetinals
+        /// </summary>
+        /// <param name="username">Input username</param>
+        /// <param name="login">Input login</param>
+        /// <param name="password">Input password</param>
+        /// <param name="avatarImage">Input avatar</param>
+        /// <returns></returns>
         public bool TryRegister(string username, string login, string password, byte[] avatarImage)
         {
             try
             {
-                User loginUser = new() { Nickname = username, Avatar = avatarImage };
-                LoginData dataToSend = new() { Login = login, Password = password, User = loginUser };
+                User loginUser = new() { Nickname = username, Avatar = avatarImage };//Creating user localy
+                LoginData dataToSend = new() { Login = login, Password = password, User = loginUser };//Creting data to get on this user
 
-                Response response = Request(CommandType.Register, dataToSend);
+                Response response = Request(CommandType.Register, dataToSend);//Requesting this user
 
                 if (response.Type == ResponseType.Error) return false;
 
-                profile = StreamTools.Deserialize<User>(response.Data);
+                profile = StreamTools.Deserialize<User>(response.Data);//Setting user
 
-                Sync();
+                Sync();//Synchronizing
 
-                StartBackgroundSync();
+                StartBackgroundSync();//Starting bg sync
 
                 return true;
             }
@@ -450,12 +463,12 @@ namespace Client
         {
             try
             {
-                Response response = Request(CommandType.Sync, null);
+                Response response = Request(CommandType.Sync, null);//Requesting sync
 
                 if (response.Type == ResponseType.Error) return;
 
-                chats = StreamTools.Deserialize<List<Chat>>(response.Data);
-                NewChatsAdded();
+                chats = StreamTools.Deserialize<List<Chat>>(response.Data);//Getting new data from response
+                NewChatsAdded();//Refreshing GUI
             }
             catch(Exception ex)
             {
@@ -467,29 +480,31 @@ namespace Client
         /// <summary>
         /// Sends messsage to srever and recieves reaction
         /// </summary>
-        /// <param name="messageText"></param>
-        /// <returns></returns>
+        /// <param name="messageText">Text to send</param>
         public void SendMessage(string messageText)
         {
             try
             {
-                ChatMessage dataToSend = new()
+                ChatMessage dataToSend = new()//Data to send
                 {
                     MessageText = messageText,
                     FromUser = profile,
                     ChatId = activeChat.ChatId
                 };
 
-                Response response = Request(CommandType.NewChatMessage, dataToSend);
+                Response response = Request(CommandType.NewChatMessage, dataToSend);//Requesting current as new message
 
                 if (response.Type == ResponseType.Error) return;
 
-                int index = chats.FindIndex(chat => chat.ChatId == activeChat.ChatId);
+                int index = chats.FindIndex(chat => chat.ChatId == activeChat.ChatId);//Getting index of chat from which to send
 
-                chats[index].Messages.Add(StreamTools.Deserialize<ChatMessage>(response.Data));
+                chats[index].Messages.Add(StreamTools.Deserialize<ChatMessage>(response.Data));//Adding sent message 
 
-                MessagesList.Add(new MessageContainer() { MessageText = messageText.Trim(), AvatartImage = StreamTools.ToBitmapImage(profile.Avatar) });
-                NewMessagesAdded(activeChat.ChatId);
+                MessagesList.Add(new MessageContainer() { 
+                    MessageText = messageText.Trim(),
+                    AvatartImage = StreamTools.ToBitmapImage(profile.Avatar) });//Adding sent message to GUI
+                
+                NewMessagesAdded(activeChat.ChatId);//Refreshes GUI
             }
             catch (Exception ex)
             {
@@ -512,16 +527,16 @@ namespace Client
             {
                 if (nickname == null) return false;
 
-                Response response = Request(CommandType.CheckForUser, nickname);
+                Response response = Request(CommandType.CheckForUser, nickname);//Request to check user
 
                 if (response.Type == ResponseType.Error) return false;
 
-                User toUser = StreamTools.Deserialize<User>(response.Data);
+                User toUser = StreamTools.Deserialize<User>(response.Data);//Adding other user 
 
-                ChatMember me = new ChatMember() { User = profile, ChatMemberRole = ChatMemberRole.Owner };
-                ChatMember to = new ChatMember() { User = toUser, ChatMemberRole = ChatMemberRole.Owner };
+                ChatMember me = new ChatMember() { User = profile, ChatMemberRole = ChatMemberRole.Owner };//Our user as chat memeber
+                ChatMember to = new ChatMember() { User = toUser, ChatMemberRole = ChatMemberRole.Owner };//Other user as chat member
 
-                chats.Add(activeChat = new Chat()
+                chats.Add(activeChat = new Chat()//Adding new chat
                 {
                     Avatar = toUser.Avatar,
                     ChatName = toUser.Nickname,
@@ -530,13 +545,13 @@ namespace Client
                     Messages = new List<ChatMessage>()
                 });
 
-                SystemChatMessage dataToSend = new() { SystemMessageType = SystemChatMessageType.NewChat, Chat = activeChat };
+                SystemChatMessage dataToSend = new() { SystemMessageType = SystemChatMessageType.NewChat, Chat = activeChat };//Data to send on new chat
 
-                response = Request(CommandType.NewSystemChatMessage, dataToSend);
+                response = Request(CommandType.NewSystemChatMessage, dataToSend);//Request for new chat
 
                 if(response.Type == ResponseType.Error) return false;
 
-                NewChatsAdded();
+                NewChatsAdded();//Refreshing GUI
                 return true;
             }
             catch (Exception ex)
@@ -567,7 +582,7 @@ namespace Client
                 List<User> members = new();
                 Response? response = null!;
 
-                foreach (string log in loginArray)
+                foreach (string log in loginArray) //Checking user on their existance
                 {
                     response = Request(CommandType.CheckForUser, log);
 
@@ -579,16 +594,16 @@ namespace Client
 
                 List<ChatMember> chatMembers = new();
 
-                chatMembers.Add(new ChatMember() {
+                chatMembers.Add(new ChatMember() { //Adding chat opur uses as member
                     User = profile,
                     ChatMemberRole = ChatMemberRole.Owner });
 
-                foreach (User user in members)
+                foreach (User user in members) //Adiing given users as members
                 {
                     chatMembers.Add(new ChatMember() { User = user, ChatMemberRole = ChatMemberRole.Member });
                 }
 
-                chats.Add(activeChat = new Chat()
+                chats.Add(activeChat = new Chat() //Adding chat to list
                 {
                     Avatar = image,
                     ChatName = nickname,
@@ -597,15 +612,15 @@ namespace Client
                     Messages = new List<ChatMessage>()
                 });
 
-                SystemChatMessage dataToSend = new() {
+                SystemChatMessage dataToSend = new() { //Request data on creation
                     SystemMessageType = SystemChatMessageType.NewChat,
                     Chat = activeChat };
 
-                response = Request(CommandType.NewSystemChatMessage, dataToSend);
+                response = Request(CommandType.NewSystemChatMessage, dataToSend);//Request on creation 
 
                 if(response.Type == ResponseType.Error) return false;
 
-                NewChatsAdded();
+                NewChatsAdded();//Refreshing GUI
                 return true;
             }
             catch (Exception ex)

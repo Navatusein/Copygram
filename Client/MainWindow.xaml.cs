@@ -141,7 +141,7 @@ namespace Client
                 if (ctrl.GetActiveChat != null && ctrl.GetActiveChat!.ChatId == chatId)
                     return;
                 else
-                    ctrl.IsLast = false;
+                    ctrl.isLast = false;
 
                 ChatThumbnailGrid.Visibility = Visibility.Visible;
                 MessageSets.IsEnabled = true;
@@ -152,7 +152,9 @@ namespace Client
                     Chat.ScrollIntoView(Chat.Items[Chat.Items.Count - 1]);
 
                 if (ctrl.GetActiveChat!.ChatType == ModelsLibrary.ChatType.Group)
-                    TimeStamp.Text = ctrl.GetActiveChat.ChatMembers.Count.ToString();
+                    TimeStamp.Text = "Members coutn: " + ctrl.GetActiveChat.ChatMembers.Count.ToString();
+                else
+                    TimeStamp.Text = "Last seen long time ago";
 
                 Username.Text = ctrl.GetActiveChat!.ChatName;
             }
