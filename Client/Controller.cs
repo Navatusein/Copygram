@@ -126,7 +126,7 @@ namespace Client
                         ChatMessage chatMsg = (message as ChatMessage)!;
                         chats.FirstOrDefault(chat => chat.ChatId == chatMsg.ChatId)!.Messages.Add(chatMsg);
 
-                        if (chatMsg.ChatId == activeChat.ChatId)
+                        if (activeChat != null && chatMsg.ChatId == activeChat.ChatId)
                             NewMessagesAdded(activeChat.ChatId);
                     }
                 }
