@@ -4,9 +4,19 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client"
+        xmlns:cctrl="clr-namespace:Client.CustomControls"
+        xmlns:ext="http://schemas.microsoft.com/winfx/2006/xaml/presentation/toolkit/extended"
         mc:Ignorable="d"
-        Title="SignUp" Height="450" Width="800">
+        WindowStartupLocation="CenterScreen"
+        MinHeight="600" MinWidth="600"
+        Icon="Resources/Icons/logotype.ico"
+        RenderOptions.BitmapScalingMode="HighQuality"
+        Closing="Window_Closing"
+        Title="SignUp" Height="600" Width="1000">
     <Grid>
+        <Grid x:Name="Background" Background="#293a4c">
+           
+        </Grid>
         <TextBox x:Name="usernameTb" HorizontalAlignment="Center" Margin="0,129,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" TextChanged="usernameAction"/>
         <TextBox x:Name="passwordTb" HorizontalAlignment="Center" Margin="0,166,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" TextChanged="passwordAction"/>
         <Label Content="Username:" HorizontalAlignment="Left" Margin="265,123,0,0" VerticalAlignment="Top" Width="70" Height="30"/>
