@@ -25,7 +25,6 @@ namespace Client
     internal class Controller
     {
         User profile = null!;
-        BitmapImage avatar = null!;
         Chat activeChat = null!;
         IPEndPoint ep = null!;
 
@@ -41,11 +40,6 @@ namespace Client
         public User Profile
         {
             get { return profile; }
-        }
-
-        public BitmapImage Avatar
-        {
-            get { return avatar; }
         }
 
         public bool IsLast
@@ -107,13 +101,11 @@ namespace Client
             {
                 Response response = Request(CommandType.RequestChanges, null);
 
-                if (response.Type == ResponseType.Error)
-                    return;
+                if (response.Type == ResponseType.Error) return;
 
                 List<IMessage> messages = StreamTools.Deserialize<List<IMessage>>(response.Data);
 
-                if (messages == null)
-                    return;
+                if (messages == null) return;
 
                 foreach (IMessage message in messages)
                 {
@@ -124,7 +116,6 @@ namespace Client
                         if (sysMsg.SystemMessageType == SystemChatMessageType.NewChat)
                         {
                             chats.Add(sysMsg.Chat);
-                            NewChatsAdded();
                         }
                         else
                         {
@@ -136,12 +127,14 @@ namespace Client
                     {
                         ChatMessage chatMsg = (message as ChatMessage)!;
                         chats.FirstOrDefault(chat => chat.ChatId == chatMsg.ChatId)!.Messages.Add(chatMsg);
-                        NewChatsAdded();
 
                         if (chatMsg.ChatId == activeChat.ChatId)
                             NewMessagesAdded(activeChat.ChatId);
                     }
                 }
+
+                if(messages.Count > 0)
+                    NewChatsAdded();
             }
             catch (Exception ex)
             {
@@ -268,6 +261,8 @@ namespace Client
                 Response response = StreamTools.NetworkGet(reader.BaseStream);
                 netStream.Close();
 
+                if (response.Type == ResponseType.Error) OnError(response);
+
                 return response;
             }
             catch (Exception ex)
@@ -308,6 +303,41 @@ namespace Client
             }
         }
 
+        void OnError(Response response)
+        { 
+            Error error = StreamTools.Deserialize<Error>(response.Data);
+
+            switch (error.Type)
+            {
+                case KnownErrors.UnknownError:
+                    MessageBox.Show("Unknown error", "Unknown Error", MessageBoxButton.OK);
+                    break;
+                case KnownErrors.OutOfSync:
+                    Sync();
+                    break;
+                case KnownErrors.SecondClient:
+                    MessageBox.Show("There is already active sesion on other device", "Simulatious login", MessageBoxButton.OK);
+                    break;
+                case KnownErrors.BadPasswordOrLogin:
+                    MessageBox.Show("Wrong login or password", "Bad login creditinals", MessageBoxButton.OK);
+                    break;
+                case KnownErrors.LoginBusy:
+                    MessageBox.Show("There is already user with this login", "Try another login", MessageBoxButton.OK);
+                    break;
+                case KnownErrors.NicknameBusy:
+                    MessageBox.Show("There is already user with this nickname", "Try another nickname", MessageBoxButton.OK);
+                    break;
+                case KnownErrors.UnknownCommand:
+                    break;
+                case KnownErrors.UnknownUser:
+                    break;
+                case KnownErrors.UnknownCommandArguments:
+                    break;
+                default:
+                    break;
+            }
+        }
+
         #endregion
 
         /// <summary>
@@ -324,19 +354,12 @@ namespace Client
 
                 Response response = Request(CommandType.Login, dataToSend);
 
-                if (response.Type == ResponseType.Error)
-                    return false;
+                if (response.Type == ResponseType.Error) return false;
 
                 profile = StreamTools.Deserialize<User>(response.Data);
-                avatar = StreamTools.ToBitmapImage(profile.Avatar);
 
-                response = Request(CommandType.Sync, null);
-
-                if (response.Type == ResponseType.Error)
-                    return false;
-
-                chats = StreamTools.Deserialize<List<Chat>>(response.Data);
-                NewChatsAdded();
+                Sync();
+                
                 StartBackgroundSync();
 
                 return true;
@@ -347,6 +370,16 @@ namespace Client
                             MessageBoxButton.OK);
                 return false;
             }
+        }
+
+        void Sync()
+        {
+            Response response = Request(CommandType.Sync, null);
+
+            if (response.Type == ResponseType.Error) return;
+
+            chats = StreamTools.Deserialize<List<Chat>>(response.Data);
+            NewChatsAdded();
         }
 
         /// <summary>
@@ -367,14 +400,13 @@ namespace Client
 
                 Response response = Request(CommandType.NewChatMessage, dataToSend);
 
-                if (response.Type == ResponseType.Error)
-                    return;
+                if (response.Type == ResponseType.Error) return;
 
                 int index = chats.FindIndex(chat => chat.ChatId == activeChat.ChatId);
 
                 chats[index].Messages.Add(StreamTools.Deserialize<ChatMessage>(response.Data));
 
-                MessagesList.Add(new MessageContainer() { MessageText = messageText.Trim(), AvatartImage = avatar });
+                MessagesList.Add(new MessageContainer() { MessageText = messageText.Trim(), AvatartImage = StreamTools.ToBitmapImage(profile.Avatar) });
                 NewMessagesAdded(activeChat.ChatId);
             }
             catch (Exception ex)
@@ -414,7 +446,10 @@ namespace Client
 
                 SystemChatMessage dataToSend = new() { SystemMessageType = SystemChatMessageType.NewChat, Chat = activeChat };
 
-                Request(CommandType.NewSystemChatMessage, dataToSend);
+                response = Request(CommandType.NewSystemChatMessage, dataToSend);
+
+                if(response.Type == ResponseType.Error) return false;
+
                 NewChatsAdded();
                 return true;
             }
@@ -457,7 +492,10 @@ namespace Client
                 if (members.Count < 1) return false;
 
                 List<ChatMember> chatMembers = new();
-                chatMembers.Add(new ChatMember() { User = profile, ChatMemberRole = ChatMemberRole.Owner });
+
+                chatMembers.Add(new ChatMember() {
+                    User = profile,
+                    ChatMemberRole = ChatMemberRole.Owner });
 
                 foreach (User user in members)
                 {
@@ -473,9 +511,14 @@ namespace Client
                     Messages = new List<ChatMessage>()
                 });
 
-                SystemChatMessage dataToSend = new() { SystemMessageType = SystemChatMessageType.NewChat, Chat = activeChat };
+                SystemChatMessage dataToSend = new() {
+                    SystemMessageType = SystemChatMessageType.NewChat,
+                    Chat = activeChat };
 
-                Request(CommandType.NewSystemChatMessage, dataToSend);
+                response = Request(CommandType.NewSystemChatMessage, dataToSend);
+
+                if(response.Type == ResponseType.Error) return false;
+
                 NewChatsAdded();
                 return true;
             }

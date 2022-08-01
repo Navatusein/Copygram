@@ -10,10 +10,10 @@
         WindowStartupLocation="CenterScreen"
         MinHeight="600" MinWidth="600"
         Icon="Resources/Icons/logotype.ico"
-        RenderOptions.BitmapScalingMode="HighQuality"
-        Closing="Window_Closing"
-        Title="SignUp" Height="600" Width="1000">
-    <Grid>
+        RenderOptions.BitmapScalingMode="HighQuality" Title="SignUp" Height="600" Width="1000">
+        <!--Closing="Window_Closing"-->
+        
+    <!--<Grid>
         <Grid x:Name="Background" Background="#293a4c">
            
         </Grid>
@@ -24,5 +24,5 @@
         <Button x:Name="signupBtn" Content="Sign up" HorizontalAlignment="Left" Margin="300,258,0,0" VerticalAlignment="Top" Width="128" Click="signupAction"/>
         <Image x:Name="profileImage" HorizontalAlignment="Left" Height="50" Margin="265,195,0,0" VerticalAlignment="Top" Width="50"/>
         <Button x:Name="selectImageBtn" Content="Select image" HorizontalAlignment="Left" Margin="364,0,0,0" VerticalAlignment="Center" Width="96" Click="selectImageAction"/>
-    </Grid>
+    </Grid>-->
 </Window>

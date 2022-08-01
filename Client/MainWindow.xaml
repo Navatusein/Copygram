@@ -8,7 +8,7 @@
         xmlns:ext="http://schemas.microsoft.com/winfx/2006/xaml/presentation/toolkit/extended"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        MinHeight="600" MinWidth="600"
+        MinHeight="600" MinWidth="650"
         Icon="Resources/Icons/logotype.ico"
         RenderOptions.BitmapScalingMode="HighQuality"
         Closing="Window_Closing"
@@ -76,7 +76,8 @@
                 <cctrl:IconButton IconImageSource="Resources/Icons/menu.ico" Click="IconButton_Tap"/>
             </Border>
 
-            <ListBox Grid.Row="1" Grid.Column="0" x:Name="FoldersGrid" Background="#293a4c" BorderThickness="0">
+            <ListBox Grid.Row="1" Grid.Column="0" x:Name="FoldersGrid" Background="#293a4c" MinWidth="50"
+                     BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                 <ListBoxItem Style="{StaticResource ListBoxItemDefaultStyle}">
                     <cctrl:IconButton IconImageSource="Resources/Icons/folder.png" Click="NotImplementedClick"/>
                 </ListBoxItem>

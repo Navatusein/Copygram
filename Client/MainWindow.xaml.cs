@@ -1,4 +1,5 @@
 ﻿using Client.CustomControls;
+using Client.Resources.Tools;
 using System;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -149,7 +150,7 @@ namespace Client
                 MainGrid.Visibility = Visibility.Visible;
 
                 sidePanelOverlay.MyUsernameSource = ctrl.Profile.Nickname;
-                sidePanelOverlay.MyAvatarSource = ctrl.Avatar;
+                sidePanelOverlay.MyAvatarSource = StreamTools.ToBitmapImage(ctrl.Profile.Avatar);
                 sidePanelOverlay.IdSource = ctrl.Profile.UserId.ToString();
             }
             else
@@ -215,7 +216,7 @@ namespace Client
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if(LoginOverlay.Visibility == Visibility.Collapsed)
+            if(LoginLayout.Visibility == Visibility.Collapsed)
                 ctrl.CloseServerConnection();
         }
 
@@ -247,7 +248,7 @@ namespace Client
                         ibVoice.Visibility = Visibility.Visible;
                         ibInfo.Visibility = Visibility.Visible;
                     }
-                    else if (e.NewSize.Width > 600)
+                    else if (e.NewSize.Width > MinWidth)
                     {
                         ibMenu.Visibility = Visibility.Visible;
                         ibInsert.Visibility = Visibility.Visible;

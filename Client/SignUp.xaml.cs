@@ -27,14 +27,14 @@ namespace Client
         }
         private void selectImageAction(object sender, RoutedEventArgs e)
         {
-            string imagePath;
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Image files (*.png;*.jpeg)|*.png;*.jpeg|All files (*.*)|*.*";
-            if (openFileDialog.ShowDialog() == true)
-            {
-                imagePath = File.ReadAllText(openFileDialog.FileName);
-                profileImage.Source = new BitmapImage(new Uri(imagePath, UriKind.Relative));
-            }
+            //string imagePath;
+            //OpenFileDialog openFileDialog = new OpenFileDialog();
+            //openFileDialog.Filter = "Image files (*.png;*.jpeg)|*.png;*.jpeg|All files (*.*)|*.*";
+            //if (openFileDialog.ShowDialog() == true)
+            //{
+            //    imagePath = File.ReadAllText(openFileDialog.FileName);
+            //    profileImage.Source = new BitmapImage(new Uri(imagePath, UriKind.Relative));
+            //}
         }
 
         private void signupAction(object sender, RoutedEventArgs e)
