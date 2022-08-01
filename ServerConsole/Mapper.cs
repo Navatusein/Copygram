@@ -12,6 +12,8 @@ namespace ServerConsole
 {
     internal static class Mapper
     {
+        #region DB Models To TCP Model
+
         public static TCP.Chat DbModelToTcpModel(DB.Chat dbChat, int messagesCount)
         {
             TCP.Chat tcpChat = new();
@@ -62,6 +64,10 @@ namespace ServerConsole
             return tcpUser;
         }
 
+        #endregion
+
+        #region TCP Model To DB Model
+
         public static DB.Chat TcpModelToDbModel(TCP.Chat tcpChat)
         {
             DB.Chat dbChat = new();
@@ -81,7 +87,7 @@ namespace ServerConsole
             dbChatMember.ChatMemberId = tcpChatMember.ChatMemberId;
             dbChatMember.UserId = tcpChatMember.User.UserId;
             dbChatMember.ChatId = tcpChatMember.ChatMemberId;
-            dbChatMember.ChatMemberId = (int)tcpChatMember.ChatMemberRole;
+            dbChatMember.ChatMemberRoleId = (int)tcpChatMember.ChatMemberRole;
 
             return dbChatMember;
         }
@@ -111,5 +117,7 @@ namespace ServerConsole
 
             return dbChatMessage;
         }
+
+        #endregion
     }
 }
