@@ -12,6 +12,7 @@
         Icon="Resources/Icons/logotype.ico"
         RenderOptions.BitmapScalingMode="HighQuality"
         Closing="Window_Closing"
+        SizeChanged="Window_SizeChanged"
         Title="Copygram" Height="600" Width="1000">
     <Grid Background="White">
         <Grid x:Name="LoginLayout" Background="#293a4c" Visibility="Collapsed">
@@ -108,11 +109,11 @@
                     <TextBlock Text="last seen long time ago" Style="{StaticResource LastSeenLabel}"/>
                 </StackPanel>
 
-                <cctrl:IconButton Grid.Column="2" IconImageSource="Resources/Icons/search.png" Click="NotImplementedClick"/>
+                <cctrl:IconButton x:Name="ibSearch" Grid.Column="2" IconImageSource="Resources/Icons/search.png" Click="NotImplementedClick"/>
 
-                <cctrl:IconButton Grid.Column="3" IconImageSource="Resources/Icons/info.ico" Click="NotImplementedClick"/>
+                <cctrl:IconButton x:Name="ibInfo" Grid.Column="3" IconImageSource="Resources/Icons/info.ico" Click="NotImplementedClick"/>
 
-                <cctrl:IconButton Grid.Column="4" IconImageSource="Resources/Icons/list.png" Click="NotImplementedClick"/>
+                <cctrl:IconButton x:Name="ibMenu" Grid.Column="4" IconImageSource="Resources/Icons/list.png" Click="NotImplementedClick"/>
             </Grid>
 
             <Grid x:Name="ChatGrid" Grid.Column="2" Grid.Row="1">
@@ -138,14 +139,14 @@
                         <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
 
-                    <cctrl:IconButton Grid.Column="0" IconImageSource="Resources/Icons/insert.png" Click="NotImplementedClick"/>
+                    <cctrl:IconButton x:Name="ibInsert" Grid.Column="0" IconImageSource="Resources/Icons/insert.png" Click="NotImplementedClick"/>
 
                     <TextBox x:Name="tbMessage" Grid.Column="1" Text="Write a message..." Style="{StaticResource TextBoxMessage}" 
                              GotFocus="tbMessage_GotFocus" LostFocus="tbMessage_LostFocus" KeyDown="tbMessage_KeyDown"/>
 
-                    <cctrl:IconButton Grid.Column="2" IconImageSource="Resources/Icons/emoji.png" Click="NotImplementedClick"/>
+                    <cctrl:IconButton x:Name="ibEmoji" Grid.Column="2" IconImageSource="Resources/Icons/emoji.png" Click="NotImplementedClick"/>
 
-                    <cctrl:IconButton Grid.Column="3" IconImageSource="Resources/Icons/microphone.png" Click="NotImplementedClick"/>
+                    <cctrl:IconButton x:Name="ibVoice" Grid.Column="3" IconImageSource="Resources/Icons/microphone.png" Click="NotImplementedClick"/>
 
                 </Grid>
             </Grid>

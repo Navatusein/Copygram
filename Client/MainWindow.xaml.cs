@@ -1,7 +1,6 @@
 ﻿using Client.CustomControls;
 using System;
 using System.Collections.ObjectModel;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -177,10 +176,10 @@ namespace Client
 
                 ctrl.NewMessagesAdded(chatId);
 
-                if(Chat.Items.Count > 1)
+                if (Chat.Items.Count > 1)
                     Chat.ScrollIntoView(Chat.Items[Chat.Items.Count - 1]);
-                
-                Username.Text = ctrl.GetActiveChat!.ChatName; 
+
+                Username.Text = ctrl.GetActiveChat!.ChatName;
             }
         }
 
@@ -216,7 +215,8 @@ namespace Client
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            ctrl.CloseServerConnection();
+            if(LoginOverlay.Visibility == Visibility.Collapsed)
+                ctrl.CloseServerConnection();
         }
 
         private void tbSearch_KeyDown(object sender, KeyEventArgs e)
@@ -229,6 +229,52 @@ namespace Client
         {
             if (ctrl.GetActiveChat != null && e.Delta > 5 && !ctrl.IsLast)
                 ctrl.NewMessagesAdded((int)(ChatsList.SelectedItem as UserCell)!.Tag);
+        }
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (e.WidthChanged)
+            {
+                if (e.NewSize.Width > e.PreviousSize.Width)
+                {
+                    if (e.NewSize.Width > 900)
+                    {
+                        ibEmoji.Visibility = Visibility.Visible;
+                        ibSearch.Visibility = Visibility.Visible;
+                    }
+                    else if (e.NewSize.Width > 700)
+                    {
+                        ibVoice.Visibility = Visibility.Visible;
+                        ibInfo.Visibility = Visibility.Visible;
+                    }
+                    else if (e.NewSize.Width > 600)
+                    {
+                        ibMenu.Visibility = Visibility.Visible;
+                        ibInsert.Visibility = Visibility.Visible;
+                    }
+                }
+                else
+                {
+                    if (e.NewSize.Width < e.PreviousSize.Width)
+                    {
+                        if (e.NewSize.Width < 700)
+                        {
+                            ibMenu.Visibility = Visibility.Collapsed;
+                            ibInsert.Visibility = Visibility.Collapsed;
+                        }
+                        else if (e.NewSize.Width < 800)
+                        {
+                            ibVoice.Visibility = Visibility.Collapsed;
+                            ibInfo.Visibility = Visibility.Collapsed;
+                        }
+                        else if (e.NewSize.Width < 900)
+                        {
+                            ibEmoji.Visibility = Visibility.Collapsed;
+                            ibSearch.Visibility = Visibility.Collapsed;
+                        }
+                    }
+                }   
+            }
         }
     }
 }

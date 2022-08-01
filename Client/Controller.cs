@@ -283,8 +283,7 @@ namespace Client
         /// </summary>
         public void CloseServerConnection()
         {
-            if (ep != null)
-                Request(CommandType.Disconnect, null);
+            Request(CommandType.Disconnect, null);
         }
 
         /// <summary>

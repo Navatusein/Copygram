@@ -117,7 +117,7 @@ namespace Client.CustomControls
 
         private void TextBlock_TargetUpdated(object sender, DataTransferEventArgs e)
         {
-            if(LastMessage.Length > 20)
+            if(LastMessage.Length > 15)
                 LastMessage = LastMessage.Substring(0, 10) + "...";
 
         }
