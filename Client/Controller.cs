@@ -18,7 +18,7 @@ using System.Windows.Threading;
 namespace Client
 {
     /// <summary>
-    /// Base controller class
+    /// My controller class
     /// </summary>
     internal class Controller
     {
@@ -84,7 +84,7 @@ namespace Client
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "Background start synchronization Error",
-                        MessageBoxButton.OK);
+                        MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 
@@ -137,9 +137,10 @@ namespace Client
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "Background update Error",
-                        MessageBoxButton.OK);
+                        MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
+
         #endregion
 
         #region View Loads
@@ -171,7 +172,7 @@ namespace Client
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "Chats to cells Error",
-                        MessageBoxButton.OK);
+                        MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 
@@ -180,6 +181,33 @@ namespace Client
         /// </summary>
         /// <param name="name"></param>
         public void NewMessagesAdded(int chatId)
+        {
+            try
+            {
+                if (chatId < 0)
+                    return;
+
+                activeChat = chats.FirstOrDefault(chat => chat.ChatId == chatId)!;
+
+                MessagesList.Clear();
+
+                foreach (ChatMessage msg in activeChat.Messages)
+                {
+                    MessagesList.Add(new MessageContainer()
+                    {
+                        MessageText = msg.MessageText,
+                        AvatartImage = StreamTools.ToBitmapImage(msg.FromUser.Avatar)
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "NewChats Chat Error",
+                        MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        public void ScrollToOldMessages(int chatId)
         {
             try
             {
@@ -210,21 +238,12 @@ namespace Client
                 if (data.Count < limit)
                     isLast = true;
 
-                MessagesList.Clear();
-
-                foreach (ChatMessage msg in activeChat.Messages)
-                {
-                    MessagesList.Add(new MessageContainer()
-                    {
-                        MessageText = msg.MessageText,
-                        AvatartImage = StreamTools.ToBitmapImage(msg.FromUser.Avatar)
-                    });
-                }
+                NewMessagesAdded(chatId);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "Recieve Chat Error",
-                        MessageBoxButton.OK);
+                MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "Scroll Chat Error",
+                        MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 
@@ -248,15 +267,24 @@ namespace Client
                     data = StreamTools.Serialize(toSerialize)!;
 
                 TcpClient client = new();
-
-                client.Connect(ep);
+                Response response = null!;
+                
+                if (!client.ConnectAsync(ep).Wait(300))
+                {
+                    byte[] dataToSend = StreamTools.Serialize(new Error() {
+                        Type = KnownErrors.UnknownError,
+                        Text = "Connection timout" })!;
+                    response = new() { Type = ResponseType.Error, Data = dataToSend };
+                    OnError(response);
+                    return response;
+                }
 
                 NetworkStream netStream = client.GetStream();
                 Command command = new() { Type = type, Data = data, User = profile };
                 StreamTools.NetworkSend(netStream, command);
 
                 StreamReader reader = new(netStream, Encoding.UTF8);
-                Response response = StreamTools.NetworkGet(reader.BaseStream);
+                response = StreamTools.NetworkGet(reader.BaseStream);
                 netStream.Close();
 
                 if (response.Type == ResponseType.Error) OnError(response);
@@ -266,7 +294,7 @@ namespace Client
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "Request Error",
-                            MessageBoxButton.OK);
+                            MessageBoxButton.OK, MessageBoxImage.Information);
                 return new Response() { Type = ResponseType.Error };
             }
         }     
@@ -276,7 +304,8 @@ namespace Client
         /// </summary>
         public void CloseServerConnection()
         {
-            Request(CommandType.Disconnect, null);
+            Response response = Request(CommandType.Disconnect, null);
+            if(response.Type == ResponseType.Error) OnError(response);
         }
 
         /// <summary>
@@ -285,19 +314,27 @@ namespace Client
         /// <param name="text">Name of chat</param>
         public void SearchChat(string name)
         {
-            ChatList.Clear();
-
-            foreach (Chat chat in chats)
+            try
             {
-                if (chat.ChatName.ToLower().Contains(name.ToLower()))
+                ChatList.Clear();
+
+                foreach (Chat chat in chats)
                 {
-                    ChatList.Add(new UserCell()
+                    if (chat.ChatName.ToLower().Contains(name.ToLower()))
                     {
-                        AvatarSource = StreamTools.ToBitmapImage(chat.Avatar),
-                        Nickname = chat.ChatName,
-                        LastMessage = chat.Messages.Count > 0 ? chat.Messages.Last().MessageText : "No message"
-                    });
+                        ChatList.Add(new UserCell()
+                        {
+                            AvatarSource = StreamTools.ToBitmapImage(chat.Avatar),
+                            Nickname = chat.ChatName,
+                            LastMessage = chat.Messages.Count > 0 ? chat.Messages.Last().MessageText : "No message"
+                        });
+                    }
                 }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "Search Error",
+                            MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 
@@ -312,31 +349,31 @@ namespace Client
             switch (error.Type)
             {
                 case KnownErrors.UnknownError:
-                    MessageBox.Show(error.Text, "Unknown Error", MessageBoxButton.OK);
+                    MessageBox.Show(error.Text, "Unknown Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     break;
                 case KnownErrors.OutOfSync:
                     Sync();
                     break;
                 case KnownErrors.SecondClient:
-                    MessageBox.Show("There is already active sesion on other device", "Simulatious login", MessageBoxButton.OK);
+                    MessageBox.Show("There is already active sesion on other device", "Simulatious login", MessageBoxButton.OK, MessageBoxImage.Error);
                     break;
                 case KnownErrors.BadPasswordOrLogin:
-                    MessageBox.Show("Wrong login or password", "Bad login creditinals", MessageBoxButton.OK);
+                    MessageBox.Show("Wrong login or password", "Bad login creditinals", MessageBoxButton.OK, MessageBoxImage.Error);
                     break;
                 case KnownErrors.LoginBusy:
-                    MessageBox.Show("There is already user with this login", "Try another login", MessageBoxButton.OK);
+                    MessageBox.Show("There is already user with this login", "Try another login", MessageBoxButton.OK, MessageBoxImage.Error);
                     break;
                 case KnownErrors.NicknameBusy:
-                    MessageBox.Show("There is already user with this nickname", "Try another nickname", MessageBoxButton.OK);
+                    MessageBox.Show("There is already user with this nickname", "Try another nickname", MessageBoxButton.OK, MessageBoxImage.Error);
                     break;
-                case KnownErrors.UnknownCommand:
+                case KnownErrors.UnknownCommand://///////////
                     break;
-                case KnownErrors.UnknownUser:
+                case KnownErrors.UnknownUser://////////////// ----> Test purpose only
                     break;
-                case KnownErrors.UnknownCommandArguments:
+                case KnownErrors.UnknownCommandArguments:///
                     break;
                 case KnownErrors.ProcessingError:
-                    MessageBox.Show(error.Text, "Something went wrong", MessageBoxButton.OK);
+                    MessageBox.Show(error.Text, "Something went wrong", MessageBoxButton.OK, MessageBoxImage.Error);
                     break;
                 default:
                     break;
@@ -344,6 +381,8 @@ namespace Client
         }
 
         #endregion
+
+        #region Main
 
         /// <summary>
         /// Tries to login user with current credentials
@@ -372,7 +411,7 @@ namespace Client
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "TryLogin Error",
-                            MessageBoxButton.OK);
+                            MessageBoxButton.OK, MessageBoxImage.Information);
                 return false;
             }
         }
@@ -398,8 +437,8 @@ namespace Client
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "TryLogin Error",
-                            MessageBoxButton.OK);
+                MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "TryRegisterError",
+                            MessageBoxButton.OK, MessageBoxImage.Information);
                 return false;
             }
         }
@@ -409,12 +448,20 @@ namespace Client
         /// </summary>
         void Sync()
         {
-            Response response = Request(CommandType.Sync, null);
+            try
+            {
+                Response response = Request(CommandType.Sync, null);
 
-            if (response.Type == ResponseType.Error) return;
+                if (response.Type == ResponseType.Error) return;
 
-            chats = StreamTools.Deserialize<List<Chat>>(response.Data);
-            NewChatsAdded();
+                chats = StreamTools.Deserialize<List<Chat>>(response.Data);
+                NewChatsAdded();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "Sync Error",
+                            MessageBoxButton.OK, MessageBoxImage.Information);
+            }
         }
 
         /// <summary>
@@ -447,9 +494,13 @@ namespace Client
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "Send Message Error",
-                        MessageBoxButton.OK);
+                        MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
+
+        #endregion
+
+        #region Adding chats
 
         /// <summary>
         /// Adds private chat
@@ -491,7 +542,7 @@ namespace Client
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "Add private chat Error",
-                        MessageBoxButton.OK);
+                        MessageBoxButton.OK, MessageBoxImage.Information);
                 return false;
             }
         }
@@ -560,10 +611,11 @@ namespace Client
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace, "Add group chat Error",
-                        MessageBoxButton.OK);
+                        MessageBoxButton.OK, MessageBoxImage.Information);
                 return false;
             }
         }
 
+        #endregion
     }
 }
