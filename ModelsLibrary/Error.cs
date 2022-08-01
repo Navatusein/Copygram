@@ -16,7 +16,8 @@ namespace ModelsLibrary
         NicknameBusy,
         UnknownCommand,
         UnknownUser,
-        UnknownCommandArguments
+        UnknownCommandArguments,
+        ProcessingError
     }
 
     [Serializable]
