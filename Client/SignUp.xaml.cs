@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,29 +27,48 @@ namespace Client
         }
         private void selectImageAction(object sender, RoutedEventArgs e)
         {
-            // TODO
-            // Upload image using image path.
+            string imagePath;
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Image files (*.png;*.jpeg)|*.png;*.jpeg|All files (*.*)|*.*";
+            if (openFileDialog.ShowDialog() == true)
+            {
+                imagePath = File.ReadAllText(openFileDialog.FileName);
+                profileImage.Source = new BitmapImage(new Uri(imagePath, UriKind.Relative));
+            }
         }
 
         private void signupAction(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                // Send data
+            }
+            catch (Exception ex)
+            {
+                // Create window with error
+                Console.WriteLine(ex.Message);
+            }
+            /*
             if (usernameTb.Text.ToString() != String.Empty && passwordTb.Text.ToString() != String.Empty)
             {
                 // TODO
                 // Sign up process. Send request to server.
+            } else
+            {
+
             }
+            */
         }
 
+        // Delete
         private void passwordAction(object sender, TextChangedEventArgs e)
         {
-            // TODO
-            // Check if not null
+            
         }
 
         private void usernameAction(object sender, TextChangedEventArgs e)
         {
-            // TODO
-            // Check if not null
+           
         }
     }
 }
