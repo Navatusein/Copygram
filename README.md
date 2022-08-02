@@ -64,6 +64,8 @@ Here's why:
 
 ### Built With
 
+[![.NET][.NET]][.NET-url]
+
 [![WPF][WPF]][WPF-url]
 
 [![EF Core][EF-Core]][EF-Core-url]
@@ -129,6 +131,9 @@ Project Link: [https://github.com/Navatusein/Copygram](https://github.com/Navatu
 [license-url]: https://github.com/Navatusein/Copygram/blob/Main/LICENSE.txt
 
 [product-screenshot]: screenshot.png
+
+[.NET]: https://img.shields.io/badge/.NET-v6-brightgreen?style=for-the-badge
+[.NET-url]: https://docs.microsoft.com/ru-ru/dotnet/core/whats-new/dotnet-6
 
 [WPF]: https://img.shields.io/badge/WPF-v4.6-brightgreen?style=for-the-badge
 [WPF-url]: https://docs.microsoft.com/ru-ru/dotnet/desktop/wpf/overview/?view=netdesktop-6.0
