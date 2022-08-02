@@ -47,6 +47,24 @@ namespace Client.CustomControls
             set => SetValue(MessageTextProperty, value);
         }
 
+        /// <summary>
+        /// Attached property
+        /// </summary>
+        public static readonly DependencyProperty ChatMessageIdProperty
+           = DependencyProperty.Register(
+               "ChatMessageId",
+               typeof(int),
+               typeof(MessageContainer));
+
+        /// <summary>
+        /// Property for attached property
+        /// </summary>
+        public int ChatMessageId
+        {
+            get => (int)GetValue(ChatMessageIdProperty);
+            set => SetValue(ChatMessageIdProperty, value);
+        }
+
         public MessageContainer()
         {
             InitializeComponent();
