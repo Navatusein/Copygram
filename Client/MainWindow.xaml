@@ -17,7 +17,8 @@
     <Grid Background="White">
         <Grid x:Name="LoginLayout" Background="#293a4c" Visibility="Collapsed">
             <cctrl:LoginPage x:Name="LoginOverlay" LoginClick="btLogin_Click" RegisterClick="LoginOverlay_RegisterClick"/>
-            <cctrl:RegisterPage x:Name="RegisterOverlay" RegisterClick="RegisterOverlay_RegisterClick" Visibility="Collapsed"/>
+            <cctrl:RegisterPage x:Name="RegisterOverlay" RegisterClick="RegisterOverlay_RegisterClick" Visibility="Collapsed"
+                                GoBackClick="RegisterOverlay_GoBackClick"/>
         </Grid> 
         <Grid x:Name="MainGrid" Visibility="Visible">
             <Grid.ColumnDefinitions>

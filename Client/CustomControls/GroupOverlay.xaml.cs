@@ -82,7 +82,6 @@ namespace Client.CustomControls
         /// <param name="e"></param>
         private void tbNameGotFocus(object sender, RoutedEventArgs e) 
         {
-            if(string.IsNullOrEmpty(tbGroupName.Text))
                 tbGroupName.Clear();
         }
         /// <summary>
@@ -103,7 +102,6 @@ namespace Client.CustomControls
         /// <param name="e"></param>
         private void tbInvitesGotFocus(object sender, RoutedEventArgs e)
         {
-            if(string.IsNullOrEmpty(tbGroupUsers.Text))
                 tbGroupUsers.Clear();
         }
 

@@ -59,6 +59,7 @@ namespace Client.CustomControls
         {
             Visibility = Visibility.Collapsed;
         }
+
         /// <summary>
         /// Clear on focus
         /// </summary>
@@ -69,6 +70,7 @@ namespace Client.CustomControls
             tbWhoToAddress.Foreground = new SolidColorBrush(Colors.Black);
             tbWhoToAddress.Clear();
         }
+
         /// <summary>
         /// Return default text on lost focus if any wasnt there
         /// </summary>

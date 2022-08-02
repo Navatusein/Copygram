@@ -27,6 +27,7 @@ namespace Client
         IPEndPoint ep = null!; //Sever endpoint
 
         public bool isLast = false; //Is loaded message was last in sequence
+        int limit = 12; //Amount of messages to get from server
 
         #region Collections
         ObservableCollection<UserCell> ChatList = null!; //GUI Collection of your chats
@@ -181,7 +182,7 @@ namespace Client
         /// <summary>
         /// Refreshes selected chat messages
         /// </summary>
-        /// <param name="name">active chat id</param>
+        /// <param name="name">Active chat id</param>
         public void NewMessagesAdded(int chatId)
         {
             try
@@ -212,23 +213,18 @@ namespace Client
         /// <summary>
         /// Loads old messages on scroll
         /// </summary>
-        /// <param name="chatId">Chat id which to load</param>
-        public void ScrollToOldMessages(int chatId)
+        public void LoadOlderData()
         {
             try
             {
-                if (chatId < 0 || isLast)
+                if (activeChat == null || isLast)
                     return;
-
-                activeChat = chats.FirstOrDefault(chat => chat.ChatId == chatId)!;
 
                 if (activeChat.Messages.Count == 0)
                 {
                     MessagesList.Clear();
                     return;
                 }
-
-                int limit = 12; //Amount of messages to get from server
 
                 SyncChatMessages dataToSend = new()//Creating data request info
                 {
@@ -244,7 +240,7 @@ namespace Client
                 if (data.Count < limit)//If no more messages
                     isLast = true;
 
-                NewMessagesAdded(chatId);//Refreshes GUI messages
+                NewMessagesAdded(activeChat.ChatId);//Refreshes GUI messages
             }
             catch (Exception ex)
             {
