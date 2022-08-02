@@ -152,7 +152,7 @@ namespace Client
                 MessageSets.IsEnabled = true;
 
                 ctrl.NewMessagesAdded(chatId);
-                ctrl.LoadOlderData(chatId);
+                ctrl.LoadOlderData();
 
                 if (Chat.Items.Count > 1)
                     Chat.ScrollIntoView(Chat.Items[Chat.Items.Count - 1]);
@@ -283,7 +283,7 @@ namespace Client
         void Chat_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             if (ctrl.GetActiveChat != null && e.Delta > 5)
-                ctrl.LoadOlderData((int)(ChatsList.SelectedItem as UserCell)!.Tag);
+                ctrl.LoadOlderData();
         }
 
         #endregion

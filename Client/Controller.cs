@@ -192,9 +192,6 @@ namespace Client
 
                 activeChat = chats.FirstOrDefault(chat => chat.ChatId == chatId)!;
 
-                if (MessagesList.Count == 1)
-                    ScrollToOldMessages(chatId);
-
                 MessagesList.Clear();
 
                 foreach (ChatMessage msg in activeChat.Messages)
@@ -216,15 +213,12 @@ namespace Client
         /// <summary>
         /// Loads old messages on scroll
         /// </summary>
-        /// <param name="chatId">Chat id which to load</param>
-        public void LoadOlderData(int chatId)
+        public void LoadOlderData()
         {
             try
             {
-                if (chatId < 0 || isLast)
+                if (activeChat == null || isLast)
                     return;
-
-                activeChat = chats.FirstOrDefault(chat => chat.ChatId == chatId)!;
 
                 if (activeChat.Messages.Count == 0)
                 {
@@ -246,7 +240,7 @@ namespace Client
                 if (data.Count < limit)//If no more messages
                     isLast = true;
 
-                NewMessagesAdded(chatId);//Refreshes GUI messages
+                NewMessagesAdded(activeChat.ChatId);//Refreshes GUI messages
             }
             catch (Exception ex)
             {
