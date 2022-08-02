@@ -38,7 +38,9 @@ namespace ServerConsole
         }
 
         #region Server Logic
-
+        /// <summary>
+        /// Server start function.
+        /// </summary>
         public void StartServer()
         {
             clients = new();
@@ -48,11 +50,16 @@ namespace ServerConsole
 
             serverWork = true;
 
-            Task.Run(() => UnavailableCollector());
+            Thread thread = new Thread(UnavailableCollector);
+            thread.IsBackground = true;
+            thread.Start();
 
             WaitingForConnection();
         }
 
+        /// <summary>
+        /// A feature to collect and remove non-responding clients.
+        /// </summary>
         private void UnavailableCollector()
         {
             while (serverWork)
@@ -71,6 +78,9 @@ namespace ServerConsole
             }
         }
 
+        /// <summary>
+        /// A function that creates threads to wait for a connection.
+        /// </summary>
         private void WaitingForConnection()
         {
             Console.WriteLine("Server started");
@@ -79,10 +89,15 @@ namespace ServerConsole
             {
                 semaphore.WaitOne();
 
-                Task.Run(() => WaitingForRequest());
+                Thread thread = new Thread(WaitingForRequest);
+                thread.IsBackground = true;
+                thread.Start();
             }
         }
 
+        /// <summary>
+        /// A function to wait for users to connect.
+        /// </summary>
         private void WaitingForRequest()
         {
             NetworkStream netStream = null!;
@@ -166,7 +181,11 @@ namespace ServerConsole
         #endregion
 
         #region Response Processing
-
+        /// <summary>
+        /// Function for handling Request Changes.
+        /// </summary>
+        /// <param name="netStream">User network stream</param>
+        /// <param name="command">The command to be processed</param>
         private void ResponseRequestChanges(NetworkStream netStream, Command command)
         {
             if (!clients.ContainsKey(command.User!.UserId))
@@ -186,6 +205,11 @@ namespace ServerConsole
             SendResponse(netStream, ResponseType.Success, data, command);
         }
 
+        /// <summary>
+        /// Function for handling New Chat Message.
+        /// </summary>
+        /// <param name="netStream">User network stream</param>
+        /// <param name="command">The command to be processed</param>
         private void ResponseNewChatMessage(NetworkStream netStream, Command command)
         {
             if (!clients.ContainsKey(command.User!.UserId))
@@ -223,6 +247,11 @@ namespace ServerConsole
             SendResponse(netStream, ResponseType.Success, data, command);
         }
 
+        /// <summary>
+        /// Function for handling Request Changes.
+        /// </summary>
+        /// <param name="netStream">User network stream</param>
+        /// <param name="command">The command to be processed</param>
         private void ResponseNewSystemChatMessage(NetworkStream netStream, Command command)
         {
             if (!clients.ContainsKey(command.User!.UserId))
@@ -274,6 +303,11 @@ namespace ServerConsole
             }
         }
 
+        /// <summary>
+        /// Function for handling Sync.
+        /// </summary>
+        /// <param name="netStream">User network stream</param>
+        /// <param name="command">The command to be processed</param>
         private void ResponseSync(NetworkStream netStream, Command command)
         {
             if (clients.ContainsKey(command.User!.UserId))
@@ -291,6 +325,11 @@ namespace ServerConsole
             SendResponse(netStream, ResponseType.Success, data, command);
         }
 
+        /// <summary>
+        /// Function for handling Sync Chat Message.
+        /// </summary>
+        /// <param name="netStream">User network stream</param>
+        /// <param name="command">The command to be processed</param>
         private void ResponseSyncChatMessage(NetworkStream netStream, Command command)
         {
             if (!clients.ContainsKey(command.User!.UserId))
@@ -308,6 +347,11 @@ namespace ServerConsole
             SendResponse(netStream, ResponseType.Success, data, command);
         }
 
+        /// <summary>
+        /// Function for handling Check For User.
+        /// </summary>
+        /// <param name="netStream">User network stream</param>
+        /// <param name="command">The command to be processed</param>
         private void ResponseCheckForUser(NetworkStream netStream, Command command)
         {
             if (!clients.ContainsKey(command.User!.UserId))
@@ -333,6 +377,11 @@ namespace ServerConsole
             SendResponse(netStream, ResponseType.Success, data, command);
         }
 
+        /// <summary>
+        /// Function for handling Login.
+        /// </summary>
+        /// <param name="netStream">User network stream</param>
+        /// <param name="command">The command to be processed</param>
         private void ResponseLogin(NetworkStream netStream, Command command)
         {
             TCP.LoginData loginData = Deserialization<TCP.LoginData>(command.Data);
@@ -351,6 +400,11 @@ namespace ServerConsole
             }
         }
 
+        /// <summary>
+        /// Function for handling Register.
+        /// </summary>
+        /// <param name="netStream">User network stream</param>
+        /// <param name="command">The command to be processed</param>
         private void ResponseRegister(NetworkStream netStream, Command command)
         {
             TCP.LoginData loginData = Deserialization<TCP.LoginData>(command.Data);
@@ -376,6 +430,11 @@ namespace ServerConsole
             SendResponse(netStream, ResponseType.Success, data, command);
         }
 
+        /// <summary>
+        /// Function for handling Disconnect.
+        /// </summary>
+        /// <param name="netStream">User network stream</param>
+        /// <param name="command">The command to be processed</param>
         private void ResponseDisconnect(NetworkStream netStream, Command command)
         {
             if (command.User == null)
@@ -392,7 +451,12 @@ namespace ServerConsole
         #endregion
 
         #region Utility
-
+        /// <summary>
+        /// Function to sterilize an object.
+        /// </summary>
+        /// <typeparam name="T">Type of object to be sterilized</typeparam>
+        /// <param name="obj">Object to be sterilized</param>
+        /// <returns>Byte array of the sterilized object</returns>
         private byte[] Serialization<T>(T obj)
         {
             if (obj == null)
@@ -409,6 +473,12 @@ namespace ServerConsole
             return serializedObject;
         }
 
+        /// <summary>
+        /// A function to deserialize objects.
+        /// </summary>
+        /// <typeparam name="T">The type of the returned object</typeparam>
+        /// <param name="data">Byte array of the sterilized object</param>
+        /// <returns>Deserialize objects</returns>
         private T Deserialization<T>(byte[] data)
         {
             T DeserializedObject;
@@ -421,6 +491,13 @@ namespace ServerConsole
             return DeserializedObject;
         }
 
+        /// <summary>
+        /// A function to send an error to the user.
+        /// </summary>
+        /// <param name="netStream">User network stream</param>
+        /// <param name="knownErrors">Error type</param>
+        /// <param name="command">Command to be answered</param>
+        /// <param name="message">Message text</param>
         private void SendError(NetworkStream netStream, KnownErrors knownErrors, Command command, string message = "")
         {
             TCP.Error error = new();
@@ -430,13 +507,22 @@ namespace ServerConsole
 
             byte[] data = Serialization(error);
 
-            string debugNickname = command.User == null ? "unknown" : command.User.Nickname;
-
-            Console.WriteLine($"[{DateTime.Now.TimeOfDay}] {debugNickname}: Send error {error.Type}, {error.Text}");
-
+            if (command != null)
+            {
+                string debugNickname = command.User == null ? "unknown" : command.User.Nickname;
+                Console.WriteLine($"[{DateTime.Now.TimeOfDay}] {debugNickname}: Send error {error.Type}, {error.Text}");
+            }
+            
             SendResponse(netStream, ResponseType.Error, data, command);
         }
 
+        /// <summary>
+        /// A function to send a response to the user.
+        /// </summary>
+        /// <param name="netStream">User network stream</param>
+        /// <param name="type">Result success or error</param>
+        /// <param name="data">Byte data array</param>
+        /// <param name="command">Command to be answered</param>
         private void SendResponse(NetworkStream netStream, ResponseType type, byte[] data, Command command)
         {
             if (type == ResponseType.Success)
@@ -456,7 +542,6 @@ namespace ServerConsole
             netStream.Write(serializedObject, 0, serializedObject.Length);
             netStream.Flush();
         }
-
         #endregion
     }
 }
