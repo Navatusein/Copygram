@@ -56,7 +56,8 @@ namespace Client
         }
         void tbSearch_LostFocus(object sender, RoutedEventArgs e)
         {
-            tbSearch.Text = "Search";
+            if(string.IsNullOrEmpty(tbSearch.Text))
+                tbSearch.Text = "Search";
         }
         void tbMessage_GotFocus(object sender, RoutedEventArgs e)
         {
@@ -64,7 +65,8 @@ namespace Client
         }
         void tbMessage_LostFocus(object sender, RoutedEventArgs e)
         {
-            tbMessage.Text = "Write a message...";
+            if(string.IsNullOrEmpty(tbMessage.Text))
+                tbMessage.Text = "Write a message...";
         }
         #endregion
 
@@ -147,6 +149,7 @@ namespace Client
                 MessageSets.IsEnabled = true;
 
                 ctrl.NewMessagesAdded(chatId);
+                ctrl.LoadOlderData(chatId);
 
                 if (Chat.Items.Count > 1)
                     Chat.ScrollIntoView(Chat.Items[Chat.Items.Count - 1]);
@@ -257,6 +260,9 @@ namespace Client
         {
             if (e.Key == Key.Enter)
                 ctrl.SearchChat(tbSearch.Text);
+
+            if (e.Key == Key.Escape)
+                ctrl.NewChatsAdded();
         }
 
         #region In chat
@@ -274,7 +280,7 @@ namespace Client
         void Chat_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             if (ctrl.GetActiveChat != null && e.Delta > 5)
-                ctrl.ScrollToOldMessages((int)(ChatsList.SelectedItem as UserCell)!.Tag);
+                ctrl.LoadOlderData((int)(ChatsList.SelectedItem as UserCell)!.Tag);
         }
 
         #endregion

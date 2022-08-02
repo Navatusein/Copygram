@@ -217,7 +217,7 @@ namespace Client
         /// Loads old messages on scroll
         /// </summary>
         /// <param name="chatId">Chat id which to load</param>
-        public void ScrollToOldMessages(int chatId)
+        public void LoadOlderData(int chatId)
         {
             try
             {
