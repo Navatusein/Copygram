@@ -8,27 +8,158 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\Icons\dots-three-vertical.ico" />
-    <None Remove="Resources\Icons\info.ico" />
-    <None Remove="Resources\Icons\logotype.ico" />
-    <None Remove="Resources\Icons\menu.ico" />
-    <None Remove="Resources\Icons\microphone.ico" />
-    <None Remove="Resources\Icons\paperclip.ico" />
-    <None Remove="Resources\Icons\search.ico" />
-    <None Remove="Resources\Icons\setting.ico" />
-    <None Remove="Resources\Icons\smiley.ico" />
+    <Compile Remove="Models\**" />
+    <EmbeddedResource Remove="Models\**" />
+    <None Remove="Models\**" />
+    <Page Remove="Models\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Resources\Icons\dots-three-vertical.ico" />
-    <Resource Include="Resources\Icons\info.ico" />
-    <Resource Include="Resources\Icons\logotype.ico" />
-    <Resource Include="Resources\Icons\menu.ico" />
-    <Resource Include="Resources\Icons\microphone.ico" />
-    <Resource Include="Resources\Icons\paperclip.ico" />
-    <Resource Include="Resources\Icons\search.ico" />
-    <Resource Include="Resources\Icons\setting.ico" />
-    <Resource Include="Resources\Icons\smiley.ico" />
+    <None Remove="Resources\Fonts\sf-compact-medium.otf" />
+    <None Remove="Resources\Fonts\sf-compact-thin.otf" />
+    <None Remove="Resources\Icons\channel.png" />
+    <None Remove="Resources\Icons\contacts.png" />
+    <None Remove="Resources\Icons\cross.png" />
+    <None Remove="Resources\Icons\default_user.png" />
+    <None Remove="Resources\Icons\emoji.png" />
+    <None Remove="Resources\Icons\fck_go_back.png" />
+    <None Remove="Resources\Icons\folder.png" />
+    <None Remove="Resources\Icons\group.png" />
+    <None Remove="Resources\Icons\group_chat.png" />
+    <None Remove="Resources\Icons\group_default.png" />
+    <None Remove="Resources\Icons\info.ico" />
+    <None Remove="Resources\Icons\insert.png" />
+    <None Remove="Resources\Icons\list.png" />
+    <None Remove="Resources\Icons\logotype.ico" />
+    <None Remove="Resources\Icons\menu.ico" />
+    <None Remove="Resources\Icons\microphone.png" />
+    <None Remove="Resources\Icons\nightmode.png" />
+    <None Remove="Resources\Icons\phone.png" />
+    <None Remove="Resources\Icons\private_chat.png" />
+    <None Remove="Resources\Icons\saved.png" />
+    <None Remove="Resources\Icons\search.png" />
+    <None Remove="Resources\Icons\settings.png" />
+    <None Remove="Resources\Icons\sort.png" />
+    <None Remove="Resources\Icons\user.png" />
+    <None Remove="Resources\Wallpapers\DefaultDay.jpg" />
+    <None Remove="Resources\Wallpapers\DefaultNight.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Icons\fck_go_back.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
+    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="ModelsLibrary">
+      <HintPath>..\ModelsLibrary\bin\Debug\net6.0\ModelsLibrary.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Fonts\sf-compact-medium.otf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\sf-compact-thin.otf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\channel.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\cross.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\default_user.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\folder.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\group.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Icons\emoji.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\group_chat.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\group_default.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\insert.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\microphone.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\nightmode.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\phone.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\private_chat.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\saved.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Icons\contacts.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\info.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\list.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\logotype.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\menu.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\settings.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\sort.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\search.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\user.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Wallpapers\DefaultDay.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Wallpapers\DefaultNight.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Config.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\Icons\forward.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

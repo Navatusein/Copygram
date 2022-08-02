@@ -6,26 +6,20 @@ using System.Threading.Tasks;
 
 namespace ServerConsole.Models
 {
-    internal class Chat
+    public class Chat
     {
-        public Chat()
-        {
-            ChatMembers = new HashSet<ChatMember>();
-            Messages = new HashSet<Message>();
-        }
-
         public int ChatId { get; set; }
 
         public int ChatTypeId { get; set; }
 
-        public string ChatName { get; set; }
+        public string ChatName { get; set; } = null!;
 
-        public byte[] Avatar { get; set; }
+        public byte[] Avatar { get; set; } = null!;
 
-        public virtual ICollection<ChatMember> ChatMembers { get; set; }
+        public virtual HashSet<ChatMember> ChatMembers { get; set; } = new();
 
-        public virtual ICollection<Message> Messages { get; set; }
+        public virtual HashSet<ChatMessage> ChatMessages { get; set; } = new();
 
-        public virtual ChatType ChatType { get; set; }
+        public virtual ChatType ChatType { get; set; } = null!;
     }
 }

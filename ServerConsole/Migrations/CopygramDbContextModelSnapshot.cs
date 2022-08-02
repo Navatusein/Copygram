@@ -45,7 +45,7 @@ namespace ServerConsole.Migrations
 
                     b.HasIndex("ChatTypeId");
 
-                    b.ToTable("Chats");
+                    b.ToTable("Chats", (string)null);
                 });
 
             modelBuilder.Entity("ServerConsole.Models.ChatMember", b =>
@@ -73,7 +73,7 @@ namespace ServerConsole.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ChatMembers");
+                    b.ToTable("ChatMembers", (string)null);
                 });
 
             modelBuilder.Entity("ServerConsole.Models.ChatMemberRole", b =>
@@ -90,7 +90,37 @@ namespace ServerConsole.Migrations
 
                     b.HasKey("ChatMemberRoleId");
 
-                    b.ToTable("ChatMemberRoles");
+                    b.ToTable("ChatMemberRoles", (string)null);
+                });
+
+            modelBuilder.Entity("ServerConsole.Models.ChatMessage", b =>
+                {
+                    b.Property<int>("ChatMessageId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ChatMessageId"), 1L, 1);
+
+                    b.Property<int>("ChatId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DispatchTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("MessageText")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ChatMessageId");
+
+                    b.HasIndex("ChatId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ChatMessages", (string)null);
                 });
 
             modelBuilder.Entity("ServerConsole.Models.ChatType", b =>
@@ -107,34 +137,7 @@ namespace ServerConsole.Migrations
 
                     b.HasKey("ChatTypeId");
 
-                    b.ToTable("ChatTypes");
-                });
-
-            modelBuilder.Entity("ServerConsole.Models.Message", b =>
-                {
-                    b.Property<int>("MessageId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MessageId"), 1L, 1);
-
-                    b.Property<int>("ChatId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("MessageText")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("MessageId");
-
-                    b.HasIndex("ChatId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Messages");
+                    b.ToTable("ChatTypes", (string)null);
                 });
 
             modelBuilder.Entity("ServerConsole.Models.User", b =>
@@ -163,7 +166,7 @@ namespace ServerConsole.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("ServerConsole.Models.Chat", b =>
@@ -204,15 +207,15 @@ namespace ServerConsole.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ServerConsole.Models.Message", b =>
+            modelBuilder.Entity("ServerConsole.Models.ChatMessage", b =>
                 {
                     b.HasOne("ServerConsole.Models.Chat", "Chat")
-                        .WithMany("Messages")
+                        .WithMany("ChatMessages")
                         .HasForeignKey("ChatId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ServerConsole.Models.User", "User")
+                    b.HasOne("ServerConsole.Models.User", "FromUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -220,14 +223,14 @@ namespace ServerConsole.Migrations
 
                     b.Navigation("Chat");
 
-                    b.Navigation("User");
+                    b.Navigation("FromUser");
                 });
 
             modelBuilder.Entity("ServerConsole.Models.Chat", b =>
                 {
                     b.Navigation("ChatMembers");
 
-                    b.Navigation("Messages");
+                    b.Navigation("ChatMessages");
                 });
 #pragma warning restore 612, 618
         }

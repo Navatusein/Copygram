@@ -4,14 +4,23 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client"
+        xmlns:cctrl="clr-namespace:Client.CustomControls"
+        xmlns:ext="http://schemas.microsoft.com/winfx/2006/xaml/presentation/toolkit/extended"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        MinHeight="500" MinWidth="500"
+        MinHeight="600" MinWidth="650"
         Icon="Resources/Icons/logotype.ico"
-        Title="Copygram" Height="450" Width="800">
-    <Grid>
-
-        <Grid x:Name="MainGrid">
+        RenderOptions.BitmapScalingMode="HighQuality"
+        Closed="Window_Closed"
+        SizeChanged="Window_SizeChanged"
+        Title="Copygram" Height="600" Width="1000">
+    <Grid Background="White">
+        <Grid x:Name="LoginLayout" Background="#293a4c" Visibility="Collapsed">
+            <cctrl:LoginPage x:Name="LoginOverlay" LoginClick="btLogin_Click" RegisterClick="LoginOverlay_RegisterClick"/>
+            <cctrl:RegisterPage x:Name="RegisterOverlay" RegisterClick="RegisterOverlay_RegisterClick" Visibility="Collapsed"
+                                GoBackClick="RegisterOverlay_GoBackClick"/>
+        </Grid> 
+        <Grid x:Name="MainGrid" Visibility="Visible">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="5*"/>
@@ -22,25 +31,74 @@
                 <RowDefinition Height="9*"/>
             </Grid.RowDefinitions>
 
-            <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource IconCornerBorder}">
-                <Button  Style="{StaticResource IconButton}">
-                    <Image Source="Resources/Icons/menu.ico" Style="{StaticResource ImageSize}"/>
-                </Button>
-            </Border>
+            <Grid x:Name="BackgroundOverlayGrid" Grid.RowSpan="2" Grid.ColumnSpan="3" Panel.ZIndex="1" Visibility="Collapsed">
+                <Viewbox Stretch="Fill">
+                    <Rectangle Name="rectOverlay" MouseDown="rectOverlay_MouseDown" 
+                           Stroke="Black" StrokeThickness="2" 
+                           Fill="Black" Opacity="0.3" 
+                           Visibility="Collapsed"/>
+                </Viewbox>
+            </Grid>
 
-            <ListBox x:Name="FoldersGrid" Background="SteelBlue" Grid.Row="1" Grid.Column="0">
+            <Grid x:Name="SidePanelOverlayGrid" Grid.RowSpan="2" Grid.ColumnSpan="3" Panel.ZIndex="2" Visibility="Collapsed" >
+                <cctrl:SidePanelMenu x:Name="sidePanelOverlay" Background="White" Grid.Column="0"
+                            HorizontalAlignment="Left" Visibility="Collapsed" 
+                            VerticalAlignment="Stretch" NotImplementedClick="NotImplementedClick"/>
+            </Grid>
 
-            </ListBox>
+            <Grid x:Name="PrivateOverlayGrid" Grid.RowSpan="2" Grid.ColumnSpan="3" Panel.ZIndex="2" Visibility="Collapsed">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="3*"/>
+                    <RowDefinition Height="4*"/>
+                    <RowDefinition Height="3*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="4*"/>
+                    <ColumnDefinition Width="3*"/>
+                </Grid.ColumnDefinitions>
+                <cctrl:PrivateOverlay Grid.Row="1" Grid.Column="1" x:Name="PrivateChatOverlay" Visibility="Collapsed" 
+                                       HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                       IsVisibleChanged="PrivateOverlay_IsVisibleChanged" AddClick="PrivateChatOverlay_AddClick"/>
+            </Grid>
 
-            <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource TBCornerBorder}">
-                <TextBox x:Name="tbSearch" Text="Search"  Style="{StaticResource TextBoxStyle}"/>
-            </Border>
+            <Grid x:Name="GroupOverlayGrid" Grid.RowSpan="2" Grid.ColumnSpan="3" Panel.ZIndex="2" Visibility="Collapsed">
+                <cctrl:GroupOverlay Grid.Row="1" Grid.Column="1" x:Name="GroupChatOverlay" Visibility="Collapsed" 
+                                       HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="75"
+                                       IsVisibleChanged="GroupOverlay_IsVisibleChanged" AddClick="GroupChatOverlay_AddClick"/>
+            </Grid>
+                
+            <Grid x:Name="DonatePlsGrid" Grid.RowSpan="2" Grid.ColumnSpan="3" Panel.ZIndex="2" Visibility="Collapsed">
+                <cctrl:DonatePage Grid.Column="1" x:Name="DonateOverlay" Visibility="Collapsed"
+                                  HorizontalAlignment="Center" VerticalAlignment="Center"
+                                  IsVisibleChanged="DonateOverlay_IsVisibleChanged" CloseClick="DonateOverlay_CloseClick"/>
+            </Grid>
             
-            <ListBox x:Name="ChatsList" Grid.Row="1" Grid.Column="1" >
+            <Border Grid.Row="0" Grid.Column="0" Background="#293a4c">
+                <cctrl:IconButton Style="{StaticResource DefaultImageSize}" IconImageSource="Resources/Icons/menu.ico" Click="IconButton_Tap"/>
+            </Border>
 
+            <ListBox Grid.Row="1" Grid.Column="0" x:Name="FoldersGrid" Background="#293a4c" MinWidth="50"
+                     BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListBoxItem Style="{StaticResource ListBoxItemDefaultStyle}">
+                    <cctrl:IconButton Style="{StaticResource DefaultImageSize}" IconImageSource="Resources/Icons/folder.png" Click="NotImplementedClick"/>
+                </ListBoxItem>
+                <ListBoxItem Style="{StaticResource ListBoxItemDefaultStyle}">
+                    <cctrl:IconButton Style="{StaticResource DefaultImageSize}" IconImageSource="Resources/Icons/private_chat.png" Click="AddPrivate_Click"/>
+                </ListBoxItem>
+                <ListBoxItem Style="{StaticResource ListBoxItemDefaultStyle}">
+                    <cctrl:IconButton Style="{StaticResource DefaultImageSize}" IconImageSource="Resources/Icons/group_chat.png" Click="AddGroup_Click"/>
+                </ListBoxItem>
             </ListBox>
 
-            <Grid x:Name="ChatThumbnailGrid" Grid.Row="0" Grid.Column="2">
+            <Border Grid.Row="0" Grid.Column="1" Margin="12" Style="{StaticResource TBCornerBorder}">
+                <TextBox x:Name="tbSearch" Text="Search" Style="{StaticResource TextBoxSearch}" GotFocus="tbSearch_GotFocus" LostFocus="tbSearch_LostFocus" KeyDown="tbSearch_KeyDown"/>
+            </Border>
+
+            <ListBox x:Name="ChatsList" Grid.Row="1" Grid.Column="1" BorderThickness="1"
+                     HorizontalContentAlignment="Stretch" SelectionChanged="ChatsList_SelectionChanged"/>
+
+            <Grid x:Name="ChatThumbnailGrid" Grid.Row="0" Grid.Column="2" Margin="5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="50*"/>
                     <ColumnDefinition Width="5*"/>
@@ -50,44 +108,33 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Orientation="Vertical">
-                    <TextBlock Text="Name Surname" Style="{StaticResource NameLabel}"/>
-                    <TextBlock Text="last seen long time ago" Style="{StaticResource LastSeenLabel}"/>
+                    <TextBlock x:Name="Username" Text="Name Surname" Style="{StaticResource NameLabel}"/>
+                    <TextBlock x:Name="TimeStamp" Text="last seen long time ago" Style="{StaticResource LastSeenLabel}"/>
                 </StackPanel>
-                
-                <Border Grid.Column="2" Style="{StaticResource IconCornerBorder}">
-                    <Button  Style="{StaticResource IconButton}">
-                        <Image Source="Resources/Icons/search.ico" Style="{StaticResource ImageSize}"/>
-                    </Button>
-                </Border>
 
-                <Border Grid.Column="3" Style="{StaticResource IconCornerBorder}">
-                    <Button Style="{StaticResource IconButton}">
-                        <Image Source="Resources/Icons/info.ico" Style="{StaticResource ImageSize}"/>
-                    </Button>
-                </Border>
+                <cctrl:IconButton x:Name="ibSearch" Style="{StaticResource DefaultImageSize}" Grid.Column="2" IconImageSource="Resources/Icons/search.png" Click="NotImplementedClick"/>
 
-                <Border Grid.Column="4" Style="{StaticResource IconCornerBorder}">
-                    <Button Style="{StaticResource IconButton}">
-                        <Image Source="Resources/Icons/dots-three-vertical.ico" Style="{StaticResource ImageSize}"/>
-                    </Button>
-                </Border>
+                <cctrl:IconButton x:Name="ibInfo" Style="{StaticResource DefaultImageSize}" Grid.Column="3" IconImageSource="Resources/Icons/info.ico" Click="NotImplementedClick"/>
+
+                <cctrl:IconButton x:Name="ibMenu" Style="{StaticResource DefaultImageSize}" Grid.Column="4" IconImageSource="Resources/Icons/list.png" Click="NotImplementedClick"/>
             </Grid>
-            
+
             <Grid x:Name="ChatGrid" Grid.Column="2" Grid.Row="1">
+
                 <Grid.RowDefinitions>
                     <RowDefinition Height="10*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="5*"/>
-                        <ColumnDefinition Width="4*"/>
-                    </Grid.ColumnDefinitions>
-                </Grid>
+                <ListView x:Name="Chat" Grid.Row="0" PreviewMouseWheel="Chat_MouseWheel" ScrollViewer.CanContentScroll="True"
+                          ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListView.Background>
+                        <ImageBrush ImageSource="Resources/Wallpapers/DefaultDay.jpg"/>
+                    </ListView.Background>
+                </ListView>
 
                 <Grid x:Name="MessageSets" Grid.Row="1">
+
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*"/>
                         <ColumnDefinition Width="7*"/>
@@ -95,31 +142,17 @@
                         <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
 
-                    <Border Grid.Column="0" Style="{StaticResource IconCornerBorder}">
-                        <Button Style="{StaticResource IconButton}">
-                            <Image Source="Resources/Icons/paperclip.ico" Style="{StaticResource ImageSize}"/>
-                        </Button>
-                    </Border>
+                    <cctrl:IconButton x:Name="ibInsert" Style="{StaticResource DefaultImageSize}" Grid.Column="0" IconImageSource="Resources/Icons/insert.png" Click="NotImplementedClick"/>
 
-                    <Border Grid.Column="1" Style="{StaticResource TBCornerBorder}">
-                        <TextBox Text="Write a message..." Style="{StaticResource TextBoxStyle}"/>
-                    </Border>
+                    <TextBox x:Name="tbMessage" Grid.Column="1" Text="Write a message..." Style="{StaticResource TextBoxMessage}" 
+                             GotFocus="tbMessage_GotFocus" LostFocus="tbMessage_LostFocus" KeyDown="tbMessage_KeyDown"/>
 
-                    <Border Grid.Column="2" Style="{StaticResource IconCornerBorder}">
-                        <Button Style="{StaticResource IconButton}">
-                            <Image Source="Resources/Icons/smiley.ico" Style="{StaticResource ImageSize}"/>
-                        </Button>
-                    </Border>
+                    <cctrl:IconButton x:Name="ibEmoji" Style="{StaticResource DefaultImageSize}" Grid.Column="2" IconImageSource="Resources/Icons/emoji.png" Click="NotImplementedClick"/>
 
-                    <Border Grid.Column="3" Style="{StaticResource IconCornerBorder}">
-                        <Button Style="{StaticResource IconButton}">
-                            <Image Source="Resources/Icons/microphone.ico" Style="{StaticResource ImageSize}"/>
-                        </Button>
-                    </Border>
+                    <cctrl:IconButton x:Name="ibVoice" Style="{StaticResource DefaultImageSize}" Grid.Column="3" IconImageSource="Resources/Icons/microphone.png" Click="NotImplementedClick"/>
+
                 </Grid>
-
             </Grid>
-
         </Grid>
     </Grid>
 </Window>

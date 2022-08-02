@@ -7,10 +7,72 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="CustomControls\PrivateOverlay.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="CustomControls\DonatePage.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="CustomControls\GroupOverlay.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="CustomControls\IconButton.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="CustomControls\LoginPage.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="CustomControls\MessageContainer.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="CustomControls\RegisterPage.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="CustomControls\SidePanelMenuItem.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="CustomControls\PrivateOverlay.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="CustomControls\DonatePage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="CustomControls\GroupOverlay.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="CustomControls\IconButton.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="CustomControls\LoginPage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="CustomControls\MessageContainer.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="CustomControls\RegisterPage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="CustomControls\SidePanelMenuItem.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="MainWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Resources\Styles\StyleDictionary.xaml">
+    <Page Update="Resources\Styles\ButtonStyles.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Resources\Styles\MiscStyles.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Resources\Styles\TextBlockStyles.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Resources\Styles\TextBoxStyles.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Resources\Styles\UserControlSpecificStyles.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
