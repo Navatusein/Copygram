@@ -13,7 +13,12 @@ namespace ServerConsole
     internal static class Mapper
     {
         #region DB Models To TCP Model
-
+        /// <summary>
+        /// Function for passing a DB.Chat object to TCP.Chat.
+        /// </summary>
+        /// <param name="dbChat">DB.Chat object</param>
+        /// <param name="messagesCount">The number of messages to be loaded from the database</param>
+        /// <returns>The converted TCP.Chat object</returns>
         public static TCP.Chat DbModelToTcpModel(DB.Chat dbChat, int messagesCount)
         {
             TCP.Chat tcpChat = new();
@@ -28,6 +33,11 @@ namespace ServerConsole
             return tcpChat;
         }
 
+        /// <summary>
+        /// Function for passing a DB.ChatMember object to TCP.ChatMember.
+        /// </summary>
+        /// <param name="dbChatMember">DB.ChatMember object</param>
+        /// <returns>The converted TCP.ChatMember object</returns>
         public static TCP.ChatMember DbModelToTcpModel(DB.ChatMember dbChatMember)
         {
             TCP.ChatMember tcpChatMember = new();
@@ -40,6 +50,11 @@ namespace ServerConsole
             return tcpChatMember;
         }
 
+        /// <summary>
+        /// Function for passing a DB.ChatMessage object to TCP.ChatMessage.
+        /// </summary>
+        /// <param name="dbChatMessage">DB.ChatMessage object</param>
+        /// <returns>The converted TCP.ChatMessage object</returns>
         public static TCP.ChatMessage DbModelToTcpModel(DB.ChatMessage dbChatMessage)
         {
             TCP.ChatMessage tcpChatMessage = new();
@@ -53,6 +68,11 @@ namespace ServerConsole
             return tcpChatMessage;
         }
 
+        /// <summary>
+        /// Function for passing a DB.User object to TCP.User.
+        /// </summary>
+        /// <param name="dbUser">DB.User object</param>
+        /// <returns>The converted TCP.User object</returns>
         public static TCP.User DbModelToTcpModel(DB.User dbUser)
         {
             TCP.User tcpUser = new();
@@ -67,7 +87,11 @@ namespace ServerConsole
         #endregion
 
         #region TCP Model To DB Model
-
+        /// <summary>
+        /// Function for passing a TCP.Chat object to DB.Chat.
+        /// </summary>
+        /// <param name="tcpChat">TCP.Chat object</param>
+        /// <returns>The converted DB.Chat object</returns>
         public static DB.Chat TcpModelToDbModel(TCP.Chat tcpChat)
         {
             DB.Chat dbChat = new();
@@ -80,6 +104,12 @@ namespace ServerConsole
             return dbChat;
         }
 
+
+        /// <summary>
+        /// Function for passing a TCP.ChatMember object to DB.ChatMember.
+        /// </summary>
+        /// <param name="tcpChatMember">TCP.ChatMember object</param>
+        /// <returns>The converted DB.ChatMember object</returns>
         public static DB.ChatMember TcpModelToDbModel(TCP.ChatMember tcpChatMember)
         {
             DB.ChatMember dbChatMember = new();
@@ -92,6 +122,14 @@ namespace ServerConsole
             return dbChatMember;
         }
 
+
+        /// <summary>
+        /// Function for passing a TCP.User object to DB.User.
+        /// </summary>
+        /// <param name="tcpUser">TCP.User object</param>
+        /// <param name="login">User login</param>
+        /// <param name="password">User password</param>
+        /// <returns>The converted DB.User object</returns>
         public static DB.User TcpModelToDbModel(TCP.User tcpUser, string login, string password)
         {
             DB.User dbUser = new();
@@ -105,6 +143,11 @@ namespace ServerConsole
             return dbUser;
         }
 
+        /// <summary>
+        /// Function for passing a TCP.ChatMessage object to DB.ChatMessage.
+        /// </summary>
+        /// <param name="tcpChatMessage">TCP.ChatMessage object</param>
+        /// <returns>The converted DB.ChatMessage object</returns>
         public static DB.ChatMessage TcpModelToDbModel(TCP.ChatMessage tcpChatMessage)
         {
             DB.ChatMessage dbChatMessage = new();
