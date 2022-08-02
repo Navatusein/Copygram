@@ -1,5 +1,6 @@
 ﻿using Client.CustomControls;
 using Client.Resources.Tools;
+using Microsoft.Extensions.Configuration;
 using ModelsLibrary;
 using System;
 using System.Collections.Generic;
@@ -26,6 +27,7 @@ namespace Client
         Chat activeChat = null!; //Chat wich is currently open
         IPEndPoint ep = null!; //Sever endpoint
 
+        public bool isTimeout = false;
         public bool isLast = false; //Is loaded message was last in sequence
         int limit = 12; //Amount of messages to get from server
 
@@ -60,7 +62,10 @@ namespace Client
             {
                 ChatList = cl;
                 MessagesList = ml;
-                ep = new IPEndPoint(IPAddress.Parse("178.151.124.250"), 27015);
+
+                var configuration = new ConfigurationBuilder().AddJsonFile("Config.json").Build();
+
+                ep = new(IPAddress.Parse(configuration["ServerIp"]), int.Parse(configuration["ServerPort"]));
             }
             catch (Exception ex)
             {
@@ -80,7 +85,7 @@ namespace Client
             {
                 DispatcherTimer timer = new();
                 timer.Tick += BackgroundSync;
-                timer.Interval = new TimeSpan(0, 0, 5);
+                timer.Interval = new TimeSpan(0, 0, 7);
                 Task.Run(timer.Start);
             }
             catch (Exception ex)
@@ -126,7 +131,8 @@ namespace Client
                     else
                     {
                         ChatMessage chatMsg = (message as ChatMessage)!;
-                        chats.FirstOrDefault(chat => chat.ChatId == chatMsg.ChatId)!.Messages.Add(chatMsg);
+                        Chat chat = chats.FirstOrDefault(chat => chat.ChatId == chatMsg.ChatId)!;
+                        chat.Messages.Add(chatMsg);
 
                         if (activeChat != null && chatMsg.ChatId == activeChat.ChatId)
                             NewMessagesAdded(activeChat.ChatId);
@@ -148,18 +154,17 @@ namespace Client
         #region View Loads
 
         /// <summary>
-        /// Rwfreshes collection chats
+        /// Refreshes collection chats
         /// </summary>
         public void NewChatsAdded()
         {
             try
             {
-                ChatList.Clear();
                 foreach (Chat chat in chats)
                 {
                     User otherUser = chat.ChatMembers.FirstOrDefault(member => member.User.UserId != profile.UserId)!.User; //Getting other user from this chat
                     
-                    ChatList.Add(new UserCell() //Adding this chat to GUI
+                    UserCell cell = new() //Adding this chat to GUI
                     {
                         ChatId = chat.ChatId,
 
@@ -169,7 +174,15 @@ namespace Client
                         Nickname = chat.ChatName == profile.Nickname ? otherUser.Nickname : chat.ChatName,
 
                         LastMessage = chat.Messages.Count > 0 ? chat.Messages.Last().MessageText : "No messages"
-                    });
+                    };
+
+                    if (ChatList.Any(chat => chat.ChatId == cell.ChatId &&
+                            !chat.LastMessage.Equals(cell.LastMessage)))
+                        cell.Bubble.Visibility = Visibility.Visible;
+
+
+                    if (!ChatList.Contains(cell))
+                        ChatList.Add(cell);
                 }
             }
             catch (Exception ex)
@@ -192,15 +205,18 @@ namespace Client
 
                 activeChat = chats.FirstOrDefault(chat => chat.ChatId == chatId)!;
 
-                MessagesList.Clear();
-
                 foreach (ChatMessage msg in activeChat.Messages)
                 {
-                    MessagesList.Add(new MessageContainer()//Adding message to GUI
+                    MessageContainer container = new()//Adding message to GUI
                     {
                         MessageText = msg.MessageText,
-                        AvatartImage = StreamTools.ToBitmapImage(msg.FromUser.Avatar)
-                    });
+                        AvatartImage = StreamTools.ToBitmapImage(msg.FromUser.Avatar),
+                        ChatMessageId = msg.ChatMessageId
+                    };
+
+                    if(!MessagesList.Contains(container))
+                        MessagesList.Add(container);
+
                 }
             }
             catch (Exception ex)
@@ -273,13 +289,18 @@ namespace Client
                 
                 if (!client.ConnectAsync(ep).Wait(300))//Checking if server is active
                 {
+                    isTimeout = true;
                     byte[] dataToSend = StreamTools.Serialize(new Error() {
                         Type = KnownErrors.UnknownError,
                         Text = "Connection timout" })!;
                     response = new() { Type = ResponseType.Error, Data = dataToSend };
                     OnError(response);
+                    client.Close();
                     return response;
                 }
+
+                if(isTimeout)
+                    isTimeout = false;
 
                 NetworkStream netStream = client.GetStream();
                 Command command = new() { Type = type, Data = data, User = profile };//Command to send

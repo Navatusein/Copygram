@@ -11,7 +11,7 @@
         MinHeight="600" MinWidth="650"
         Icon="Resources/Icons/logotype.ico"
         RenderOptions.BitmapScalingMode="HighQuality"
-        Closing="Window_Closing"
+        Closed="Window_Closed"
         SizeChanged="Window_SizeChanged"
         Title="Copygram" Height="600" Width="1000">
     <Grid Background="White">
