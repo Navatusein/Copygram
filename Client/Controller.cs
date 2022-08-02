@@ -154,7 +154,7 @@ namespace Client
         #region View Loads
 
         /// <summary>
-        /// Rwfreshes collection chats
+        /// Refreshes collection chats
         /// </summary>
         public void NewChatsAdded()
         {
