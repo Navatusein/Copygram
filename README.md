@@ -105,7 +105,7 @@ Don't forget to give the project a star! Thanks again!
 <!-- LICENSE -->
 ## License
 
-Distributed under the MIT License. See `LICENSE.txt` for more information.
+Distributed under the MIT License. See `LICENSE` for more information.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -128,7 +128,7 @@ Project Link: [https://github.com/Navatusein/Copygram](https://github.com/Navatu
 [issues-url]: https://github.com/Navatusein/Copygram/issues
 
 [license-shield]: https://img.shields.io/github/license/Navatusein/Copygram.svg?style=for-the-badge
-[license-url]: https://github.com/Navatusein/Copygram/blob/Main/LICENSE.txt
+[license-url]: https://github.com/Navatusein/Copygram/blob/Main/LICENSE
 
 [product-screenshot]: screenshot.png
 
