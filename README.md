@@ -72,9 +72,9 @@ Here's why:
 
 ### Built With
 
-* [![WPF][WPF]][WPF-url]
+[![WPF][WPF]][WPF-url]
 
-* [![EF Core][EF-Core]][EF-Core-url]
+[![EF Core][EF-Core]][EF-Core-url]
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
