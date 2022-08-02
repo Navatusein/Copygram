@@ -115,7 +115,6 @@ namespace Client.CustomControls
         /// <param name="e"></param>
         private void UserControl_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            UnreadCountBubble.Visibility = Visibility.Collapsed;
             Bubble.Visibility = Visibility.Collapsed;
         }
 

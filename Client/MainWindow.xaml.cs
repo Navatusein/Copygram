@@ -163,6 +163,7 @@ namespace Client
                     TimeStamp.Text = "Last seen long time ago";
 
                 Username.Text = ctrl.GetActiveChat!.ChatName;
+
             }
         }
 
@@ -203,11 +204,10 @@ namespace Client
         #endregion
 
         #region Window habbits
-
-        void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void Window_Closed(object sender, EventArgs e)
         {
-            if(LoginLayout.Visibility == Visibility.Collapsed &&
-                RegisterOverlay.Visibility == Visibility.Collapsed)
+            if (LoginLayout.Visibility == Visibility.Collapsed &&
+                RegisterOverlay.Visibility == Visibility.Collapsed && !ctrl.isTimeout)
                 ctrl.CloseServerConnection();
         }
 
@@ -277,6 +277,7 @@ namespace Client
                 ctrl.SendMessage(tbMessage.Text.Trim());
                 ctrl.NewChatsAdded();
                 tbMessage.Clear();
+                Chat.ScrollIntoView(Chat.Items[Chat.Items.Count - 1]);
             }
         }
 
@@ -342,5 +343,7 @@ namespace Client
             }
         }
         #endregion
+
+
     }
 }
