@@ -66,8 +66,6 @@ namespace Client
                 var configuration = new ConfigurationBuilder().AddJsonFile("Config.json").Build();
 
                 ep = new(IPAddress.Parse(configuration["ServerIp"]), int.Parse(configuration["ServerPort"]));
-
-                //178.151.124.250,27015
             }
             catch (Exception ex)
             {
@@ -287,6 +285,7 @@ namespace Client
                         Text = "Connection timout" })!;
                     response = new() { Type = ResponseType.Error, Data = dataToSend };
                     OnError(response);
+                    client.Close();
                     return response;
                 }
 

@@ -154,6 +154,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Config.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Resources\Icons\forward.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
