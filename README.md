@@ -88,7 +88,7 @@ Here's why:
 
 ### Not Built With
 
-This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
+This section should not list any major frameworks/libraries used to bootstrap your project. Do not leave any add-ons/plugins for the acknowledgements section. Here are a few examples how to not to do.
 
 * [![Next][Next.js]][Next-url]
 * [![React][React.js]][React-url]
