@@ -549,8 +549,6 @@ namespace ServerConsole
             }
             catch (Exception ex)
             {
-                SendError(netStream, KnownErrors.ProcessingError, command);
-
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.Error.WriteLine($"[{DateTime.Now.TimeOfDay}] Error: {ex.ToString}");
                 Console.ForegroundColor = ConsoleColor.White;
