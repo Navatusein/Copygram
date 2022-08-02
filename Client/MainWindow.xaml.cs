@@ -54,15 +54,18 @@ namespace Client
         {
             tbSearch.Clear();
         }
+
         void tbSearch_LostFocus(object sender, RoutedEventArgs e)
         {
             if(string.IsNullOrEmpty(tbSearch.Text))
                 tbSearch.Text = "Search";
         }
+
         void tbMessage_GotFocus(object sender, RoutedEventArgs e)
         {
             tbMessage.Clear();
         }
+
         void tbMessage_LostFocus(object sender, RoutedEventArgs e)
         {
             if(string.IsNullOrEmpty(tbMessage.Text))
