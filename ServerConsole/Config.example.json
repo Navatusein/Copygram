@@ -1,0 +1,14 @@
+{
+  "exclude": [
+    "**/bin",
+    "**/bower_components",
+    "**/jspm_packages",
+    "**/node_modules",
+    "**/obj",
+    "**/platforms"
+  ],
+
+  "ServerIp": "xxx.xxx.xxx.xxx",
+  "ServerPort": 12345,
+  "ConnectionString": "xxxx"
+}

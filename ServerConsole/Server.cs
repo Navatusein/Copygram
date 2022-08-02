@@ -10,6 +10,7 @@ using ModelsLibrary;
 
 using TCP = ModelsLibrary;
 using DB = ServerConsole.Models;
+using Microsoft.Extensions.Configuration;
 
 #pragma warning disable SYSLIB0011
 
@@ -45,7 +46,9 @@ namespace ServerConsole
         {
             clients = new();
 
-            listener = new(IPAddress.Parse("192.168.1.100"), 27015);
+            var configuration = new ConfigurationBuilder().AddJsonFile("Config.json").Build();
+
+            listener = new(IPAddress.Parse(configuration["ServerIp"]), int.Parse(configuration["ServerPort"]));
             listener.Start();
 
             serverWork = true;
@@ -498,7 +501,7 @@ namespace ServerConsole
         /// <param name="knownErrors">Error type</param>
         /// <param name="command">Command to be answered</param>
         /// <param name="message">Message text</param>
-        private void SendError(NetworkStream netStream, KnownErrors knownErrors, Command command, string message = "")
+        private void SendError(NetworkStream netStream, KnownErrors knownErrors, Command? command, string message = "")
         {
             TCP.Error error = new();
 
@@ -523,24 +526,35 @@ namespace ServerConsole
         /// <param name="type">Result success or error</param>
         /// <param name="data">Byte data array</param>
         /// <param name="command">Command to be answered</param>
-        private void SendResponse(NetworkStream netStream, ResponseType type, byte[] data, Command command)
+        private void SendResponse(NetworkStream netStream, ResponseType type, byte[] data, Command? command)
         {
-            if (type == ResponseType.Success)
+            try
             {
-                string debugNickname = command.User == null ? "unknown" : command.User.Nickname;
+                if (type == ResponseType.Success)
+                {
+                    string debugNickname = command!.User == null ? "unknown" : command.User.Nickname;
 
-                Console.WriteLine($"[{DateTime.Now.TimeOfDay}] {debugNickname}: Send response {command.Type}");
+                    Console.WriteLine($"[{DateTime.Now.TimeOfDay}] {debugNickname}: Send response {command.Type}");
+                }
+
+                TCP.Response response = new();
+                response.Type = type;
+                response.Data = data;
+                response.OnCommandResponse = command!;
+
+                byte[] serializedObject = Serialization(response);
+
+                netStream.Write(serializedObject, 0, serializedObject.Length);
+                netStream.Flush();
             }
- 
-            TCP.Response response = new();
-            response.Type = type;
-            response.Data = data;
-            response.OnCommandResponse = command;
+            catch (Exception ex)
+            {
+                SendError(netStream, KnownErrors.ProcessingError, command);
 
-            byte[] serializedObject = Serialization(response);
-
-            netStream.Write(serializedObject, 0, serializedObject.Length);
-            netStream.Flush();
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Error.WriteLine($"[{DateTime.Now.TimeOfDay}] Error: {ex.ToString}");
+                Console.ForegroundColor = ConsoleColor.White;
+            } 
         }
         #endregion
     }
