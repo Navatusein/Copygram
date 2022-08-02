@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,9 +24,11 @@ namespace ServerConsole.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            var configuration = new ConfigurationBuilder().AddJsonFile("config.json").Build();
+
             optionsBuilder
                 .UseLazyLoadingProxies()
-                .UseSqlServer("Data Source=178.151.124.250,21062; Initial Catalog=Copygram; User Id=sa; Password=cUarOm9If67yI6sFQBa6rOlJ; Trusted_Connection=false;MultipleActiveResultSets=true;");
+                .UseSqlServer(configuration["ConnectionString"]);
         }
     }
 }
