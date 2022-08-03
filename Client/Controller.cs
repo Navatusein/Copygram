@@ -160,29 +160,22 @@ namespace Client
         {
             try
             {
+                ChatList.Clear();
                 foreach (Chat chat in chats)
                 {
                     User otherUser = chat.ChatMembers.FirstOrDefault(member => member.User.UserId != profile.UserId)!.User; //Getting other user from this chat
-                    
-                    UserCell cell = new() //Adding this chat to GUI
+
+                    ChatList.Add(new UserCell() //Adding this chat to GUI
                     {
                         ChatId = chat.ChatId,
 
-                        AvatarSource = chat.ChatType == ChatType.Private ? 
+                        AvatarSource = chat.ChatType == ChatType.Private ?
                         StreamTools.ToBitmapImage(otherUser.Avatar) : StreamTools.ToBitmapImage(chat.Avatar),
 
                         Nickname = chat.ChatName == profile.Nickname ? otherUser.Nickname : chat.ChatName,
 
                         LastMessage = chat.Messages.Count > 0 ? chat.Messages.Last().MessageText : "No messages"
-                    };
-
-                    if (ChatList.Any(chat => chat.ChatId == cell.ChatId &&
-                            !chat.LastMessage.Equals(cell.LastMessage)))
-                        cell.Bubble.Visibility = Visibility.Visible;
-
-
-                    if (!ChatList.Contains(cell))
-                        ChatList.Add(cell);
+                    });
                 }
             }
             catch (Exception ex)
