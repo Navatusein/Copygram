@@ -154,7 +154,7 @@ namespace Client
         #region View Loads
 
         /// <summary>
-        /// Rwfreshes collection chats
+        /// Refreshes collection chats
         /// </summary>
         public void NewChatsAdded()
         {
@@ -164,12 +164,12 @@ namespace Client
                 foreach (Chat chat in chats)
                 {
                     User otherUser = chat.ChatMembers.FirstOrDefault(member => member.User.UserId != profile.UserId)!.User; //Getting other user from this chat
-                    
+
                     ChatList.Add(new UserCell() //Adding this chat to GUI
                     {
                         ChatId = chat.ChatId,
 
-                        AvatarSource = chat.ChatType == ChatType.Private ? 
+                        AvatarSource = chat.ChatType == ChatType.Private ?
                         StreamTools.ToBitmapImage(otherUser.Avatar) : StreamTools.ToBitmapImage(chat.Avatar),
 
                         Nickname = chat.ChatName == profile.Nickname ? otherUser.Nickname : chat.ChatName,
@@ -198,15 +198,18 @@ namespace Client
 
                 activeChat = chats.FirstOrDefault(chat => chat.ChatId == chatId)!;
 
-                MessagesList.Clear();
-
                 foreach (ChatMessage msg in activeChat.Messages)
                 {
-                    MessagesList.Add(new MessageContainer()//Adding message to GUI
+                    MessageContainer container = new()//Adding message to GUI
                     {
                         MessageText = msg.MessageText,
-                        AvatartImage = StreamTools.ToBitmapImage(msg.FromUser.Avatar)
-                    });
+                        AvatartImage = StreamTools.ToBitmapImage(msg.FromUser.Avatar),
+                        ChatMessageId = msg.ChatMessageId
+                    };
+
+                    if(!MessagesList.Contains(container))
+                        MessagesList.Add(container);
+
                 }
             }
             catch (Exception ex)
