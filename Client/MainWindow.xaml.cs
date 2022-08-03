@@ -141,7 +141,7 @@ namespace Client
         {
             if (ChatsList.SelectedIndex != -1 || ChatsList.SelectedItem != null)
             {
-                int chatId = (int)(ChatsList.SelectedItem as UserCell)!.Tag;
+                int chatId = (int)(ChatsList.SelectedItem as UserCell)!.ChatId;
 
                 if (ctrl.GetActiveChat != null && ctrl.GetActiveChat!.ChatId == chatId)
                     return;
@@ -158,7 +158,7 @@ namespace Client
                     Chat.ScrollIntoView(Chat.Items[Chat.Items.Count - 1]);
 
                 if (ctrl.GetActiveChat!.ChatType == ModelsLibrary.ChatType.Group)
-                    TimeStamp.Text = "Members coutn: " + ctrl.GetActiveChat.ChatMembers.Count.ToString();
+                    TimeStamp.Text = "Members count: " + ctrl.GetActiveChat.ChatMembers.Count.ToString();
                 else
                     TimeStamp.Text = "Last seen long time ago";
 
@@ -277,7 +277,9 @@ namespace Client
                 ctrl.SendMessage(tbMessage.Text.Trim());
                 ctrl.NewChatsAdded();
                 tbMessage.Clear();
-                Chat.ScrollIntoView(Chat.Items[Chat.Items.Count - 1]);
+                
+                if(Chat.Items.Count > 1)
+                    Chat.ScrollIntoView(Chat.Items[Chat.Items.Count - 1]);
             }
         }
 

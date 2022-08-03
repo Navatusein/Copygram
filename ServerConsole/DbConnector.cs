@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using TCP = ModelsLibrary;
 using DB = ServerConsole.Models;
 using System.Drawing.Imaging;
+using ServerConsole.CustomException;
 
 namespace ServerConsole
 {
@@ -25,14 +26,23 @@ namespace ServerConsole
         /// </returns>
         public static bool IsLoginAllowed(string login)
         {
-            bool allowed = false;
-
-            using (CopygramDbContext dbContext = new())
+            try
             {
-                allowed = !dbContext.Users.Any(x => x.Login == login);
-            }
+                bool allowed = false;
 
-            return allowed;
+                using (CopygramDbContext dbContext = new())
+                {
+                    allowed = !dbContext.Users.Any(x => x.Login == login);
+                }
+
+                return allowed;
+            } 
+            catch (Exception ex)
+            {
+                ConsoleWriter.WriteError("DbConnector", ex.ToString());
+
+                throw new DbProcessingException("IsLoginAllowed Error", ex);
+            } 
         }
 
         /// <summary>
@@ -45,14 +55,22 @@ namespace ServerConsole
         /// </returns>
         public static bool IsNicknameAllowed(string nickname)
         {
-            bool allowed = false;
-
-            using (CopygramDbContext dbContext = new())
+            try
             {
-                allowed = !dbContext.Users.Any(x => x.Nickname == nickname);
-            }
+                bool allowed = false;
 
-            return allowed;
+                using (CopygramDbContext dbContext = new())
+                {
+                    allowed = !dbContext.Users.Any(x => x.Nickname == nickname);
+                }
+
+                return allowed;
+            }
+            catch (Exception ex)
+            {
+                ConsoleWriter.WriteError("DbConnector", ex.ToString());
+                throw new DbProcessingException("IsNicknameAllowed Error", ex);
+            } 
         }
 
         /// <summary>
@@ -63,16 +81,24 @@ namespace ServerConsole
         /// <param name="password">User password</param>
         public static void RegisterNewUser(ref TCP.User user, string login, string password)
         {
-            using (CopygramDbContext dbContext = new())
+            try
             {
-                DB.User dbUser = Mapper.TcpModelToDbModel(user, login, password);
+                using (CopygramDbContext dbContext = new())
+                {
+                    DB.User dbUser = Mapper.TcpModelToDbModel(user, login, password);
 
-                var userData = dbContext.Users.Add(dbUser);
+                    var userData = dbContext.Users.Add(dbUser);
 
-                dbContext.SaveChanges();
+                    dbContext.SaveChanges();
 
-                user.UserId = userData.Entity.UserId;
+                    user.UserId = userData.Entity.UserId;
+                }
             }
+            catch (Exception ex)
+            {
+                ConsoleWriter.WriteError("DbConnector", ex.ToString());
+                throw new DbProcessingException("RegisterNewUser Error", ex);
+            } 
         }
 
         /// <summary>
@@ -81,16 +107,24 @@ namespace ServerConsole
         /// <param name="tcpChatMessage">Message object</param>
         public static void RegisterNewMessage(ref TCP.ChatMessage tcpChatMessage)
         {
-            using (CopygramDbContext dbContext = new())
+            try
             {
-                DB.ChatMessage dbChatMessage = Mapper.TcpModelToDbModel(tcpChatMessage);
+                using (CopygramDbContext dbContext = new())
+                {
+                    DB.ChatMessage dbChatMessage = Mapper.TcpModelToDbModel(tcpChatMessage);
 
-                var chatMessageData = dbContext.ChatMessages.Add(dbChatMessage);
+                    var chatMessageData = dbContext.ChatMessages.Add(dbChatMessage);
 
-                dbContext.SaveChanges();
+                    dbContext.SaveChanges();
 
-                tcpChatMessage.ChatMessageId = chatMessageData.Entity.ChatMessageId;
+                    tcpChatMessage.ChatMessageId = chatMessageData.Entity.ChatMessageId;
+                }
             }
+            catch (Exception ex)
+            {
+                ConsoleWriter.WriteError("DbConnector", ex.ToString());
+                throw new DbProcessingException("RegisterNewMessage Error", ex);
+            } 
         }
 
         /// <summary>
@@ -99,24 +133,32 @@ namespace ServerConsole
         /// <param name="tcpChat">Chat object</param>
         public static void RegisterNewChat(ref TCP.Chat tcpChat)
         {
-            using (CopygramDbContext dbContext = new())
+            try
             {
-                DB.Chat dbChat = Mapper.TcpModelToDbModel(tcpChat);
+                using (CopygramDbContext dbContext = new())
+                {
+                    DB.Chat dbChat = Mapper.TcpModelToDbModel(tcpChat);
 
-                var dbChatData = dbContext.Chats.Add(dbChat);
+                    var dbChatData = dbContext.Chats.Add(dbChat);
 
-                dbContext.SaveChanges();
+                    dbContext.SaveChanges();
 
-                int chatId = tcpChat.ChatId = dbChatData.Entity.ChatId;
+                    int chatId = tcpChat.ChatId = dbChatData.Entity.ChatId;
 
-                List<DB.ChatMember> dbChatMembers = tcpChat.ChatMembers.Select(x => Mapper.TcpModelToDbModel(x)).ToList();
+                    List<DB.ChatMember> dbChatMembers = tcpChat.ChatMembers.Select(x => Mapper.TcpModelToDbModel(x)).ToList();
 
-                dbChatMembers.ForEach(x => x.ChatId = chatId);
+                    dbChatMembers.ForEach(x => x.ChatId = chatId);
 
-                dbContext.ChatMembers.AddRange(dbChatMembers);
+                    dbContext.ChatMembers.AddRange(dbChatMembers);
 
-                dbContext.SaveChanges();
+                    dbContext.SaveChanges();
+                }
             }
+            catch (Exception ex)
+            {
+                ConsoleWriter.WriteError("DbConnector", ex.ToString());
+                throw new DbProcessingException("RegisterNewChat Error", ex);
+            }   
         }
 
         /// <summary>
@@ -125,28 +167,36 @@ namespace ServerConsole
         /// <param name="tcpChat">Chat object</param>
         public static void UpdateChat(TCP.Chat tcpChat)
         {
-            using (CopygramDbContext dbContext = new())
+            try
             {
-                DB.Chat dbChat = Mapper.TcpModelToDbModel(tcpChat);
+                using (CopygramDbContext dbContext = new())
+                {
+                    DB.Chat dbChat = Mapper.TcpModelToDbModel(tcpChat);
 
-                List<DB.ChatMember> dbChatMembersFromDb = dbContext.ChatMembers.Where(x => x.ChatId == tcpChat.ChatId).ToList();
-                List<DB.ChatMember> dbChatMembersFromTcp = tcpChat.ChatMembers.Select(x => Mapper.TcpModelToDbModel(x)).ToList();
+                    List<DB.ChatMember> dbChatMembersFromDb = dbContext.ChatMembers.Where(x => x.ChatId == tcpChat.ChatId).ToList();
+                    List<DB.ChatMember> dbChatMembersFromTcp = tcpChat.ChatMembers.Select(x => Mapper.TcpModelToDbModel(x)).ToList();
 
-                List<DB.ChatMember> addDbUsers = dbChatMembersFromTcp.Except(dbChatMembersFromDb).ToList();
-                List<DB.ChatMember> removeDbUsers = dbChatMembersFromDb.Except(dbChatMembersFromTcp).ToList();
+                    List<DB.ChatMember> addDbUsers = dbChatMembersFromTcp.Except(dbChatMembersFromDb).ToList();
+                    List<DB.ChatMember> removeDbUsers = dbChatMembersFromDb.Except(dbChatMembersFromTcp).ToList();
 
-                dbContext.Chats.Update(dbChat);
+                    dbContext.Chats.Update(dbChat);
 
-                if (addDbUsers.Count > 0)
-                    dbContext.ChatMembers.AddRange(addDbUsers);
+                    if (addDbUsers.Count > 0)
+                        dbContext.ChatMembers.AddRange(addDbUsers);
 
-                if (removeDbUsers.Count > 0)
-                    dbContext.ChatMembers.RemoveRange(removeDbUsers);
+                    if (removeDbUsers.Count > 0)
+                        dbContext.ChatMembers.RemoveRange(removeDbUsers);
 
-                dbContext.ChatMembers.UpdateRange(dbChatMembersFromTcp);
-                
-                dbContext.SaveChanges();
+                    dbContext.ChatMembers.UpdateRange(dbChatMembersFromTcp);
+
+                    dbContext.SaveChanges();
+                }
             }
+            catch (Exception ex)
+            {
+                ConsoleWriter.WriteError("DbConnector", ex.ToString());
+                throw new DbProcessingException("UpdateChat Error", ex);
+            } 
         }
 
         /// <summary>
@@ -156,18 +206,26 @@ namespace ServerConsole
         /// <returns></returns>
         public static List<TCP.Chat> SyncChats(TCP.User tcpUser)
         {
-            List<TCP.Chat> tcpChatList = new();
-
-            int userId = tcpUser.UserId;
-
-            using(CopygramDbContext dbContext = new())
+            try
             {
-                tcpChatList = dbContext.Chats.Where(x => x.ChatMembers.Any(x => x.UserId == userId))
-                    .Select(x => Mapper.DbModelToTcpModel(x, 1))
-                    .ToList();
-            }
+                List<TCP.Chat> tcpChatList = new();
 
-            return tcpChatList;
+                int userId = tcpUser.UserId;
+
+                using (CopygramDbContext dbContext = new())
+                {
+                    tcpChatList = dbContext.Chats.Where(x => x.ChatMembers.Any(x => x.UserId == userId))
+                        .Select(x => Mapper.DbModelToTcpModel(x, 1))
+                        .ToList();
+                }
+
+                return tcpChatList;
+            }
+            catch (Exception ex)
+            {
+                ConsoleWriter.WriteError("DbConnector", ex.ToString());
+                throw new DbProcessingException("SyncChats Error", ex);
+            } 
         }
 
         /// <summary>
@@ -177,31 +235,39 @@ namespace ServerConsole
         /// <returns>List of requested messages</returns>
         public static List<TCP.ChatMessage> SyncChatMessages(TCP.SyncChatMessages syncChatMessages)
         {
-            List<TCP.ChatMessage> chatMessages;
-
-            using (CopygramDbContext dbContext = new())
+            try
             {
-                DB.Chat? dbChat = dbContext.Chats.FirstOrDefault(x => x.ChatId == syncChatMessages.ChatId);
+                List<TCP.ChatMessage> chatMessages;
 
-                if (dbChat == null)
-                    return null!;
-
-                int messageIndex = dbChat.ChatMessages.ToList().FindIndex(x => x.ChatMessageId == syncChatMessages.MessageId);
-
-                int range = syncChatMessages.MessageCount;
-                int startIndex = messageIndex - range;
-
-                if (startIndex < 0)
+                using (CopygramDbContext dbContext = new())
                 {
-                    range += startIndex;
-                    startIndex = 0;
+                    DB.Chat? dbChat = dbContext.Chats.FirstOrDefault(x => x.ChatId == syncChatMessages.ChatId);
+
+                    if (dbChat == null)
+                        return null!;
+
+                    int messageIndex = dbChat.ChatMessages.ToList().FindIndex(x => x.ChatMessageId == syncChatMessages.MessageId);
+
+                    int range = syncChatMessages.MessageCount;
+                    int startIndex = messageIndex - range;
+
+                    if (startIndex < 0)
+                    {
+                        range += startIndex;
+                        startIndex = 0;
+                    }
+
+                    List<DB.ChatMessage> dbChatMessages = dbChat.ChatMessages.ToList().GetRange(startIndex, range);
+                    chatMessages = dbChatMessages.Select(x => Mapper.DbModelToTcpModel(x)).ToList();
                 }
 
-                List<DB.ChatMessage> dbChatMessages = dbChat.ChatMessages.ToList().GetRange(startIndex, range);
-                chatMessages = dbChatMessages.Select(x => Mapper.DbModelToTcpModel(x)).ToList();
+                return chatMessages;
             }
-
-            return chatMessages;
+            catch (Exception ex)
+            {
+                ConsoleWriter.WriteError("DbConnector", ex.ToString());
+                throw new DbProcessingException("SyncChatMessages Error", ex);
+            }
         }
 
         /// <summary>
@@ -211,14 +277,22 @@ namespace ServerConsole
         /// <returns>A list of users</returns>
         public static List<TCP.User> GetUsersFromChat(int chatId)
         {
-            List<TCP.User> users;
-
-            using (CopygramDbContext dbContext = new())
+            try
             {
-                users = dbContext.ChatMembers.Where(x => x.ChatId == chatId).Select(x => Mapper.DbModelToTcpModel(x.User)).ToList();
-            }
+                List<TCP.User> users;
 
-            return users;
+                using (CopygramDbContext dbContext = new())
+                {
+                    users = dbContext.ChatMembers.Where(x => x.ChatId == chatId).Select(x => Mapper.DbModelToTcpModel(x.User)).ToList();
+                }
+
+                return users;
+            }
+            catch (Exception ex)
+            {
+                ConsoleWriter.WriteError("DbConnector", ex.ToString());
+                throw new DbProcessingException("GetUsersFromChat Error", ex);
+            } 
         }
 
         /// <summary>
@@ -231,16 +305,24 @@ namespace ServerConsole
         /// </returns>
         public static TCP.User? TryToLogin(TCP.LoginData loginData)
         {
-            TCP.User? tcpUser = null;
-
-            using (CopygramDbContext dbContext = new())
+            try
             {
-                DB.User? dbUser = dbContext.Users.FirstOrDefault(x => x.Login == loginData.Login && x.Password == loginData.Password);
+                TCP.User? tcpUser = null;
 
-                tcpUser = dbUser == null ? null : Mapper.DbModelToTcpModel(dbUser);
+                using (CopygramDbContext dbContext = new())
+                {
+                    DB.User? dbUser = dbContext.Users.FirstOrDefault(x => x.Login == loginData.Login && x.Password == loginData.Password);
+
+                    tcpUser = dbUser == null ? null : Mapper.DbModelToTcpModel(dbUser);
+                }
+
+                return tcpUser;
             }
-
-            return tcpUser;
+            catch (Exception ex)
+            {
+                ConsoleWriter.WriteError("DbConnector", ex.ToString());
+                throw new DbProcessingException("TryToLogin Error", ex);
+            }
         }
 
         /// <summary>
@@ -250,19 +332,27 @@ namespace ServerConsole
         /// <returns>User object</returns>
         public static TCP.User? CheckForUser(string nickname)
         {
-            TCP.User? tcpUser = null;
-
-            using (CopygramDbContext dbContext = new())
+            try
             {
-                DB.User? dbUser = dbContext.Users.FirstOrDefault(x => x.Nickname == nickname);
+                TCP.User? tcpUser = null;
 
-                if (dbUser != null)
+                using (CopygramDbContext dbContext = new())
                 {
-                    tcpUser = Mapper.DbModelToTcpModel(dbUser);
-                }
-            }
+                    DB.User? dbUser = dbContext.Users.FirstOrDefault(x => x.Nickname == nickname);
 
-            return tcpUser;
+                    if (dbUser != null)
+                    {
+                        tcpUser = Mapper.DbModelToTcpModel(dbUser);
+                    }
+                }
+
+                return tcpUser;
+            }
+            catch (Exception ex)
+            {
+                ConsoleWriter.WriteError("DbConnector", ex.ToString());
+                throw new DbProcessingException("CheckForUser Error", ex);
+            } 
         }
     }
 }

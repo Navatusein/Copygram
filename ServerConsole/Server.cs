@@ -53,7 +53,7 @@ namespace ServerConsole
 
             serverWork = true;
 
-            Thread thread = new Thread(UnavailableCollector);
+            Thread thread = new Thread(UnavailableClientCollector);
             thread.IsBackground = true;
             thread.Start();
 
@@ -63,8 +63,10 @@ namespace ServerConsole
         /// <summary>
         /// A feature to collect and remove non-responding clients.
         /// </summary>
-        private void UnavailableCollector()
+        private void UnavailableClientCollector()
         {
+            ConsoleWriter.WriteMessage("Unavailable Client Collector: Started");
+
             while (serverWork)
             {
                 Thread.Sleep(10000);
@@ -75,7 +77,7 @@ namespace ServerConsole
 
                 foreach(var value in unavailableClientsId)
                 {
-                    Console.WriteLine($"[{DateTime.Now.TimeOfDay}] Remove client {clients[value].User.Nickname}");
+                    ConsoleWriter.WriteMessage($"Remove client {clients[value].User.Nickname}");
                     clients.Remove(value);
                 }
             }
@@ -86,7 +88,7 @@ namespace ServerConsole
         /// </summary>
         private void WaitingForConnection()
         {
-            Console.WriteLine("Server started");
+            ConsoleWriter.WriteMessage("Server: Started");
 
             while (serverWork)
             {
@@ -123,8 +125,7 @@ namespace ServerConsole
                 }
 
                 string debugNickname = command.User == null ? "unknown" : command.User.Nickname;
-                Console.WriteLine($"[{DateTime.Now.TimeOfDay}] {debugNickname}: Get request {command.Type}");
-
+                ConsoleWriter.WriteMessage($"{debugNickname}: Get request {command.Type}");
 
                 switch (command.Type) 
                 {
@@ -174,10 +175,7 @@ namespace ServerConsole
             catch (Exception ex)
             {
                 SendError(netStream, KnownErrors.ProcessingError, command);
-
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.Error.WriteLine($"[{DateTime.Now.TimeOfDay}] Error: {ex.ToString}");
-                Console.ForegroundColor = ConsoleColor.White;
+                ConsoleWriter.WriteError("WaitingForRequest", ex.ToString());
             }
         }
 
@@ -203,7 +201,10 @@ namespace ServerConsole
             byte[] data = Serialization(client.Changes);
 
             if (client.Changes.Count > 0)
+            {
+                Console.WriteLine("Work");
                 client.Changes.Clear();
+            }
 
             SendResponse(netStream, ResponseType.Success, data, command);
         }
@@ -299,9 +300,9 @@ namespace ServerConsole
 
             foreach (TCP.User user in users)
             {
-                if (clients.ContainsKey(user.UserId))
+                if (clients.ContainsKey(user.UserId) && user.UserId != command.User.UserId)
                 {
-                    clients[user.UserId].Changes.Append(message);
+                    clients[user.UserId].Changes.Add(message);
                 }
             }
         }
@@ -324,7 +325,9 @@ namespace ServerConsole
 
             clients.Add(client.User.UserId, client);
 
-            byte[] data = Serialization(DbConnector.SyncChats(command.User));
+            var syncData = DbConnector.SyncChats(command.User);
+
+            byte[] data = Serialization(syncData);
             SendResponse(netStream, ResponseType.Success, data, command);
         }
 
@@ -346,7 +349,8 @@ namespace ServerConsole
 
             TCP.SyncChatMessages syncChatMessages = Deserialization<TCP.SyncChatMessages>(command.Data);
 
-            byte[] data = Serialization(DbConnector.SyncChatMessages(syncChatMessages));
+            var syncData = DbConnector.SyncChatMessages(syncChatMessages);
+            byte[] data = Serialization(syncData);
             SendResponse(netStream, ResponseType.Success, data, command);
         }
 
@@ -533,8 +537,7 @@ namespace ServerConsole
                 if (type == ResponseType.Success)
                 {
                     string debugNickname = command!.User == null ? "unknown" : command.User.Nickname;
-
-                    Console.WriteLine($"[{DateTime.Now.TimeOfDay}] {debugNickname}: Send response {command.Type}");
+                    ConsoleWriter.WriteMessage($"{debugNickname}: Send response {command.Type}");
                 }
 
                 TCP.Response response = new();
@@ -549,9 +552,7 @@ namespace ServerConsole
             }
             catch (Exception ex)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.Error.WriteLine($"[{DateTime.Now.TimeOfDay}] Error: {ex.ToString}");
-                Console.ForegroundColor = ConsoleColor.White;
+                ConsoleWriter.WriteError("SendResponse", ex.ToString());
             } 
         }
         #endregion
