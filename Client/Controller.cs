@@ -24,7 +24,7 @@ namespace Client
     internal class Controller
     {
         User profile = null!; //Your user profile
-        Chat activeChat = null!; //Chat wich is currently open
+        Chat activeChat = null!; //Chat which is currently open
         IPEndPoint ep = null!; //Server endpoint
         DispatcherTimer timer = null!; //Background sync timer
 
