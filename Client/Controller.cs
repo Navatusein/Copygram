@@ -136,6 +136,8 @@ namespace Client
 
                         if (activeChat != null && chatMsg.ChatId == activeChat.ChatId)
                             NewMessagesAdded(activeChat.ChatId);
+                        else
+                            ActivateBubble(chat.ChatId);
                     }
                 }
 
@@ -163,7 +165,11 @@ namespace Client
                 ChatList.Clear();
                 foreach (Chat chat in chats)
                 {
-                    User otherUser = chat.ChatMembers.FirstOrDefault(member => member.User.UserId != profile.UserId)!.User; //Getting other user from this chat
+                    ChatMember someChat = chat.ChatMembers.FirstOrDefault(member => member.User.UserId != profile.UserId)!; //Getting other user from this chat
+
+                    if (someChat == null) continue;
+
+                    User otherUser = someChat.User;
 
                     ChatList.Add(new UserCell() //Adding this chat to GUI
                     {
@@ -199,6 +205,9 @@ namespace Client
                 activeChat = chats.FirstOrDefault(chat => chat.ChatId == chatId)!;
 
                 MessagesList.Clear();
+
+                if (activeChat.Messages.Count <= 0)
+                    return;
 
                 foreach (ChatMessage msg in activeChat.Messages)
                 {
@@ -395,6 +404,17 @@ namespace Client
             }
         }
 
+        /// <summary>
+        /// Activates new message bubble on specific chat
+        /// </summary>
+        /// <param name="ChatId">Chat where to activate</param>
+        void ActivateBubble(int ChatId)
+        {
+            UserCell us = ChatList.FirstOrDefault(chat => chat.ChatId == ChatId)!;
+            
+            if(us != null)
+                us.Bubble.Visibility = Visibility.Visible;
+        }
         #endregion
 
         #region Main
@@ -495,6 +515,8 @@ namespace Client
         {
             try
             {
+                if (activeChat.ChatId == 0) return;
+
                 ChatMessage dataToSend = new()//Data to send
                 {
                     MessageText = messageText,
@@ -546,20 +568,24 @@ namespace Client
                 ChatMember me = new ChatMember() { User = profile, ChatMemberRole = ChatMemberRole.Owner };//Our user as chat memeber
                 ChatMember to = new ChatMember() { User = toUser, ChatMemberRole = ChatMemberRole.Owner };//Other user as chat member
 
-                chats.Add(activeChat = new Chat()//Adding new chat
+                Chat c = new Chat()//Adding new chat
                 {
                     Avatar = toUser.Avatar,
                     ChatName = toUser.Nickname,
                     ChatMembers = new List<ChatMember>() { me, to },
                     ChatType = ChatType.Private,
                     Messages = new List<ChatMessage>()
-                });
+                };
 
-                SystemChatMessage dataToSend = new() { SystemMessageType = SystemChatMessageType.NewChat, Chat = activeChat };//Data to send on new chat
+                SystemChatMessage dataToSend = new() { SystemMessageType = SystemChatMessageType.NewChat, Chat = c };//Data to send on new chat
 
                 response = Request(CommandType.NewSystemChatMessage, dataToSend);//Request for new chat
 
                 if(response.Type == ResponseType.Error) return false;
+
+                Chat cs = StreamTools.Deserialize<Chat>(response.Data);
+
+                chats.Add(cs);
 
                 NewChatsAdded();//Refreshing GUI
                 return true;
@@ -613,22 +639,26 @@ namespace Client
                     chatMembers.Add(new ChatMember() { User = user, ChatMemberRole = ChatMemberRole.Member });
                 }
 
-                chats.Add(activeChat = new Chat() //Adding chat to list
+                Chat c = new Chat() //Adding new chat 
                 {
                     Avatar = image,
                     ChatName = nickname,
                     ChatMembers = chatMembers,
                     ChatType = ChatType.Group,
                     Messages = new List<ChatMessage>()
-                });
+                };
 
                 SystemChatMessage dataToSend = new() { //Request data on creation
                     SystemMessageType = SystemChatMessageType.NewChat,
-                    Chat = activeChat };
+                    Chat = c };
 
                 response = Request(CommandType.NewSystemChatMessage, dataToSend);//Request on creation 
 
                 if(response.Type == ResponseType.Error) return false;
+
+                Chat cs = StreamTools.Deserialize<Chat>(response.Data);
+
+                chats.Add(cs);
 
                 NewChatsAdded();//Refreshing GUI
                 return true;
