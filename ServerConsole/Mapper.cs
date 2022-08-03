@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 using TCP = ModelsLibrary;
 using DB = ServerConsole.Models;
+using ServerConsole.CustomException;
 
 namespace ServerConsole
 {
@@ -21,16 +22,24 @@ namespace ServerConsole
         /// <returns>The converted TCP.Chat object</returns>
         public static TCP.Chat DbModelToTcpModel(DB.Chat dbChat, int messagesCount)
         {
-            TCP.Chat tcpChat = new();
+            try
+            {
+                TCP.Chat tcpChat = new();
 
-            tcpChat.ChatId = dbChat.ChatId;
-            tcpChat.ChatType = (TCP.ChatType)dbChat.ChatTypeId;
-            tcpChat.ChatName = dbChat.ChatName;
-            tcpChat.Avatar = dbChat.Avatar;
-            tcpChat.ChatMembers = dbChat.ChatMembers.Select(x => DbModelToTcpModel(x)).ToList();
-            tcpChat.Messages = dbChat.ChatMessages.TakeLast(messagesCount).Select(x => DbModelToTcpModel(x)).ToList();
+                tcpChat.ChatId = dbChat.ChatId;
+                tcpChat.ChatType = (TCP.ChatType)dbChat.ChatTypeId;
+                tcpChat.ChatName = dbChat.ChatName;
+                tcpChat.Avatar = dbChat.Avatar;
+                tcpChat.ChatMembers = dbChat.ChatMembers.Select(x => DbModelToTcpModel(x)).ToList();
+                tcpChat.Messages = dbChat.ChatMessages.TakeLast(messagesCount).Select(x => DbModelToTcpModel(x)).ToList();
 
-            return tcpChat;
+                return tcpChat;
+            }
+            catch (Exception ex)
+            {
+                ConsoleWriter.WriteError("Mapper", ex.ToString());
+                throw new MapperException("DbModelToTcpModel Error", ex);
+            } 
         }
 
         /// <summary>
@@ -40,14 +49,22 @@ namespace ServerConsole
         /// <returns>The converted TCP.ChatMember object</returns>
         public static TCP.ChatMember DbModelToTcpModel(DB.ChatMember dbChatMember)
         {
-            TCP.ChatMember tcpChatMember = new();
+            try
+            {
+                TCP.ChatMember tcpChatMember = new();
 
-            tcpChatMember.ChatMemberId = dbChatMember.ChatMemberId;
-            tcpChatMember.User = DbModelToTcpModel(dbChatMember.User);
-            tcpChatMember.ChatId = dbChatMember.ChatId;
-            tcpChatMember.ChatMemberRole = (TCP.ChatMemberRole)dbChatMember.ChatMemberId;
+                tcpChatMember.ChatMemberId = dbChatMember.ChatMemberId;
+                tcpChatMember.User = DbModelToTcpModel(dbChatMember.User);
+                tcpChatMember.ChatId = dbChatMember.ChatId;
+                tcpChatMember.ChatMemberRole = (TCP.ChatMemberRole)dbChatMember.ChatMemberId;
 
-            return tcpChatMember;
+                return tcpChatMember;
+            }
+            catch (Exception ex)
+            {
+                ConsoleWriter.WriteError("Mapper", ex.ToString());
+                throw new MapperException("DbModelToTcpModel Error", ex);
+            }  
         }
 
         /// <summary>
@@ -57,15 +74,23 @@ namespace ServerConsole
         /// <returns>The converted TCP.ChatMessage object</returns>
         public static TCP.ChatMessage DbModelToTcpModel(DB.ChatMessage dbChatMessage)
         {
-            TCP.ChatMessage tcpChatMessage = new();
+            try
+            {
+                TCP.ChatMessage tcpChatMessage = new();
 
-            tcpChatMessage.ChatMessageId = dbChatMessage.ChatMessageId;
-            tcpChatMessage.ChatId = dbChatMessage.ChatId;
-            tcpChatMessage.FromUser = DbModelToTcpModel(dbChatMessage.FromUser);
-            tcpChatMessage.MessageText = dbChatMessage.MessageText;
-            tcpChatMessage.DispatchTime = dbChatMessage.DispatchTime;
+                tcpChatMessage.ChatMessageId = dbChatMessage.ChatMessageId;
+                tcpChatMessage.ChatId = dbChatMessage.ChatId;
+                tcpChatMessage.FromUser = DbModelToTcpModel(dbChatMessage.FromUser);
+                tcpChatMessage.MessageText = dbChatMessage.MessageText;
+                tcpChatMessage.DispatchTime = dbChatMessage.DispatchTime;
 
-            return tcpChatMessage;
+                return tcpChatMessage;
+            }
+            catch (Exception ex)
+            {
+                ConsoleWriter.WriteError("Mapper", ex.ToString());
+                throw new MapperException("DbModelToTcpModel Error", ex);
+            } 
         }
 
         /// <summary>
@@ -75,13 +100,21 @@ namespace ServerConsole
         /// <returns>The converted TCP.User object</returns>
         public static TCP.User DbModelToTcpModel(DB.User dbUser)
         {
-            TCP.User tcpUser = new();
+            try
+            {
+                TCP.User tcpUser = new();
 
-            tcpUser.UserId = dbUser.UserId;
-            tcpUser.Avatar = dbUser.Avatar;
-            tcpUser.Nickname = dbUser.Nickname;
+                tcpUser.UserId = dbUser.UserId;
+                tcpUser.Avatar = dbUser.Avatar;
+                tcpUser.Nickname = dbUser.Nickname;
 
-            return tcpUser;
+                return tcpUser;
+            }
+            catch (Exception ex)
+            {
+                ConsoleWriter.WriteError("Mapper", ex.ToString());
+                throw new MapperException("DbModelToTcpModel Error", ex);
+            }
         }
 
         #endregion
@@ -94,14 +127,22 @@ namespace ServerConsole
         /// <returns>The converted DB.Chat object</returns>
         public static DB.Chat TcpModelToDbModel(TCP.Chat tcpChat)
         {
-            DB.Chat dbChat = new();
+            try
+            {
+                DB.Chat dbChat = new();
 
-            dbChat.ChatId = tcpChat.ChatId;
-            dbChat.ChatTypeId = (int)tcpChat.ChatType;
-            dbChat.ChatName = tcpChat.ChatName;
-            dbChat.Avatar = tcpChat.Avatar;
+                dbChat.ChatId = tcpChat.ChatId;
+                dbChat.ChatTypeId = (int)tcpChat.ChatType;
+                dbChat.ChatName = tcpChat.ChatName;
+                dbChat.Avatar = tcpChat.Avatar;
 
-            return dbChat;
+                return dbChat;
+            }
+            catch (Exception ex)
+            {
+                ConsoleWriter.WriteError("Mapper", ex.ToString());
+                throw new MapperException("TcpModelToDbModel Error", ex);
+            }
         }
 
 
@@ -112,14 +153,22 @@ namespace ServerConsole
         /// <returns>The converted DB.ChatMember object</returns>
         public static DB.ChatMember TcpModelToDbModel(TCP.ChatMember tcpChatMember)
         {
-            DB.ChatMember dbChatMember = new();
+            try
+            {
+                DB.ChatMember dbChatMember = new();
 
-            dbChatMember.ChatMemberId = tcpChatMember.ChatMemberId;
-            dbChatMember.UserId = tcpChatMember.User.UserId;
-            dbChatMember.ChatId = tcpChatMember.ChatMemberId;
-            dbChatMember.ChatMemberRoleId = (int)tcpChatMember.ChatMemberRole;
+                dbChatMember.ChatMemberId = tcpChatMember.ChatMemberId;
+                dbChatMember.UserId = tcpChatMember.User.UserId;
+                dbChatMember.ChatId = tcpChatMember.ChatMemberId;
+                dbChatMember.ChatMemberRoleId = (int)tcpChatMember.ChatMemberRole;
 
-            return dbChatMember;
+                return dbChatMember;
+            }
+            catch (Exception ex)
+            {
+                ConsoleWriter.WriteError("Mapper", ex.ToString());
+                throw new MapperException("TcpModelToDbModel Error", ex);
+            }
         }
 
 
@@ -132,15 +181,23 @@ namespace ServerConsole
         /// <returns>The converted DB.User object</returns>
         public static DB.User TcpModelToDbModel(TCP.User tcpUser, string login, string password)
         {
-            DB.User dbUser = new();
+            try
+            {
+                DB.User dbUser = new();
 
-            dbUser.UserId = tcpUser.UserId;
-            dbUser.Avatar = tcpUser.Avatar;
-            dbUser.Nickname = tcpUser.Nickname;
-            dbUser.Login = login;
-            dbUser.Password = password;
+                dbUser.UserId = tcpUser.UserId;
+                dbUser.Avatar = tcpUser.Avatar;
+                dbUser.Nickname = tcpUser.Nickname;
+                dbUser.Login = login;
+                dbUser.Password = password;
 
-            return dbUser;
+                return dbUser;
+            }
+            catch (Exception ex)
+            {
+                ConsoleWriter.WriteError("Mapper", ex.ToString());
+                throw new MapperException("TcpModelToDbModel Error", ex);
+            }
         }
 
         /// <summary>
@@ -150,15 +207,23 @@ namespace ServerConsole
         /// <returns>The converted DB.ChatMessage object</returns>
         public static DB.ChatMessage TcpModelToDbModel(TCP.ChatMessage tcpChatMessage)
         {
-            DB.ChatMessage dbChatMessage = new();
+            try
+            {
+                DB.ChatMessage dbChatMessage = new();
 
-            dbChatMessage.ChatMessageId = tcpChatMessage.ChatMessageId;
-            dbChatMessage.ChatId = tcpChatMessage.ChatId;
-            dbChatMessage.UserId = tcpChatMessage.FromUser.UserId;
-            dbChatMessage.MessageText = tcpChatMessage.MessageText;
-            dbChatMessage.DispatchTime = tcpChatMessage.DispatchTime;
+                dbChatMessage.ChatMessageId = tcpChatMessage.ChatMessageId;
+                dbChatMessage.ChatId = tcpChatMessage.ChatId;
+                dbChatMessage.UserId = tcpChatMessage.FromUser.UserId;
+                dbChatMessage.MessageText = tcpChatMessage.MessageText;
+                dbChatMessage.DispatchTime = tcpChatMessage.DispatchTime;
 
-            return dbChatMessage;
+                return dbChatMessage;
+            }
+            catch (Exception ex)
+            {
+                ConsoleWriter.WriteError("Mapper", ex.ToString());
+                throw new MapperException("TcpModelToDbModel Error", ex);
+            } 
         }
 
         #endregion
