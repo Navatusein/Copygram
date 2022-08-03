@@ -277,7 +277,9 @@ namespace Client
                 ctrl.SendMessage(tbMessage.Text.Trim());
                 ctrl.NewChatsAdded();
                 tbMessage.Clear();
-                Chat.ScrollIntoView(Chat.Items[Chat.Items.Count - 1]);
+                
+                if(Chat.Items.Count > 1)
+                    Chat.ScrollIntoView(Chat.Items[Chat.Items.Count - 1]);
             }
         }
 
