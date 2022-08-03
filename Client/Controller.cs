@@ -198,6 +198,8 @@ namespace Client
 
                 activeChat = chats.FirstOrDefault(chat => chat.ChatId == chatId)!;
 
+                MessagesList.Clear();
+
                 foreach (ChatMessage msg in activeChat.Messages)
                 {
                     MessageContainer container = new()//Adding message to GUI
@@ -207,9 +209,7 @@ namespace Client
                         ChatMessageId = msg.ChatMessageId
                     };
 
-                    if(!MessagesList.Contains(container))
-                        MessagesList.Add(container);
-
+                    MessagesList.Add(container);
                 }
             }
             catch (Exception ex)
