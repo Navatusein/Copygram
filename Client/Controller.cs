@@ -87,7 +87,7 @@ namespace Client
             {
                 timer = new();
                 timer.Tick += BackgroundSync;
-                timer.Interval = new TimeSpan(0, 0, 7);
+                timer.Interval = new TimeSpan(0, 0, 5);
                 Task.Run(timer.Start);
             }
             catch (Exception ex)
@@ -414,9 +414,11 @@ namespace Client
                     MessageBox.Show(error.Text, "Something went wrong", MessageBoxButton.OK, MessageBoxImage.Error);
                     break;
                 default:
+                    MessageBox.Show("OH NO!", "Something went really wrong", MessageBoxButton.OK, MessageBoxImage.Error);
                     break;
             }
         }
+
         #endregion
 
         #region Main

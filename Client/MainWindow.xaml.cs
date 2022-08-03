@@ -71,6 +71,7 @@ namespace Client
             if(string.IsNullOrEmpty(tbMessage.Text))
                 tbMessage.Text = "Write a message...";
         }
+
         #endregion
 
         #region Overlays functions
@@ -173,7 +174,6 @@ namespace Client
         {
             if (ctrl.AddPrivateChat(PrivateChatOverlay.tbWhoToAddress.Text))
                 PrivateChatOverlay.Visibility = Visibility.Collapsed;
-
         }
 
         void GroupChatOverlay_AddClick(object sender, RoutedEventArgs e)
@@ -344,8 +344,7 @@ namespace Client
                 RegisterOverlay.SpeakLable.Foreground = new SolidColorBrush(Color.FromRgb(153, 0, 0));
             }
         }
+
         #endregion
-
-
     }
 }

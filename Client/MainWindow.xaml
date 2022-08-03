@@ -5,7 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client"
         xmlns:cctrl="clr-namespace:Client.CustomControls"
-        xmlns:ext="http://schemas.microsoft.com/winfx/2006/xaml/presentation/toolkit/extended"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         MinHeight="600" MinWidth="650"
