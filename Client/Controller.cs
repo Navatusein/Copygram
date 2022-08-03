@@ -25,7 +25,7 @@ namespace Client
     {
         User profile = null!; //Your user profile
         Chat activeChat = null!; //Chat wich is currently open
-        IPEndPoint ep = null!; //Sever endpoint
+        IPEndPoint ep = null!; //Server endpoint
         DispatcherTimer timer = null!; //Background sync timer
 
         public bool isTimeout = false;
