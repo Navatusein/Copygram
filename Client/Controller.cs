@@ -26,6 +26,7 @@ namespace Client
         User profile = null!; //Your user profile
         Chat activeChat = null!; //Chat wich is currently open
         IPEndPoint ep = null!; //Sever endpoint
+        DispatcherTimer timer = null!; //Background sync timer
 
         public bool isTimeout = false;
         public bool isLast = false; //Is loaded message was last in sequence
@@ -84,7 +85,7 @@ namespace Client
         {
             try
             {
-                DispatcherTimer timer = new();
+                timer = new();
                 timer.Tick += BackgroundSync;
                 timer.Interval = new TimeSpan(0, 0, 7);
                 Task.Run(timer.Start);
@@ -341,6 +342,7 @@ namespace Client
         /// </summary>
         public void CloseServerConnection()
         {
+            timer.Stop();
             Response response = Request(CommandType.Disconnect, null);
         }
 
