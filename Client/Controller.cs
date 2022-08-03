@@ -35,6 +35,7 @@ namespace Client
         ObservableCollection<UserCell> ChatList = null!; //GUI Collection of your chats
         ObservableCollection<MessageContainer> MessagesList = null!; //GUI Collection of messages from active chat
         List<Chat> chats = null!; //Collections of your chats
+        //List<int> toLightUp = new();
         #endregion
 
         #region Props
@@ -136,8 +137,8 @@ namespace Client
 
                         if (activeChat != null && chatMsg.ChatId == activeChat.ChatId)
                             NewMessagesAdded(activeChat.ChatId);
-                        else
-                            ActivateBubble(chat.ChatId);
+                        //else
+                        //    toLightUp.Add(chatMsg.ChatId);
                     }
                 }
 
@@ -163,6 +164,7 @@ namespace Client
             try
             {
                 ChatList.Clear();
+
                 foreach (Chat chat in chats)
                 {
                     ChatMember someChat = chat.ChatMembers.FirstOrDefault(member => member.User.UserId != profile.UserId)!; //Getting other user from this chat
@@ -183,6 +185,16 @@ namespace Client
                         LastMessage = chat.Messages.Count > 0 ? chat.Messages.Last().MessageText : "No messages"
                     });
                 }
+
+                //foreach(int id in toLightUp)
+                //{
+                //    UserCell c = ChatList.FirstOrDefault(chat => chat.ChatId == id)!;
+
+                //    if(c != null)
+                //        c.Bubble.Visibility = Visibility.Visible;
+
+                //    toLightUp.Remove(id);
+                //}
             }
             catch (Exception ex)
             {
@@ -402,18 +414,6 @@ namespace Client
                 default:
                     break;
             }
-        }
-
-        /// <summary>
-        /// Activates new message bubble on specific chat
-        /// </summary>
-        /// <param name="ChatId">Chat where to activate</param>
-        void ActivateBubble(int ChatId)
-        {
-            UserCell us = ChatList.FirstOrDefault(chat => chat.ChatId == ChatId)!;
-            
-            if(us != null)
-                us.Bubble.Visibility = Visibility.Visible;
         }
         #endregion
 
