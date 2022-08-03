@@ -24,8 +24,9 @@ namespace Client
     internal class Controller
     {
         User profile = null!; //Your user profile
-        Chat activeChat = null!; //Chat wich is currently open
-        IPEndPoint ep = null!; //Sever endpoint
+        Chat activeChat = null!; //Chat which is currently open
+        IPEndPoint ep = null!; //Server endpoint
+        DispatcherTimer timer = null!; //Background sync timer
 
         public bool isTimeout = false;
         public bool isLast = false; //Is loaded message was last in sequence
@@ -35,6 +36,7 @@ namespace Client
         ObservableCollection<UserCell> ChatList = null!; //GUI Collection of your chats
         ObservableCollection<MessageContainer> MessagesList = null!; //GUI Collection of messages from active chat
         List<Chat> chats = null!; //Collections of your chats
+        //List<int> toLightUp = new();
         #endregion
 
         #region Props
@@ -83,7 +85,7 @@ namespace Client
         {
             try
             {
-                DispatcherTimer timer = new();
+                timer = new();
                 timer.Tick += BackgroundSync;
                 timer.Interval = new TimeSpan(0, 0, 7);
                 Task.Run(timer.Start);
@@ -136,6 +138,8 @@ namespace Client
 
                         if (activeChat != null && chatMsg.ChatId == activeChat.ChatId)
                             NewMessagesAdded(activeChat.ChatId);
+                        //else
+                        //    toLightUp.Add(chatMsg.ChatId);
                     }
                 }
 
@@ -161,9 +165,14 @@ namespace Client
             try
             {
                 ChatList.Clear();
+
                 foreach (Chat chat in chats)
                 {
-                    User otherUser = chat.ChatMembers.FirstOrDefault(member => member.User.UserId != profile.UserId)!.User; //Getting other user from this chat
+                    ChatMember someChat = chat.ChatMembers.FirstOrDefault(member => member.User.UserId != profile.UserId)!; //Getting other user from this chat
+
+                    if (someChat == null) continue;
+
+                    User otherUser = someChat.User;
 
                     ChatList.Add(new UserCell() //Adding this chat to GUI
                     {
@@ -177,6 +186,16 @@ namespace Client
                         LastMessage = chat.Messages.Count > 0 ? chat.Messages.Last().MessageText : "No messages"
                     });
                 }
+
+                //foreach(int id in toLightUp)
+                //{
+                //    UserCell c = ChatList.FirstOrDefault(chat => chat.ChatId == id)!;
+
+                //    if(c != null)
+                //        c.Bubble.Visibility = Visibility.Visible;
+
+                //    toLightUp.Remove(id);
+                //}
             }
             catch (Exception ex)
             {
@@ -199,6 +218,9 @@ namespace Client
                 activeChat = chats.FirstOrDefault(chat => chat.ChatId == chatId)!;
 
                 MessagesList.Clear();
+
+                if (activeChat.Messages.Count <= 0)
+                    return;
 
                 foreach (ChatMessage msg in activeChat.Messages)
                 {
@@ -320,6 +342,7 @@ namespace Client
         /// </summary>
         public void CloseServerConnection()
         {
+            timer.Stop();
             Response response = Request(CommandType.Disconnect, null);
         }
 
@@ -394,7 +417,6 @@ namespace Client
                     break;
             }
         }
-
         #endregion
 
         #region Main
@@ -495,6 +517,8 @@ namespace Client
         {
             try
             {
+                if (activeChat.ChatId == 0) return;
+
                 ChatMessage dataToSend = new()//Data to send
                 {
                     MessageText = messageText,
@@ -546,20 +570,24 @@ namespace Client
                 ChatMember me = new ChatMember() { User = profile, ChatMemberRole = ChatMemberRole.Owner };//Our user as chat memeber
                 ChatMember to = new ChatMember() { User = toUser, ChatMemberRole = ChatMemberRole.Owner };//Other user as chat member
 
-                chats.Add(activeChat = new Chat()//Adding new chat
+                Chat c = new Chat()//Adding new chat
                 {
                     Avatar = toUser.Avatar,
                     ChatName = toUser.Nickname,
                     ChatMembers = new List<ChatMember>() { me, to },
                     ChatType = ChatType.Private,
                     Messages = new List<ChatMessage>()
-                });
+                };
 
-                SystemChatMessage dataToSend = new() { SystemMessageType = SystemChatMessageType.NewChat, Chat = activeChat };//Data to send on new chat
+                SystemChatMessage dataToSend = new() { SystemMessageType = SystemChatMessageType.NewChat, Chat = c };//Data to send on new chat
 
                 response = Request(CommandType.NewSystemChatMessage, dataToSend);//Request for new chat
 
                 if(response.Type == ResponseType.Error) return false;
+
+                Chat cs = StreamTools.Deserialize<Chat>(response.Data);
+
+                chats.Add(cs);
 
                 NewChatsAdded();//Refreshing GUI
                 return true;
@@ -613,22 +641,26 @@ namespace Client
                     chatMembers.Add(new ChatMember() { User = user, ChatMemberRole = ChatMemberRole.Member });
                 }
 
-                chats.Add(activeChat = new Chat() //Adding chat to list
+                Chat c = new Chat() //Adding new chat 
                 {
                     Avatar = image,
                     ChatName = nickname,
                     ChatMembers = chatMembers,
                     ChatType = ChatType.Group,
                     Messages = new List<ChatMessage>()
-                });
+                };
 
                 SystemChatMessage dataToSend = new() { //Request data on creation
                     SystemMessageType = SystemChatMessageType.NewChat,
-                    Chat = activeChat };
+                    Chat = c };
 
                 response = Request(CommandType.NewSystemChatMessage, dataToSend);//Request on creation 
 
                 if(response.Type == ResponseType.Error) return false;
+
+                Chat cs = StreamTools.Deserialize<Chat>(response.Data);
+
+                chats.Add(cs);
 
                 NewChatsAdded();//Refreshing GUI
                 return true;
