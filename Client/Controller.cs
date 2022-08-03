@@ -154,18 +154,17 @@ namespace Client
         #region View Loads
 
         /// <summary>
-        /// Rwfreshes collection chats
+        /// Refreshes collection chats
         /// </summary>
         public void NewChatsAdded()
         {
             try
             {
-                ChatList.Clear();
                 foreach (Chat chat in chats)
                 {
                     User otherUser = chat.ChatMembers.FirstOrDefault(member => member.User.UserId != profile.UserId)!.User; //Getting other user from this chat
                     
-                    ChatList.Add(new UserCell() //Adding this chat to GUI
+                    UserCell cell = new() //Adding this chat to GUI
                     {
                         ChatId = chat.ChatId,
 
@@ -175,7 +174,15 @@ namespace Client
                         Nickname = chat.ChatName == profile.Nickname ? otherUser.Nickname : chat.ChatName,
 
                         LastMessage = chat.Messages.Count > 0 ? chat.Messages.Last().MessageText : "No messages"
-                    });
+                    };
+
+                    if (ChatList.Any(chat => chat.ChatId == cell.ChatId &&
+                            !chat.LastMessage.Equals(cell.LastMessage)))
+                        cell.Bubble.Visibility = Visibility.Visible;
+
+
+                    if (!ChatList.Contains(cell))
+                        ChatList.Add(cell);
                 }
             }
             catch (Exception ex)
@@ -198,15 +205,18 @@ namespace Client
 
                 activeChat = chats.FirstOrDefault(chat => chat.ChatId == chatId)!;
 
-                MessagesList.Clear();
-
                 foreach (ChatMessage msg in activeChat.Messages)
                 {
-                    MessagesList.Add(new MessageContainer()//Adding message to GUI
+                    MessageContainer container = new()//Adding message to GUI
                     {
                         MessageText = msg.MessageText,
-                        AvatartImage = StreamTools.ToBitmapImage(msg.FromUser.Avatar)
-                    });
+                        AvatartImage = StreamTools.ToBitmapImage(msg.FromUser.Avatar),
+                        ChatMessageId = msg.ChatMessageId
+                    };
+
+                    if(!MessagesList.Contains(container))
+                        MessagesList.Add(container);
+
                 }
             }
             catch (Exception ex)
